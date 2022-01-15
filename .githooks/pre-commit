@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+FILE_LIST_NAME=".pre_commit_file_list"
+EXIT_LINT=4
+#IGNORE_LINT="continue"
+PMD_CMD="pmd.bat"
+PMD_RULES=".githooks/pmd_java_rules.xml"
+
+[[ -e "$FILE_LIST_NAME" ]] && { echo "Delete $FILE_LIST_NAME before commit"; exit 1; }
+
+file_list=""
+current_dir=$(pwd)
+
+# grep .java files only non in test dir
+for file in $(git diff --name-only --staged | grep --extended-regexp '\.java$' | grep --invert-match --extended-regexp '^src/test')
+do
+  [[ -e "${file}" ]] && { file_list="${file_list},${file}"; }
+done
+file_list="${file_list#,}"
+
+# no java files changed, no need to run PMD
+[[ -z "$file_list" ]] && exit 0
+
+# run linter and print warnings
+echo "$file_list" >"$FILE_LIST_NAME"
+"${PMD_CMD}" --file-list "${current_dir}/${FILE_LIST_NAME}" --rulesets "${PMD_RULES}" --no-cache
+result="$?"
+rm "$FILE_LIST_NAME"
+
+if [[ "$result" == "$EXIT_LINT" ]]
+then
+  echo
+  echo "Lint detected, commit aborted"
+  echo "To ignore this warning commit with '--no-verify' option"
+  echo
+  exit 1
+  # I can't get the 'read' command to work on Git for Windows
+  #read -r -p "Committed java files have lint. Enter '${IGNORE_LINT}' to ignore: " choice
+  #[[ "$choice" != "$IGNORE_LINT" ]] && exit 1
+elif [[ "$result" != "0" ]]
+then
+  echo
+  echo "PMD returned error"
+  echo "To bypass this problem commit with '--no-verify' option"
+  echo
+  exit 1
+fi
+
+exit 0
