@@ -23,7 +23,7 @@ public class IngesterImpl implements Ingester {
         for (int i = len; i < chars.length; i++) {
             char letter = chars[i];
             current.increment(letter);
-            String nextKey = current.getGram().substring(1) + letter;
+            String nextKey = current.getValue().substring(1) + letter;
             current = getGram(nextKey, gramMap, dict);
         }
         current.increment(WORD_END);

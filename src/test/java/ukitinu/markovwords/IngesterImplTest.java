@@ -67,35 +67,8 @@ class IngesterImplTest {
     }
 
     @Test
-    void ingest_4gram() {
-        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 4));
-        assertEquals(3, gramMap.size());
-
-        assertEquals(1, gramMap.get("_hel").get('l'));
-        assertEquals(1, gramMap.get("hell").get('o'));
-        assertEquals(1, gramMap.get("ello").get('_'));
-    }
-
-    @Test
-    void ingest_5gram() {
-        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 5));
-        assertEquals(2, gramMap.size());
-
-        assertEquals(1, gramMap.get("_hell").get('o'));
-        assertEquals(1, gramMap.get("hello").get('_'));
-    }
-
-    @Test
-    void ingest_6gram() {
-        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 6));
-        assertEquals(1, gramMap.size());
-
-        assertEquals(1, gramMap.get("_hello").get('_'));
-    }
-
-    @Test
-    void ingest_7gram() {
-        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 7));
+    void ingest_noOp() {
+        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, text.length() + 1));
         assertTrue(gramMap.isEmpty());
     }
 

@@ -13,16 +13,19 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 public class TextManager {
     private final Reader reader;
     private final Ingester ingester;
+    private final Repo repo;
 
-    public TextManager(Reader reader, Ingester ingester) {
+    public TextManager(Reader reader, Ingester ingester, Repo repo) {
         this.reader = reader;
         this.ingester = ingester;
+        this.repo = repo;
     }
 
-    public void processText(String src, Dict dict) {
+    public void processText(String src, Dict dict, int len) {
         String text = reader.read(src);
+        var gramMap = repo.getGramMap(dict);
         String cleaned = cleanText(text, dict);
-        ingester.ingest(cleaned, new HashMap<>(), dict, 1);
+        ingester.ingest(cleaned, gramMap, dict, len);
     }
 
     /**

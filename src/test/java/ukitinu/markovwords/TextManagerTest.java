@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 class TextManagerTest {
+    private final TextManager tm = new TextManager(null, null, null);
 
     @Test
     void cleanText() {
         var dict = new Dict("test", Set.of('A', 'b', 'c'));
-        var tm = new TextManager(null, null);
         String str = "the quick brown fox jumps over the lazy dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
 
         String cleaned = assertDoesNotThrow(() -> tm.cleanText(str, dict));
@@ -25,7 +25,6 @@ class TextManagerTest {
     @Test
     void cleanText_longer() {
         var dict = new Dict("test", Set.of('a', 'b', 'c'));
-        var tm = new TextManager(null, null);
         String str = """
                 "The quick brown fox jumps over the lazy dog" is an English-language pangram, a sentence that contains
                  all of the letters of the English alphabet.
