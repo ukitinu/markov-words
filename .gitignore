@@ -1,0 +1,18 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+
+/logs/
+*.log
+.pre_commit_file_list
+
+target/
+*.class
+*.jar
+*.zip
+*.tar
+*.gz
+
