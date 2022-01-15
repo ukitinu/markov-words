@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 import static ukitinu.markovwords.DataConverter.GRAM_MAP_SEP;
 import static ukitinu.markovwords.DataConverter.NAME_SEP;
@@ -20,7 +19,7 @@ class DataConverterTest {
 
     @Test
     void serialiseDict() {
-        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '\u001F', WORD_END);
+        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '\u001f', '\u00e6', WORD_END);
         Dict dict = new Dict("dict-name", alphabet);
         String serial = assertDoesNotThrow(() -> dc.serialiseDict(dict));
 
@@ -35,14 +34,15 @@ class DataConverterTest {
 
     @Test
     void serialiseGram() {
-        Dict dict = new Dict("dict-name", Set.of('a', 'b', 'c', '1', '0', '\''));
+        Dict dict = new Dict("dict-name", Set.of('a', 'b', 'c', '1', '0', '\'', '\u00e6'));
         Map<Character, Integer> charMap = Map.of(
                 'a', 10,
                 'b', 0,
                 'c', 2,
                 '1', 1,
                 '0', 1,
-                '\'', 0
+                '\'', 0,
+                '\u00e6', 7
         );
         Gram gram = new Gram("ab1", dict, charMap);
         String serial = assertDoesNotThrow(() -> dc.serialiseGram(gram));
@@ -57,16 +57,33 @@ class DataConverterTest {
         long charMapSize = parts[1].chars().filter(ch -> ch == GRAM_MAP_SEP).count();
         assertEquals(charMap.size(), charMapSize);
         assertEquals(
-                new HashSet<>(Arrays.asList("a10", "b0", "c2", "11", "01", "'0")),
+                new HashSet<>(Arrays.asList("a10", "b0", "c2", "11", "01", "'0", "æ7")), //æ is u00e6
                 new HashSet<>(Arrays.asList(parts[1].split(String.valueOf(GRAM_MAP_SEP))))
         );
     }
 
     @Test
     void deserialiseDict() {
+        String name = "my-dict-name";
+        String alphabet = "aopurag182,ooo.-1!'" + WORD_END;
+        String serial = name + NAME_SEP + alphabet;
+        Dict dict = assertDoesNotThrow(() -> dc.deserialiseDict(serial));
+        assertEquals(name, dict.name());
+        assertEquals(AlphabetUtils.convertToSet(alphabet), dict.alphabet());
     }
 
     @Test
     void deserialiseGram() {
+        Dict dict = new Dict("placeholder", Set.of());
+        String value = "gram-value";
+        String charMap = "a2;02;110;\u00e61;" + WORD_END + "4;";
+        String serial = value + NAME_SEP + charMap;
+        Gram gram = assertDoesNotThrow(() -> dc.deserialiseGram(serial, dict));
+        assertEquals(value, gram.getValue());
+        assertFalse(gram.isEmpty());
+        assertEquals(
+                Map.of('a', 2, '0', 2, '1', 10, '\u00e6', 1, WORD_END, 4),
+                gram.getCharMap()
+        );
     }
 }

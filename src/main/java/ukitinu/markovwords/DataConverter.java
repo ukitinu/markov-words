@@ -68,7 +68,7 @@ public class DataConverter {
 
         Map<Character, Integer> charMap = new HashMap<>();
         while (i < cs.length()) {
-            char letter = cs.charAt(i);
+            char letter = cs.charAt(i++);
             var pair = readSlice(cs, i, GRAM_MAP_SEP);
             int count = Integer.parseInt(pair.first());
 
