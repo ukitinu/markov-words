@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class DataConverter {
-    private static final char NAME_SEP = '\n';
-    private static final char GRAM_MAP_SEP = ';';
+    static final char NAME_SEP = '\n';
+    static final char GRAM_MAP_SEP = ';';
 
     /**
      * Converts the dictionary in a string with the dict name on the first line, and the alphabet on the second.
@@ -98,7 +98,8 @@ public class DataConverter {
         int i = start;
         char current;
 
-        while (i < cs.length() && (current = cs.charAt(i++)) != stop) {
+        // PMD disabled to avoid warnings about AssignmentInOperand rule
+        while (i < cs.length() && (current = cs.charAt(i++)) != stop) { // NOPMD
             extraction.append(current);
         }
         return new Pair<>(extraction.toString(), i);
