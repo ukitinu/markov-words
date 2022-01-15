@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
+@SuppressWarnings("PMD.SystemPrintln") //TODO temporary fix (tm)
 public final class Main {
     private static final Dict DICT = new Dict("berlusca", AlphabetUtils.getAsciiSimple());
     private static final Map<String, Gram> GRAM_MAP = new HashMap<>();
@@ -47,7 +48,7 @@ public final class Main {
     }
 
     private static String createWord(Gram gram) {
-        var word = new StringBuilder(gram.getGram());
+        var word = new StringBuilder(gram.getValue());
         char next = gram.next();
         while (next != WORD_END) {
             word.append(next);

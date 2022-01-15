@@ -13,20 +13,20 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 public class Gram {
     private static final Random RANDOM = new Random();
 
-    private final String gram;
+    private final String value;
     private final Dict dict;
     private final Map<Character, Integer> charMap;
     private int weight;
 
-    public Gram(String gram, Dict dict, Map<Character, Integer> charMap) {
-        this.gram = gram;
+    public Gram(String value, Dict dict, Map<Character, Integer> charMap) {
+        this.value = value;
         this.dict = dict;
         this.charMap = new HashMap<>(charMap);
         this.weight = weigh();
     }
 
-    public Gram(String gram, Dict dict) {
-        this(gram, dict, new HashMap<>());
+    public Gram(String value, Dict dict) {
+        this(value, dict, new HashMap<>());
     }
 
     public boolean isEmpty() {
@@ -76,7 +76,7 @@ public class Gram {
                 || !Objects.equals(dict.alphabet(), other.getDict().alphabet())) {
             throw new IllegalArgumentException("trying to add n-grams from different lexicons");
         }
-        if (!gram.equals(other.gram)) throw new IllegalArgumentException("trying to add different n-grams");
+        if (!value.equals(other.value)) throw new IllegalArgumentException("trying to add different n-grams");
 
         for (var letter : dict.alphabet()) {
             int count = get(letter) + other.get(letter);
