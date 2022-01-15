@@ -1,14 +1,13 @@
 name: Integration tests and coverage
 
 #
-# Unit and integration tests, with coverage report and check and badge for PR on master and develop branches
+# Unit and integration tests, with coverage report and check and badge for PR on master branch
 #
 
 on:
   pull_request:
     branches:
       - master
-      - develop
 
 jobs:
   test-coverage:

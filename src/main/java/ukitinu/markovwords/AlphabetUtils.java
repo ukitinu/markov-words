@@ -17,6 +17,14 @@ public final class AlphabetUtils {
 
     public static final char WORD_END = '_';
 
+    public static Set<Character> convertToSet(String string) {
+        Set<Character> set = new HashSet<>();
+        for (char c : string.toCharArray()) {
+            set.add(c);
+        }
+        return set;
+    }
+
     /**
      * @return Set of letters A-Z, a-z, 0-9
      */
