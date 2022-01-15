@@ -12,12 +12,23 @@
     <url>https://github.com/ukitinu/markov-words</url>
 
     <properties>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
         <versions.log4j>2.17.1</versions.log4j>
         <versions.lombok>1.18.22</versions.lombok>
         <versions.junit>5.8.2</versions.junit>
+        <!-- PLUGINS -->
+        <versions.surefire>3.0.0-M5</versions.surefire>
+        <!-- JaCoCo -->
+        <versions.jacoco>0.8.7</versions.jacoco>
+        <jacoco.out>${project.reporting.outputDirectory}/jacoco-output</jacoco.out>
+        <jacoco.unit.data>${jacoco.out}/jacoco-unit-tests.exec</jacoco.unit.data>
+        <jacoco.unit.report>${project.reporting.outputDirectory}/jacoco-unit-report</jacoco.unit.report>
+        <jacoco.int.data>${jacoco.out}/jacoco-integration-tests.exec</jacoco.int.data>
+        <jacoco.int.report>${project.reporting.outputDirectory}/jacoco-integration-report</jacoco.int.report>
+        <jacoco.merged.data>${jacoco.out}/merged.exec</jacoco.merged.data>
+        <jacoco.merged.report>${project.reporting.outputDirectory}/jacoco-merged-report</jacoco.merged.report>
     </properties>
 
     <dependencies>
@@ -42,10 +53,158 @@
         <!-- TEST -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <version>${versions.junit}</version>
             <scope>test</scope>
         </dependency>
+        <!-- PLUGINS -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${versions.jacoco}</version>
+            <type>maven-plugin</type>
+        </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${versions.surefire}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                    <runOrder>alphabetical</runOrder>
+                    <!-- populated during execution, ignore 'unresolved maven property' warning  -->
+                    <argLine>${surefire.jacoco.args}</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${versions.surefire}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                    <runOrder>alphabetical</runOrder>
+                    <!-- populated during execution, ignore 'unresolved maven property' warning  -->
+                    <argLine>${failsafe.jacoco.args}</argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${versions.jacoco}</version>
+                <executions>
+                    <!-- Surefire -->
+                    <execution>
+                        <id>before-unit-test-execution</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path where to store unit test coverage data it will generate -->
+                            <destFile>${jacoco.unit.data}</destFile>
+                            <propertyName>surefire.jacoco.args</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>after-unit-test-execution</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path of coverage data generated during unit testing, as destFile above -->
+                            <dataFile>${jacoco.unit.data}</dataFile>
+                            <!-- path where to store the generated report -->
+                            <outputDirectory>${jacoco.unit.report}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Failsafe -->
+                    <execution>
+                        <id>before-integration-test-execution</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path where to store integration test coverage data it will generate -->
+                            <destFile>${jacoco.int.data}</destFile>
+                            <propertyName>failsafe.jacoco.args</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>after-integration-test-execution</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- path of coverage data generated during integration testing, as destFile above -->
+                            <dataFile>${jacoco.int.data}</dataFile>
+                            <!-- path where to store the generated report -->
+                            <outputDirectory>${jacoco.int.report}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Merged test coverage report -->
+                    <execution>
+                        <id>merge-unit-and-integration</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <!-- files to merge -->
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${jacoco.out}</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <!-- merged file -->
+                            <destFile>${jacoco.merged.data}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-merged-report</id>
+                        <!-- same phase as above, executes after the 'merge-unit-and-integration' because -->
+                        <!-- Maven respects the sequence of <execution> blocks -->
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.out}/merged.exec</dataFile>
+                            <outputDirectory>${jacoco.merged.report}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

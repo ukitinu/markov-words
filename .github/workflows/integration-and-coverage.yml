@@ -1,5 +1,9 @@
 name: Integration tests and coverage
 
+#
+# Unit and integration tests, with coverage report and check and badge for PR on master and develop branches
+#
+
 on:
   pull_request:
     branches:
