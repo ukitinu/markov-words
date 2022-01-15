@@ -1,0 +1,32 @@
+name: Unit tests
+
+on:
+  - push
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+      - name: Test
+        run: mvn test --batch-mode --fail-at-end
+
+      # publishes data of failed tests
+      - name: Publish reports
+        # to ensure it proceeds in case of test failures
+        if: ${{ always() }}
+        uses: ScaCap/action-surefire-report@v1.0.5
+        with:
+          # ignore failsafe reports (integration tests)
+          report_paths: '**/surefire-reports/TEST-*.xml'
+          # default is false, another action will fail the pipeline if there are test failures
+          fail_on_test_failures: false
+          # default is true, another action will fail the pipeline if there are no tests
+          fail_if_no_tests: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,22 @@
+name: Static analysis
+
+on:
+  - pull_request
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+      - name: PMD
+        id: pmd
+        uses: pmd/pmd-github-action@v1.1.0
+        with:
+          rulesets: '.githooks/pmd_java_rules.xml'
+          sourcePath: 'src/main/java'
