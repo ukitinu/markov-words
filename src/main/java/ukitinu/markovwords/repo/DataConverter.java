@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 class DataConverter {
-    static final char NAME_SEP = '\n';
+    static final char NAME_SEP = '\u001d';
     static final char GRAM_MAP_SEP = ';';
 
     /**
