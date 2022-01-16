@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 class GramTest {
     private Dict dict;
@@ -14,7 +15,6 @@ class GramTest {
     @BeforeEach
     void setUp() {
         dict = new Dict("dict", Set.of('a', 'b', 'c'));
-
         gram = new Gram("gram", dict);
     }
 
@@ -52,7 +52,7 @@ class GramTest {
     @Test
     void next() {
         char nextWhenEmpty = assertDoesNotThrow(() -> gram.next());
-        assertEquals('_', nextWhenEmpty);
+        assertEquals(WORD_END, nextWhenEmpty);
 
         gram.increment('c');
         assertEquals('c', gram.next());
