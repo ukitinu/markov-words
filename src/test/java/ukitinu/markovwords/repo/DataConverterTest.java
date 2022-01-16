@@ -1,8 +1,11 @@
-package ukitinu.markovwords;
+package ukitinu.markovwords.repo;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
+import ukitinu.markovwords.repo.DataConverter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,8 +14,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
-import static ukitinu.markovwords.DataConverter.GRAM_MAP_SEP;
-import static ukitinu.markovwords.DataConverter.NAME_SEP;
+import static ukitinu.markovwords.repo.DataConverter.GRAM_MAP_SEP;
+import static ukitinu.markovwords.repo.DataConverter.NAME_SEP;
 
 class DataConverterTest {
     private final DataConverter dc = new DataConverter();
@@ -29,7 +32,7 @@ class DataConverterTest {
         String[] parts = serial.split(String.valueOf(NAME_SEP));
 
         assertEquals("dict-name", parts[0]);
-        assertEquals(alphabet, AlphabetUtils.convertToSet(parts[1]));
+        Assertions.assertEquals(alphabet, AlphabetUtils.convertToSet(parts[1]));
     }
 
     @Test

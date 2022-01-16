@@ -2,9 +2,9 @@ package ukitinu.markovwords;
 
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.readers.Reader;
+import ukitinu.markovwords.repo.Repo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 

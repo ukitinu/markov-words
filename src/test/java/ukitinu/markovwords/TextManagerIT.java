@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.readers.StringReader;
+import ukitinu.markovwords.repo.Repo;
 
 import java.util.HashMap;
 import java.util.Map;

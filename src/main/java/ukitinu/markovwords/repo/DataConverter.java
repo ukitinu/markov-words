@@ -1,4 +1,4 @@
-package ukitinu.markovwords;
+package ukitinu.markovwords.repo;
 
 import ukitinu.markovwords.lib.Pair;
 import ukitinu.markovwords.models.Dict;
@@ -9,14 +9,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class DataConverter {
+class DataConverter {
     static final char NAME_SEP = '\n';
     static final char GRAM_MAP_SEP = ';';
 
     /**
      * Converts the dictionary in a string with the dict name on the first line, and the alphabet on the second.
      */
-    public String serialiseDict(Dict dict) {
+    String serialiseDict(Dict dict) {
         StringBuilder sb = new StringBuilder();
         sb.append(dict.name()).append(NAME_SEP);
         dict.alphabet().forEach(sb::append);
@@ -27,7 +27,7 @@ public class DataConverter {
      * Converts the gram in a string with the gram value on the first line, and a {@link #GRAM_MAP_SEP}-separated list
      * of {@code CharInt} values.
      */
-    public String serialiseGram(Gram gram) {
+    String serialiseGram(Gram gram) {
         StringBuilder sb = new StringBuilder();
         sb.append(gram.getValue()).append(NAME_SEP);
         gram.getCharMap().forEach((k, v) -> sb.append(k).append(v).append(GRAM_MAP_SEP));
@@ -37,7 +37,7 @@ public class DataConverter {
     /**
      * Reads the input, everything before {@link #NAME_SEP} is saved into the name, everything after into the alphabet.
      */
-    public Dict deserialiseDict(CharSequence cs) {
+    Dict deserialiseDict(CharSequence cs) {
         var pair = readSlice(cs, 0, NAME_SEP);
         String name = pair.first();
 
@@ -52,7 +52,7 @@ public class DataConverter {
     /**
      * Creates a new {@link Gram} from the given {@link CharSequence}, with {@param dict} as {@link Dict}.
      */
-    public Gram deserialiseGram(CharSequence cs, Dict dict) {
+    Gram deserialiseGram(CharSequence cs, Dict dict) {
         var gramPair = readGramSerial(cs);
 
         return new Gram(gramPair.first(), dict, gramPair.second());
