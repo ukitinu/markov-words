@@ -1,5 +1,6 @@
 package ukitinu.markovwords.repo;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.DataException;
 import ukitinu.markovwords.models.Dict;
@@ -74,6 +75,22 @@ class FileRepoIT {
 
         assertThrows(DataException.class, () -> repo.get("bad-dict-dir"));
         assertThrows(DataException.class, () -> repo.get("bad-dict-name"));
+    }
+
+    @Test
+    void delete() throws IOException {
+        String name = "delete-test";
+        try {
+            Files.createDirectory(Path.of(basePath + "/" + name));
+            Files.createFile(Path.of(basePath + "/" + name + "/" + name));
+            assertDoesNotThrow(() -> repo.delete(name));
+            assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
+            assertTrue(Files.exists(Path.of(basePath + "/." + name)));
+            assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name)));
+        } finally {
+            FileUtils.deleteDirectory(Path.of(basePath + "/" + name).toFile());
+            FileUtils.deleteDirectory(Path.of(basePath + "/." + name).toFile());
+        }
     }
 
 }

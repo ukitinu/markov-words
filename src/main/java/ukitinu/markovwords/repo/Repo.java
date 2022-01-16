@@ -12,7 +12,7 @@ public interface Repo {
 
     Dict get(String name);
 
-    Dict delete(String name);
+    void delete(String name);
 
     Map<String, Gram> getGramMap(Dict dict);
 

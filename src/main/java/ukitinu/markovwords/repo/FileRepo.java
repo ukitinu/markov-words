@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public final class FileRepo implements Repo {
     private static final Logger LOG = Logger.create(FileRepo.class);
     private static final String FILE_EXT = ".dat";
+    private static final String DEL_PREFIX = ".";
 
     private final Path dataPath;
     private final DataConverter dataConverter;
@@ -68,8 +69,15 @@ public final class FileRepo implements Repo {
     }
 
     @Override
-    public Dict delete(String name) {
-        return null;
+    public void delete(String name) {
+        try {
+            Path dirPath = dataPath.resolve(name);
+            Path deletedPath = dataPath.resolve(DEL_PREFIX + name);
+            Files.move(dirPath, deletedPath);
+        } catch (Exception e){
+            LOG.error("Unable to delete dict {}: {}", name, e.toString());
+            throw new DataException("Unable to delete dict " + name, e);
+        }
     }
 
     @Override
