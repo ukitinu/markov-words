@@ -14,7 +14,9 @@ public interface Repo {
 
     void delete(String name);
 
-    Map<String, Gram> getGramMap(Dict dict);
+    Map<String, Gram> getGramMap(String name);
+
+    Map<String, Gram> getGramMap(String name, int len);
 
     void update(Dict dict, Map<String, Gram> gramMap);
 

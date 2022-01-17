@@ -79,13 +79,13 @@ class DataConverterTest {
     void deserialiseGram() {
         Dict dict = new Dict("placeholder", Set.of());
         String value = "gram-value";
-        String charMap = "a2;02;110;\u00e61;" + WORD_END + "4;";
+        String charMap = "a2;02;110;\u00e61;;3;" + WORD_END + "4;";
         String serial = value + NAME_SEP + charMap;
         Gram gram = assertDoesNotThrow(() -> dc.deserialiseGram(serial, dict));
         assertEquals(value, gram.getValue());
         assertFalse(gram.isEmpty());
         assertEquals(
-                Map.of('a', 2, '0', 2, '1', 10, '\u00e6', 1, WORD_END, 4),
+                Map.of('a', 2, '0', 2, '1', 10, '\u00e6', 1, ';', 3, WORD_END, 4),
                 gram.getCharMap()
         );
     }

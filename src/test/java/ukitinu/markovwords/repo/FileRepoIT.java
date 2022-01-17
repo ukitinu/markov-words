@@ -4,11 +4,13 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.DataException;
 import ukitinu.markovwords.models.Dict;
+import ukitinu.markovwords.models.Gram;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,15 +50,17 @@ class FileRepoIT {
 
     @Test
     void listAll() throws IOException {
-        assertEquals(2, repo.listAll().size());
+        assertEquals(3, repo.listAll().size());
 
         try {
             Files.createDirectory(Path.of(basePath + "/dict1"));
             Files.createDirectory(Path.of(basePath + "/dict2"));
-            assertEquals(4, repo.listAll().size());
+            Files.createDirectory(Path.of(basePath + "/.deleted_dict"));
+            assertEquals(5, repo.listAll().size());
         } finally {
             Files.delete(Path.of(basePath + "/dict1"));
             Files.delete(Path.of(basePath + "/dict2"));
+            Files.delete(Path.of(basePath + "/.deleted_dict"));
         }
     }
 
@@ -83,7 +87,9 @@ class FileRepoIT {
         try {
             Files.createDirectory(Path.of(basePath + "/" + name));
             Files.createFile(Path.of(basePath + "/" + name + "/" + name));
+
             assertDoesNotThrow(() -> repo.delete(name));
+
             assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
             assertTrue(Files.exists(Path.of(basePath + "/." + name)));
             assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name)));
@@ -92,5 +98,26 @@ class FileRepoIT {
             FileUtils.deleteDirectory(Path.of(basePath + "/." + name).toFile());
         }
     }
+
+    @Test
+    void getGramMap_1() {
+        String name = "dict-test";
+        Map<String, Gram> gramMap = assertDoesNotThrow(() -> repo.getGramMap(name, 1));
+        assertEquals(2, gramMap.size());
+    }
+
+    @Test
+    void getGramMap_2() {
+        String name = "dict-test";
+        Map<String, Gram> gramMap = assertDoesNotThrow(() -> repo.getGramMap(name, 2));
+        assertEquals(1, gramMap.size());
+    }
+
+    @Test
+    void getGramMap_3() {
+        String name = "dict-test";
+        assertThrows(DataException.class, () -> repo.getGramMap(name, 3));
+    }
+
 
 }

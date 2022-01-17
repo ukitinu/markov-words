@@ -23,7 +23,7 @@ public class TextManager {
 
     public void processText(String src, Dict dict, int len) {
         String text = reader.read(src);
-        var gramMap = repo.getGramMap(dict);
+        var gramMap = repo.getGramMap(dict.name());
         String cleaned = cleanText(text, dict);
         ingester.ingest(cleaned, gramMap, dict, len);
     }
