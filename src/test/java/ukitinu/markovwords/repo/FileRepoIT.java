@@ -6,6 +6,7 @@ import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -153,6 +154,10 @@ class FileRepoIT {
     void getGramMap_3() {
         String name = "dict-test";
         assertThrows(DataException.class, () -> repo.getGramMap(name, 3));
+    }
+
+    @Test
+    void upsert() throws IOException {
     }
 
 

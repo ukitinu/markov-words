@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -146,9 +147,56 @@ public final class FileRepo implements Repo {
     }
 
     @Override
-    public void update(Dict dict, Map<String, Gram> gramMap) {
+    public void upsert(Dict dict, Map<String, Gram> gramMap) {
 
     }
+
+    /**
+     * Creates, if necessary, the dict's directory, and then creates or overrides the dict's file.
+     *
+     * @param dict dictionary to update/create.
+     * @throws IOException if an error occurs while writing the file or creating the directory.
+     */
+    private void upsertDict(Dict dict) throws IOException {
+        Path dictDir = getDictDir(dict.name());
+        if (!Files.exists(dictDir)) Files.createDirectory(dictDir);
+
+        Path dictFile = getDictFile(dict.name());
+        String dictString = dataConverter.serialiseDict(dict);
+        Files.writeString(dictFile, dictString, StandardCharsets.UTF_8);
+    }
+
+    private void upsertGramMap(Map<String, Gram> gramMap, String dictName) throws IOException {
+        Map<Integer, List<Gram>> gramsByLength = gramMap
+                .values()
+                .stream()
+                .collect(Collectors.groupingBy(g -> g.getValue().length()));
+        for (var entry : gramsByLength.entrySet()) {
+            Path gramDir = getGramDir(dictName, entry.getKey());
+            for (var gram : entry.getValue()) upsertGram(gram, gramDir);
+        }
+    }
+
+    /**
+     * Creates or updates the gram's file. If the file already exists, it reads its content and updates it only if
+     * it is different.
+     *
+     * @param gram    gram to update/create.
+     * @param gramDir directory where the gram should be stored.
+     * @throws IOException if an error occurs reading or writing the gram's file.
+     */
+    private void upsertGram(Gram gram, Path gramDir) throws IOException {
+        Path gramPath = gramDir.resolve(gram.getValue());
+        String gramString = dataConverter.serialiseGram(gram);
+        if (!Files.exists(gramPath)) {
+            Files.writeString(gramPath, gramString, StandardCharsets.UTF_8);
+        } else {
+            String currentContent = Files.readString(gramPath, StandardCharsets.UTF_8);
+            if (!currentContent.equals(gramString)) Files.writeString(gramPath, gramString, StandardCharsets.UTF_8);
+        }
+    }
+
+    //region utils
 
     /**
      * Converts to string every valid gram file's content.
@@ -181,6 +229,7 @@ public final class FileRepo implements Repo {
                     .toList();
         }
     }
+    //endregion
 
 
     //region paths

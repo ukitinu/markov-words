@@ -18,6 +18,6 @@ public interface Repo {
 
     Map<String, Gram> getGramMap(String name, int len);
 
-    void update(Dict dict, Map<String, Gram> gramMap);
+    void upsert(Dict dict, Map<String, Gram> gramMap);
 
 }
