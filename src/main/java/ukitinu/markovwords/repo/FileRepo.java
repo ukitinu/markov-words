@@ -1,6 +1,5 @@
 package ukitinu.markovwords.repo;
 
-import ukitinu.markovwords.lib.DataException;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
@@ -8,6 +7,7 @@ import ukitinu.markovwords.models.Gram;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,12 +64,25 @@ public final class FileRepo implements Repo {
      */
     @Override
     public Dict get(String name) {
-        //TODO handling and test of deleted dict
         try {
+            if (name.startsWith(DEL_PREFIX)) {
+                LOG.info("Cannot get deleted dict {}", name);
+                throw new DataException("Cannot get deleted dict " + name);
+            }
+
             Path filePath = getDictFile(name);
             String content = Files.readString(filePath, StandardCharsets.UTF_8);
             return dataConverter.deserialiseDict(content);
-        } catch (Exception e) {
+        } catch (NoSuchFileException e) {
+            Path deletedPath = getDeletedDictDir(name);
+            if (Files.isDirectory(deletedPath)) {
+                LOG.error("Dict {} has been deleted", name);
+                throw new DataException("Dict has been deleted: " + name);
+            } else {
+                LOG.error("Dict {} not found (either dir or .dat file)", name);
+                throw new DataException("Dict not found: " + name, e);
+            }
+        } catch (IOException e) {
             LOG.error("Unable to read dict {}: {}", name, e.toString());
             throw new DataException("Unable to read dict " + name, e);
         }

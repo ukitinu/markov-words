@@ -2,7 +2,6 @@ package ukitinu.markovwords.repo;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
-import ukitinu.markovwords.lib.DataException;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -73,12 +72,17 @@ class FileRepoIT {
     }
 
     @Test
-    void get_notFound() {
+    void get_errors() {
         var e = assertThrows(DataException.class, () -> repo.get("not-found"));
         assertTrue(e.getCause() instanceof NoSuchFileException);
 
         assertThrows(DataException.class, () -> repo.get("bad-dict-dir"));
         assertThrows(DataException.class, () -> repo.get("bad-dict-name"));
+
+        e = assertThrows(DataException.class, () -> repo.get("del-dict"));
+        assertNull(e.getCause());
+
+        assertThrows(DataException.class, () -> repo.get(".del-dict"));
     }
 
     @Test

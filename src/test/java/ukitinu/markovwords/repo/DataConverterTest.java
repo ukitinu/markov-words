@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.repo.DataConverter;
 
 import java.util.Arrays;
 import java.util.HashSet;

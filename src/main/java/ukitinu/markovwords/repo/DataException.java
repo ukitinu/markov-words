@@ -1,4 +1,4 @@
-package ukitinu.markovwords.lib;
+package ukitinu.markovwords.repo;
 
 import java.io.Serial;
 
