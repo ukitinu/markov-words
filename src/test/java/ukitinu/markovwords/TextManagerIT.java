@@ -31,7 +31,7 @@ class TextManagerIT {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(repo.getGramMap(dict.name())).thenReturn(gramMap);
+        Mockito.when(repo.getGramMap(Mockito.eq(dict.name()), Mockito.anyInt())).thenReturn(gramMap);
         textManager = new TextManager(new StringReader(), new IngesterImpl(), repo);
     }
 

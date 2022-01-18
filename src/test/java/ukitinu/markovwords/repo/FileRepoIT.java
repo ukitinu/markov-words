@@ -86,6 +86,38 @@ class FileRepoIT {
     }
 
     @Test
+    void getGram_ok() {
+        String dictName = "dict-test";
+        String gram1 = "a";
+        String gram2 = "ba";
+        var g1 = assertDoesNotThrow(() -> repo.getGram(dictName, gram1));
+        var g2 = assertDoesNotThrow(() -> repo.getGram(dictName, gram2));
+        assertEquals("a", g1.getValue());
+        assertEquals(dictName, g1.getDict().name());
+        assertEquals("ba", g2.getValue());
+        assertEquals(Map.of('a', 3, 'b', 3, WORD_END, 4), g2.getCharMap());
+    }
+
+    @Test
+    void getGram_dictErrors() {
+        String delDict = "del-dict";
+        String delDictDot = ".del-dict";
+        String notFoundDict = "not-found-dict";
+        assertThrows(DataException.class, () -> repo.getGram(delDict, "value"));
+        assertThrows(DataException.class, () -> repo.getGram(delDictDot, "value"));
+        assertThrows(DataException.class, () -> repo.getGram(notFoundDict, "value"));
+    }
+
+    @Test
+    void getGram_gramErrors() {
+        String dictName = "dict-test";
+        String dirNotFound = "dirnotfound";
+        String gramNotFound = "x";
+        assertThrows(DataException.class, () -> repo.getGram(dictName, dirNotFound));
+        assertThrows(DataException.class, () -> repo.getGram(dictName, gramNotFound));
+    }
+
+    @Test
     void delete() throws IOException {
         String name = "delete-test";
         try {

@@ -88,6 +88,23 @@ public final class FileRepo implements Repo {
         }
     }
 
+    @Override
+    public Gram getGram(String dictName, String gramValue) {
+        Dict dict = get(dictName);
+        int len = gramValue.length();
+        try {
+            Path gramPath = getGramDir(dictName, len).resolve(gramValue + FILE_EXT);
+            String content = Files.readString(gramPath, StandardCharsets.UTF_8);
+            return dataConverter.deserialiseGram(content, dict);
+        } catch (NoSuchFileException e) {
+            LOG.error("Gram {} of Dict {} not found", gramValue, dictName);
+            throw new DataException("Gram " + gramValue + " of Dict " + dictName + " not found");
+        } catch (IOException e) {
+            LOG.error("Unable to read gram {} of dict {}: {}", gramValue, dictName, e.toString());
+            throw new DataException("Unable to read gram " + gramValue + " of Dic " + dictName, e);
+        }
+    }
+
     /**
      * The dict's directory is renamed adding a {@link #DEL_PREFIX} before it.
      */
@@ -101,11 +118,6 @@ public final class FileRepo implements Repo {
             LOG.error("Unable to delete dict {}: {}", name, e.toString());
             throw new DataException("Unable to delete dict " + name, e);
         }
-    }
-
-    @Override
-    public Map<String, Gram> getGramMap(String name) {
-        return null;
     }
 
     /**

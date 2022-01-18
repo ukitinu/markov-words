@@ -12,9 +12,9 @@ public interface Repo {
 
     Dict get(String name);
 
-    void delete(String name);
+    Gram getGram(String dictName, String gramValue);
 
-    Map<String, Gram> getGramMap(String name);
+    void delete(String name);
 
     Map<String, Gram> getGramMap(String name, int len);
 
