@@ -22,7 +22,7 @@ class DataConverterTest {
 
     @Test
     void serialiseDict() {
-        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '_', '\u00e6', WORD_END);
+        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '\u00e6', WORD_END);
         Dict dict = new Dict("dict-name", alphabet);
         String serial = assertDoesNotThrow(() -> dc.serialiseDict(dict));
 

@@ -15,7 +15,7 @@ public final class AlphabetUtils {
         throw new IllegalStateException("non-instantiable");
     }
 
-    public static final char WORD_END = '\u001f';
+    public static final char WORD_END = '_';
 
     public static Set<Character> convertToSet(String string) {
         Set<Character> set = new HashSet<>();
