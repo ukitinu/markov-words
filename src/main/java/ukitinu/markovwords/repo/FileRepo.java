@@ -18,10 +18,6 @@ import java.util.stream.Collectors;
 
 public final class FileRepo implements Repo {
     private static final Logger LOG = Logger.create(FileRepo.class);
-    private static final String FILE_EXT = ".dat";
-    private static final String DEL_PREFIX = ".";
-    private static final String GRAM_DIR_SUFFIX = "-grams";
-    private static final String TMP_SUFFIX = ".tmp";
 
     private final Path dataPath;
     private final DataConverter dataConverter;
@@ -43,8 +39,10 @@ public final class FileRepo implements Repo {
     }
 
     /**
-     * For every dict there is a directory with its name under {@link #dataPath}. Directories starting with
-     * {@link #DEL_PREFIX} are ignored.
+     * For every dict there is a directory with its name under {@link #dataPath}. Directories "deleted" previously are
+     * ignored.
+     *
+     * @see FilePaths to see how deleted directories are marked.
      */
     @Override
     public Collection<String> listAll() {
@@ -53,7 +51,7 @@ public final class FileRepo implements Repo {
                     .filter(Files::isDirectory)
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .filter(s -> !s.startsWith(DEL_PREFIX))
+                    .filter(s -> !FilePaths.isDeleted(s))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Unable to read dir {}: {}", dataPath.toString(), e.toString());
@@ -67,16 +65,16 @@ public final class FileRepo implements Repo {
     @Override
     public Dict get(String name) {
         try {
-            if (name.startsWith(DEL_PREFIX)) {
+            if (FilePaths.isDeleted(name)) {
                 LOG.info("Cannot get deleted dict {}", name);
                 throw new DataException("Cannot get deleted dict " + name);
             }
 
-            Path filePath = getDictFile(name);
+            Path filePath = FilePaths.getDictFile(dataPath, name);
             String content = FsUtils.readFile(filePath);
             return dataConverter.deserialiseDict(content);
         } catch (NoSuchFileException e) {
-            Path deletedPath = getDeletedDictDir(name);
+            Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             if (Files.isDirectory(deletedPath)) {
                 LOG.error("Dict {} has been deleted", name);
                 throw new DataException("Dict has been deleted: " + name);
@@ -93,9 +91,8 @@ public final class FileRepo implements Repo {
     @Override
     public Gram getGram(String dictName, String gramValue) {
         Dict dict = get(dictName);
-        int len = gramValue.length();
         try {
-            Path gramPath = getGramDir(dictName, len).resolve(gramValue + FILE_EXT);
+            Path gramPath = FilePaths.getGramFile(dataPath, dictName, gramValue);
             String content = FsUtils.readFile(gramPath);
             return dataConverter.deserialiseGram(content, dict);
         } catch (NoSuchFileException e) {
@@ -108,13 +105,13 @@ public final class FileRepo implements Repo {
     }
 
     /**
-     * The dict's directory is renamed adding a {@link #DEL_PREFIX} before it.
+     * The dict's directory is renamed to mark is as deleted.
      */
     @Override
     public void delete(String name) {
         try {
-            Path dirPath = getDictDir(name);
-            Path deletedPath = getDeletedDictDir(name);
+            Path dirPath = FilePaths.getDictDir(dataPath, name);
+            Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             Files.move(dirPath, deletedPath);
         } catch (Exception e) {
             LOG.error("Unable to delete dict {}: {}", name, e.toString());
@@ -135,7 +132,7 @@ public final class FileRepo implements Repo {
         try {
             Dict dict = get(name);
 
-            Path gramDir = getGramDir(name, len);
+            Path gramDir = FilePaths.getGramDir(dataPath, name, len);
             return readGramContents(gramDir)
                     .stream()
                     .map(s -> dataConverter.deserialiseGram(s, dict))
@@ -148,8 +145,8 @@ public final class FileRepo implements Repo {
     }
 
     @Override
-    public void upsert(Dict dict, Map<String, Gram> gramMap) {
-
+    public void upsert(Dict dict, Map<String, Gram> gramMap) throws IOException {
+        createTempDictDir(dict);
     }
 
     /**
@@ -159,10 +156,10 @@ public final class FileRepo implements Repo {
      * @throws IOException if it fails to create the tmp directory.
      */
     private void createTempDictDir(Dict dict) throws IOException {
-        Path tmpDir = getDictDir(dict.name(), true);
+        Path tmpDir = FilePaths.getDictDir(dataPath, dict.name(), true);
         if (Files.exists(tmpDir)) throw new DataException(tmpDir + " already exists, check " + dataPath);
 
-        Path dictDir = getDictDir(dict.name(), false);
+        Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
         FsUtils.cpDir(dictDir, tmpDir);
     }
 
@@ -173,9 +170,9 @@ public final class FileRepo implements Repo {
      * @throws IOException if an error occurs while writing the file or creating the directory.
      */
     private void upsertDict(Dict dict) throws IOException {
-        FsUtils.mkDir(getDictDir(dict.name()));
+        FsUtils.mkDir(FilePaths.getDictDir(dataPath, dict.name()));
 
-        Path dictFile = getDictFile(dict.name());
+        Path dictFile = FilePaths.getDictFile(dataPath, dict.name());
         String dictString = dataConverter.serialiseDict(dict);
         FsUtils.writeToFile(dictFile, dictString);
     }
@@ -186,7 +183,7 @@ public final class FileRepo implements Repo {
                 .stream()
                 .collect(Collectors.groupingBy(g -> g.getValue().length()));
         for (var entry : gramsByLength.entrySet()) {
-            Path gramDir = getGramDir(dictName, entry.getKey());
+            Path gramDir = FilePaths.getGramDir(dataPath, dictName, entry.getKey());
             for (var gram : entry.getValue()) upsertGram(gram, gramDir);
         }
     }
@@ -239,40 +236,10 @@ public final class FileRepo implements Repo {
         try (var files = Files.list(gramDir)) {
             return files
                     .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().endsWith(FILE_EXT))
+                    .filter(FilePaths::isDataFile)
                     .toList();
         }
     }
     //endregion
 
-
-    //region paths
-    private Path getDictDir(String dictName) {
-        return getDictDir(dictName, false);
-    }
-
-    private Path getDictDir(String dictName, boolean isTemp) {
-        return dataPath.resolve(dictName + (isTemp ? TMP_SUFFIX : ""));
-    }
-
-    private Path getDeletedDictDir(String dictName) {
-        return dataPath.resolve(DEL_PREFIX + dictName);
-    }
-
-    private Path getDictFile(String dictName) {
-        return getDictDir(dictName).resolve(dictName + FILE_EXT);
-    }
-
-    private Path getDictFile(String dictName, boolean isTemp) {
-        return getDictDir(dictName, isTemp).resolve(dictName + FILE_EXT);
-    }
-
-    private Path getGramDir(String dictName, int len) {
-        return getDictDir(dictName).resolve(len + GRAM_DIR_SUFFIX);
-    }
-
-    private Path getGramDir(String dictName, int len, boolean isTemp) {
-        return getDictDir(dictName, isTemp).resolve(len + GRAM_DIR_SUFFIX);
-    }
-    //endregion
 }
