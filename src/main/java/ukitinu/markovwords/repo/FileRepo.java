@@ -1,11 +1,11 @@
 package ukitinu.markovwords.repo;
 
+import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -21,6 +21,7 @@ public final class FileRepo implements Repo {
     private static final String FILE_EXT = ".dat";
     private static final String DEL_PREFIX = ".";
     private static final String GRAM_DIR_SUFFIX = "-grams";
+    private static final String TMP_SUFFIX = ".tmp";
 
     private final Path dataPath;
     private final DataConverter dataConverter;
@@ -72,7 +73,7 @@ public final class FileRepo implements Repo {
             }
 
             Path filePath = getDictFile(name);
-            String content = Files.readString(filePath, StandardCharsets.UTF_8);
+            String content = FsUtils.readFile(filePath);
             return dataConverter.deserialiseDict(content);
         } catch (NoSuchFileException e) {
             Path deletedPath = getDeletedDictDir(name);
@@ -95,7 +96,7 @@ public final class FileRepo implements Repo {
         int len = gramValue.length();
         try {
             Path gramPath = getGramDir(dictName, len).resolve(gramValue + FILE_EXT);
-            String content = Files.readString(gramPath, StandardCharsets.UTF_8);
+            String content = FsUtils.readFile(gramPath);
             return dataConverter.deserialiseGram(content, dict);
         } catch (NoSuchFileException e) {
             LOG.error("Gram {} of Dict {} not found", gramValue, dictName);
@@ -152,18 +153,31 @@ public final class FileRepo implements Repo {
     }
 
     /**
+     * Creates a temporary directory for the given dictionary, copying, if present, the current content.
+     *
+     * @param dict dictionary
+     * @throws IOException if it fails to create the tmp directory.
+     */
+    private void createTempDictDir(Dict dict) throws IOException {
+        Path tmpDir = getDictDir(dict.name(), true);
+        if (Files.exists(tmpDir)) throw new DataException(tmpDir + " already exists, check " + dataPath);
+
+        Path dictDir = getDictDir(dict.name(), false);
+        FsUtils.cpDir(dictDir, tmpDir);
+    }
+
+    /**
      * Creates, if necessary, the dict's directory, and then creates or overrides the dict's file.
      *
      * @param dict dictionary to update/create.
      * @throws IOException if an error occurs while writing the file or creating the directory.
      */
     private void upsertDict(Dict dict) throws IOException {
-        Path dictDir = getDictDir(dict.name());
-        if (!Files.exists(dictDir)) Files.createDirectory(dictDir);
+        FsUtils.mkDir(getDictDir(dict.name()));
 
         Path dictFile = getDictFile(dict.name());
         String dictString = dataConverter.serialiseDict(dict);
-        Files.writeString(dictFile, dictString, StandardCharsets.UTF_8);
+        FsUtils.writeToFile(dictFile, dictString);
     }
 
     private void upsertGramMap(Map<String, Gram> gramMap, String dictName) throws IOException {
@@ -189,10 +203,10 @@ public final class FileRepo implements Repo {
         Path gramPath = gramDir.resolve(gram.getValue());
         String gramString = dataConverter.serialiseGram(gram);
         if (!Files.exists(gramPath)) {
-            Files.writeString(gramPath, gramString, StandardCharsets.UTF_8);
+            FsUtils.writeToFile(gramPath, gramString);
         } else {
-            String currentContent = Files.readString(gramPath, StandardCharsets.UTF_8);
-            if (!currentContent.equals(gramString)) Files.writeString(gramPath, gramString, StandardCharsets.UTF_8);
+            String currentContent = FsUtils.readFile(gramPath);
+            if (!currentContent.equals(gramString)) FsUtils.writeToFile(gramPath, gramString);
         }
     }
 
@@ -209,7 +223,7 @@ public final class FileRepo implements Repo {
         var paths = getGramPaths(gramDir);
 
         Collection<String> contents = new ArrayList<>(paths.size());
-        for (var path : paths) contents.add(Files.readString(path, StandardCharsets.UTF_8));
+        for (var path : paths) contents.add(FsUtils.readFile(path));
 
         return contents;
     }
@@ -234,7 +248,11 @@ public final class FileRepo implements Repo {
 
     //region paths
     private Path getDictDir(String dictName) {
-        return dataPath.resolve(dictName);
+        return getDictDir(dictName, false);
+    }
+
+    private Path getDictDir(String dictName, boolean isTemp) {
+        return dataPath.resolve(dictName + (isTemp ? TMP_SUFFIX : ""));
     }
 
     private Path getDeletedDictDir(String dictName) {
@@ -245,8 +263,16 @@ public final class FileRepo implements Repo {
         return getDictDir(dictName).resolve(dictName + FILE_EXT);
     }
 
+    private Path getDictFile(String dictName, boolean isTemp) {
+        return getDictDir(dictName, isTemp).resolve(dictName + FILE_EXT);
+    }
+
     private Path getGramDir(String dictName, int len) {
         return getDictDir(dictName).resolve(len + GRAM_DIR_SUFFIX);
+    }
+
+    private Path getGramDir(String dictName, int len, boolean isTemp) {
+        return getDictDir(dictName, isTemp).resolve(len + GRAM_DIR_SUFFIX);
     }
     //endregion
 }
