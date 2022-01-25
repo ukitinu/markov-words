@@ -11,7 +11,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -113,7 +112,7 @@ public final class FileRepo implements Repo {
             Path dirPath = FilePaths.getDictDir(dataPath, name);
             Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             Files.move(dirPath, deletedPath);
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Unable to delete dict {}: {}", name, e.toString());
             throw new DataException("Unable to delete dict " + name, e);
         }
@@ -138,53 +137,65 @@ public final class FileRepo implements Repo {
                     .map(s -> dataConverter.deserialiseGram(s, dict))
                     .collect(Collectors.toMap(Gram::getValue, Function.identity()));
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Unable to get {}-grams of {}: {}", len, name, e.toString());
             throw new DataException("Unable to get " + len + "-grams of " + name, e);
         }
     }
 
     @Override
-    public void upsert(Dict dict, Map<String, Gram> gramMap) throws IOException {
+    public void upsert(Dict dict, Map<String, Gram> gramMap) {
         createTempDictDir(dict);
+        upsertDict(dict);
+        upsertGramMap(gramMap, dict.name());
+        replaceOriginalWithTemp(dict);
     }
 
     /**
      * Creates a temporary directory for the given dictionary, copying, if present, the current content.
      *
      * @param dict dictionary
-     * @throws IOException if it fails to create the tmp directory.
+     * @throws DataException if it fails to create the tmp directory.
      */
-    private void createTempDictDir(Dict dict) throws IOException {
+    private void createTempDictDir(Dict dict) {
         Path tmpDir = FilePaths.getDictDir(dataPath, dict.name(), true);
-        if (Files.exists(tmpDir)) throw new DataException(tmpDir + " already exists, check " + dataPath);
+        try {
+            if (Files.exists(tmpDir)) throw new DataException(tmpDir + " already exists, check " + dataPath);
 
-        Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
-        FsUtils.cpDir(dictDir, tmpDir);
+            Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
+            FsUtils.cpDir(dictDir, tmpDir);
+        } catch (IOException e) {
+            throw new DataException(String.format("Failed to create %s: %s", tmpDir, e.getMessage()), e);
+        }
     }
 
     /**
-     * Creates, if necessary, the dict's directory, and then creates or overrides the dict's file.
+     * Creates or overrides the dictionary's file.
      *
      * @param dict dictionary to update/create.
-     * @throws IOException if an error occurs while writing the file or creating the directory.
+     * @throws DataException if an error occurs while writing the file or creating the directory.
      */
-    private void upsertDict(Dict dict) throws IOException {
-        FsUtils.mkDir(FilePaths.getDictDir(dataPath, dict.name()));
-
-        Path dictFile = FilePaths.getDictFile(dataPath, dict.name());
-        String dictString = dataConverter.serialiseDict(dict);
-        FsUtils.writeToFile(dictFile, dictString);
+    private void upsertDict(Dict dict) {
+        try {
+            Path dictFile = FilePaths.getDictFile(dataPath, dict.name(), true);
+            String dictString = dataConverter.serialiseDict(dict);
+            FsUtils.writeToFile(dictFile, dictString);
+        } catch (IOException e) {
+            throw new DataException(String.format("Failed to upsert dictionary %s: %s", dict.name(), e.getMessage()), e);
+        }
     }
 
-    private void upsertGramMap(Map<String, Gram> gramMap, String dictName) throws IOException {
-        Map<Integer, List<Gram>> gramsByLength = gramMap
-                .values()
-                .stream()
-                .collect(Collectors.groupingBy(g -> g.getValue().length()));
-        for (var entry : gramsByLength.entrySet()) {
-            Path gramDir = FilePaths.getGramDir(dataPath, dictName, entry.getKey());
-            for (var gram : entry.getValue()) upsertGram(gram, gramDir);
+    /**
+     * Upserts every gram in the map.
+     *
+     * @param gramMap  map of the dictionary's grams.
+     * @param dictName name of the dictionary.
+     * @throws DataException if it fails to upsert a gram.
+     * @see #upsertGram(Gram, String)
+     */
+    private void upsertGramMap(Map<String, Gram> gramMap, String dictName) {
+        for (var gram : gramMap.values()) {
+            upsertGram(gram, dictName);
         }
     }
 
@@ -192,22 +203,40 @@ public final class FileRepo implements Repo {
      * Creates or updates the gram's file. If the file already exists, it reads its content and updates it only if
      * it is different.
      *
-     * @param gram    gram to update/create.
-     * @param gramDir directory where the gram should be stored.
-     * @throws IOException if an error occurs reading or writing the gram's file.
+     * @param gram     gram to update/create.
+     * @param dictName name of the gram's dictionary.
+     * @throws DataException if an error occurs reading or writing the gram's file.
      */
-    private void upsertGram(Gram gram, Path gramDir) throws IOException {
-        Path gramPath = gramDir.resolve(gram.getValue());
-        String gramString = dataConverter.serialiseGram(gram);
-        if (!Files.exists(gramPath)) {
-            FsUtils.writeToFile(gramPath, gramString);
-        } else {
-            String currentContent = FsUtils.readFile(gramPath);
-            if (!currentContent.equals(gramString)) FsUtils.writeToFile(gramPath, gramString);
+    private void upsertGram(Gram gram, String dictName) {
+        Path gramPath = FilePaths.getGramFile(dataPath, dictName, gram.getValue(), true);
+        try {
+            String gramString = dataConverter.serialiseGram(gram);
+            if (!Files.exists(gramPath)) {
+                FsUtils.writeToFile(gramPath, gramString);
+            } else {
+                String currentContent = FsUtils.readFile(gramPath);
+                if (!currentContent.equals(gramString)) FsUtils.writeToFile(gramPath, gramString);
+            }
+        } catch (IOException e) {
+            throw new DataException(String.format("Failed to upsert gram %s: %s", gramPath, e.getMessage()), e);
         }
     }
 
-    //region utils
+    /**
+     * Replaces the original dict's directory with the temporary one that contains the new data.
+     *
+     * @param dict dictionary to update.
+     * @throws DataException if it fails to copy the directory.
+     */
+    private void replaceOriginalWithTemp(Dict dict) {
+        Path tmpDir = FilePaths.getDictDir(dataPath, dict.name(), true);
+        Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
+        try {
+            FsUtils.moveAndReplace(tmpDir, dictDir);
+        } catch (IOException e) {
+            throw new DataException(String.format("Failed to replace %s with %s: %s", dictDir, tmpDir, e.getMessage()), e);
+        }
+    }
 
     /**
      * Converts to string every valid gram file's content.
@@ -240,6 +269,5 @@ public final class FileRepo implements Repo {
                     .toList();
         }
     }
-    //endregion
 
 }

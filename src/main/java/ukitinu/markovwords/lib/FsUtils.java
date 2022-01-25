@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public final class FsUtils {
     private FsUtils() {
@@ -20,10 +21,24 @@ public final class FsUtils {
         if (Files.notExists(dir)) Files.createDirectories(dir);
     }
 
-    public static void writeToFile(Path path, String content) throws IOException {
+    /**
+     * Writes the given {@link CharSequence} to the given path, with UTF-8 encoding.
+     *
+     * @param path    where to write.
+     * @param content content to write.
+     * @throws IOException if an error occurs whilst writing.
+     */
+    public static void writeToFile(Path path, CharSequence content) throws IOException {
         Files.writeString(path, content, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Reads the content of the file at {@param path}, with UTF-8 encoding.
+     *
+     * @param path file path.
+     * @return file content, as UTF-8
+     * @throws IOException if an error occurs whilst reading
+     */
     public static String readFile(Path path) throws IOException {
         return Files.readString(path, StandardCharsets.UTF_8);
     }
@@ -49,5 +64,15 @@ public final class FsUtils {
         }
     }
 
+    /**
+     * Moves the {@param src} to {@param dest}, replacing it if already existing.
+     *
+     * @param src  dir path.
+     * @param dest dir path.
+     * @throws IOException if an error occurs.
+     */
+    public static void moveAndReplace(Path src, Path dest) throws IOException {
+        Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING);
+    }
 
 }
