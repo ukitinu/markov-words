@@ -51,6 +51,7 @@ public final class FileRepo implements Repo {
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .filter(s -> !FilePaths.isDeleted(s))
+                    .filter(s -> !FilePaths.isTemp(s))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Unable to read dir {}: {}", dataPath.toString(), e.toString());
@@ -217,8 +218,11 @@ public final class FileRepo implements Repo {
      * @throws DataException if an error occurs reading or writing the gram's file.
      */
     private void upsertGram(Gram gram, String dictName) {
+        Path gramDir = FilePaths.getGramDir(dataPath, dictName, gram.getValue().length(), true);
         Path gramPath = FilePaths.getGramFile(dataPath, dictName, gram.getValue(), true);
         try {
+            FsUtils.mkDir(gramDir);
+
             String gramString = dataConverter.serialiseGram(gram);
             if (!Files.exists(gramPath)) {
                 FsUtils.writeToFile(gramPath, gramString);

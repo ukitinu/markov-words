@@ -6,7 +6,6 @@ import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -157,8 +156,33 @@ class FileRepoIT {
     }
 
     @Test
-    void upsert() throws IOException {
+    void upsert_tmpAlreadyPresent() {
+        Dict dict = new Dict("ups-no", Set.of());
+        assertThrows(DataException.class, () -> repo.upsert(dict, Map.of()));
     }
 
+    @Test
+    void upsert_newDict() throws IOException {
+        final Dict dict = new Dict("new", Set.of('a'));
+        final Map<String, Gram> gramMap = Map.of(
+                "a", new Gram("a", dict, Map.of('a', 1, '_', 2)),
+                "_", new Gram("_", dict, Map.of('a', 2, '_', 1)),
+                "a_", new Gram("a_", dict, Map.of('a', 1, '_', 2))
+        );
+        try {
+            assertDoesNotThrow(() -> repo.upsert(dict, gramMap));
+
+            assertEquals(dict, repo.get(dict.name()));
+
+            assertEquals(2, repo.getGramMap(dict.name(), 1).size());
+            assertEquals(1, repo.getGramMap(dict.name(), 2).size());
+
+            assertTrue(Files.notExists(FilePaths.getDictDir(Path.of(basePath), dict.name(), true)));
+        } finally {
+            FileUtils.deleteDirectory(FilePaths.getDictDir(Path.of(basePath), dict.name()).toFile());
+        }
+    }
+
+    //TODO add test upsert_update (copy dir from outside basePath to have consistent starting data
 
 }

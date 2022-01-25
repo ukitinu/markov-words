@@ -1,5 +1,7 @@
 package ukitinu.markovwords.lib;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -65,13 +67,15 @@ public final class FsUtils {
     }
 
     /**
-     * Moves the {@param src} to {@param dest}, replacing it if already existing.
+     * Moves the {@param src} to {@param dest}, replacing it if already existing (that is, deleting the old one and
+     * replacing it with the new).
      *
      * @param src  dir path.
      * @param dest dir path.
      * @throws IOException if an error occurs.
      */
     public static void moveAndReplace(Path src, Path dest) throws IOException {
+        FileUtils.deleteDirectory(dest.toFile());
         Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 

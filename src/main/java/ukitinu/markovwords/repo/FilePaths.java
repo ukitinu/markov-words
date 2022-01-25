@@ -55,6 +55,10 @@ final class FilePaths {
         return filename.startsWith(DEL_PREFIX);
     }
 
+    static boolean isTemp(String filename) {
+        return filename.endsWith(TMP_SUFFIX);
+    }
+
     static boolean isDataFile(Path path) {
         return path.toString().endsWith(FILE_EXT);
     }

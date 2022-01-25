@@ -63,6 +63,12 @@ class FilePathsTest {
     }
 
     @Test
+    void isTemp() {
+        assertTrue(FilePaths.isTemp("file.tmp"));
+        assertFalse(FilePaths.isTemp("file"));
+    }
+
+    @Test
     void isDataFile() {
         assertTrue(FilePaths.isDataFile(Path.of("file.dat")));
         assertFalse(FilePaths.isDataFile(Path.of("file")));
