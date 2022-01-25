@@ -11,22 +11,22 @@ class Log implements Logger {
 
     @Override
     public void debug(String s) {
-        log.info(s);
+        log.debug(s);
     }
 
     @Override
     public void debug(String s, Object o) {
-        log.info(s, o);
+        log.debug(s, o);
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
-        log.info(s, o, o1);
+        log.debug(s, o, o1);
     }
 
     @Override
     public void debug(String s, Object... objects) {
-        log.info(s, objects);
+        log.debug(s, objects);
     }
 
     @Override

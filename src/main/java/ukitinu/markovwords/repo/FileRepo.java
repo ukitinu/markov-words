@@ -143,6 +143,15 @@ public final class FileRepo implements Repo {
         }
     }
 
+    /**
+     * Writes the given data to the given dict, overriding any existing data if necessary.
+     * First, the data is written to a tmp directory, then the original (if it exists) is replaced by the temp.
+     * Every method called wraps any {@link IOException} as {@link DataException}, and throws it so that this method
+     * fails as soon as an error occurs.
+     *
+     * @param dict    dictionary to update
+     * @param gramMap gramMap to associate to the dict
+     */
     @Override
     public void upsert(Dict dict, Map<String, Gram> gramMap) {
         createTempDictDir(dict);
