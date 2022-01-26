@@ -39,12 +39,10 @@ class FsUtilsTest {
 
             var s0Expected = List.of(Path.of(testDirDest + "/s0/s00"), Path.of(testDirDest + "/s0/s0_f0.txt"));
             var s0Found = Files.list(Path.of(testDirDest + "/s0")).toList();
-            assertTrue(s0Expected.size() == s0Found.size() && s0Expected.containsAll(s0Found) && s0Found.containsAll(s0Expected));
+            assertTrue(s0Expected.size() == s0Found.size()
+                    && s0Expected.containsAll(s0Found)
+                    && s0Found.containsAll(s0Expected));
 
-            assertEquals(
-                    List.of(Path.of(testDirDest + "/s0/s00"), Path.of(testDirDest + "/s0/s0_f0.txt")),
-                    Files.list(Path.of(testDirDest + "/s0")).toList()
-            );
             assertEquals(
                     List.of(Path.of(testDirDest + "/s0/s00/s00_f0.txt")),
                     Files.list(Path.of(testDirDest + "/s0/s00")).toList()
