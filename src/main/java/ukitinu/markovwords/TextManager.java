@@ -2,9 +2,9 @@ package ukitinu.markovwords;
 
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.readers.Reader;
+import ukitinu.markovwords.repo.Repo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ public class TextManager {
 
     public void processText(String src, Dict dict, int len) {
         String text = reader.read(src);
-        var gramMap = repo.getGramMap(dict);
+        var gramMap = repo.getGramMap(dict.name(), len);
         String cleaned = cleanText(text, dict);
         ingester.ingest(cleaned, gramMap, dict, len);
     }

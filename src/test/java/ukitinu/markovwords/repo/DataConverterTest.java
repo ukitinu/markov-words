@@ -1,6 +1,8 @@
-package ukitinu.markovwords;
+package ukitinu.markovwords.repo;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -11,15 +13,15 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
-import static ukitinu.markovwords.DataConverter.GRAM_MAP_SEP;
-import static ukitinu.markovwords.DataConverter.NAME_SEP;
+import static ukitinu.markovwords.repo.DataConverter.GRAM_MAP_SEP;
+import static ukitinu.markovwords.repo.DataConverter.NAME_SEP;
 
 class DataConverterTest {
     private final DataConverter dc = new DataConverter();
 
     @Test
     void serialiseDict() {
-        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '\u001f', '\u00e6', WORD_END);
+        Set<Character> alphabet = Set.of('a', '-', '\'', 'b', 'c', '0', '1', '2', '<', '\u00e6', WORD_END);
         Dict dict = new Dict("dict-name", alphabet);
         String serial = assertDoesNotThrow(() -> dc.serialiseDict(dict));
 
@@ -29,7 +31,7 @@ class DataConverterTest {
         String[] parts = serial.split(String.valueOf(NAME_SEP));
 
         assertEquals("dict-name", parts[0]);
-        assertEquals(alphabet, AlphabetUtils.convertToSet(parts[1]));
+        Assertions.assertEquals(alphabet, AlphabetUtils.convertToSet(parts[1]));
     }
 
     @Test
@@ -76,13 +78,13 @@ class DataConverterTest {
     void deserialiseGram() {
         Dict dict = new Dict("placeholder", Set.of());
         String value = "gram-value";
-        String charMap = "a2;02;110;\u00e61;" + WORD_END + "4;";
+        String charMap = "a2;02;110;\u00e61;;3;" + WORD_END + "4;";
         String serial = value + NAME_SEP + charMap;
         Gram gram = assertDoesNotThrow(() -> dc.deserialiseGram(serial, dict));
         assertEquals(value, gram.getValue());
         assertFalse(gram.isEmpty());
         assertEquals(
-                Map.of('a', 2, '0', 2, '1', 10, '\u00e6', 1, WORD_END, 4),
+                Map.of('a', 2, '0', 2, '1', 10, '\u00e6', 1, ';', 3, WORD_END, 4),
                 gram.getCharMap()
         );
     }

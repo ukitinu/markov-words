@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.readers.StringReader;
+import ukitinu.markovwords.repo.Repo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ class TextManagerIT {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(repo.getGramMap(dict)).thenReturn(gramMap);
+        Mockito.when(repo.getGramMap(Mockito.eq(dict.name()), Mockito.anyInt())).thenReturn(gramMap);
         textManager = new TextManager(new StringReader(), new IngesterImpl(), repo);
     }
 

@@ -19,7 +19,8 @@ class TextManagerTest {
         String cleaned = assertDoesNotThrow(() -> tm.cleanText(str, dict));
         assertTrue(cleaned.startsWith(String.valueOf(WORD_END)));
         assertFalse(cleaned.endsWith(String.valueOf(WORD_END)));
-        assertEquals("_c_b_A", cleaned);
+        String expected = String.format("%sc%sb%sA", WORD_END, WORD_END, WORD_END);
+        assertEquals(expected, cleaned);
     }
 
     @Test

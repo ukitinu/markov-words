@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- DEPENDENCIES -->
+        <versions.commons-io>2.11.0</versions.commons-io>
         <versions.log4j>2.17.1</versions.log4j>
         <versions.lombok>1.18.22</versions.lombok>
         <versions.junit>5.8.2</versions.junit>
@@ -34,6 +35,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${versions.commons-io}</version>
+        </dependency>
         <!-- LOGGING -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

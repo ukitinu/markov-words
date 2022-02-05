@@ -10,12 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 class IngesterImplTest {
 
     private final Ingester ingester = new IngesterImpl();
     private final Dict dict = new Dict("test", Set.of('h', 'e', 'l', 'o'));
-    private final String text = "_hello";
+    private final String text = WORD_END + "hello";
     private Map<String, Gram> gramMap;
 
     @BeforeEach
@@ -28,12 +29,12 @@ class IngesterImplTest {
         assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 1));
         assertEquals(5, gramMap.size());
 
-        assertEquals(1, gramMap.get("_").get('h'));
+        assertEquals(1, gramMap.get(String.valueOf(WORD_END)).get('h'));
         assertEquals(1, gramMap.get("h").get('e'));
         assertEquals(1, gramMap.get("e").get('l'));
         assertEquals(1, gramMap.get("l").get('l'));
         assertEquals(1, gramMap.get("l").get('o'));
-        assertEquals(1, gramMap.get("o").get('_'));
+        assertEquals(1, gramMap.get("o").get(WORD_END));
     }
 
     @Test
@@ -47,11 +48,11 @@ class IngesterImplTest {
         assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 2));
         assertEquals(5, gramMap.size());
 
-        assertEquals(1, gramMap.get("_h").get('e'));
+        assertEquals(1, gramMap.get(WORD_END + "h").get('e'));
         assertEquals(6, gramMap.get("he").get('l'));
         assertEquals(1, gramMap.get("el").get('l'));
         assertEquals(1, gramMap.get("ll").get('o'));
-        assertEquals(1, gramMap.get("lo").get('_'));
+        assertEquals(1, gramMap.get("lo").get(WORD_END));
         assertEquals(2, gramMap.get("lo").get('l'));
     }
 
@@ -60,10 +61,10 @@ class IngesterImplTest {
         assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 3));
         assertEquals(4, gramMap.size());
 
-        assertEquals(1, gramMap.get("_he").get('l'));
+        assertEquals(1, gramMap.get(WORD_END + "he").get('l'));
         assertEquals(1, gramMap.get("hel").get('l'));
         assertEquals(1, gramMap.get("ell").get('o'));
-        assertEquals(1, gramMap.get("llo").get('_'));
+        assertEquals(1, gramMap.get("llo").get(WORD_END));
     }
 
     @Test
