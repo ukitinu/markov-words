@@ -2,6 +2,7 @@ package ukitinu.markovwords.repo;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -183,6 +184,59 @@ class FileRepoIT {
         }
     }
 
-    //TODO add test upsert_update (copy dir from outside basePath to have consistent starting data
+    @Test
+    void upsert_existing() throws IOException {
+        String dictName = "existing";
+
+        // update
+        final Dict dict = new Dict(dictName, Set.of('a', 'b', 'c'));
+        final Map<String, Gram> gramMap = Map.of(
+                "a", new Gram("a", dict, Map.of('a', 3, 'b', 2, '_', 2, 'c', 2)),
+                "c", new Gram("c", dict, Map.of('b', 2, 'c', 4, '_', 1)),
+                "cb", new Gram("cb", dict, Map.of('a', 1, '_', 1)),
+                "ba", new Gram("ba", dict, Map.of('a', 1, '_', 4))
+        );
+
+        try {
+            // moving dir to repo path, to have consistent test data
+            FsUtils.cpDir(Path.of("./src/test/resources/existing"), Path.of(basePath, dictName));
+
+            // check existing
+            var oneGrams = repo.getGramMap(dictName, 1);
+            assertFalse(oneGrams.containsKey("c"));
+            assertEquals(4, oneGrams.get("a").get('a'));
+            assertEquals(0, oneGrams.get("a").get('c'));
+
+            var twoGrams = repo.getGramMap(dictName, 2);
+            assertFalse(twoGrams.containsKey("cb"));
+            assertEquals(10, twoGrams.get("ba").getWeight());
+            assertEquals(3, twoGrams.get("ba").get('a'));
+            assertEquals(4, twoGrams.get("ba").get('_'));
+
+            // update and check
+            assertDoesNotThrow(() -> repo.upsert(dict, gramMap));
+            oneGrams = repo.getGramMap(dictName, 1);
+            assertTrue(oneGrams.containsKey("b"));
+
+            assertEquals(3, oneGrams.get("a").get('a'));
+            assertEquals(2, oneGrams.get("a").get('c'));
+
+            assertEquals(2, oneGrams.get("c").get('b'));
+            assertEquals(4, oneGrams.get("c").get('c'));
+            assertEquals(1, oneGrams.get("c").get('_'));
+
+            twoGrams = repo.getGramMap(dictName, 2);
+            assertEquals(5, twoGrams.get("ba").getWeight());
+            assertEquals(1, twoGrams.get("ba").get('a'));
+            assertEquals(4, twoGrams.get("ba").get('_'));
+
+            assertEquals(1, twoGrams.get("cb").get('a'));
+            assertEquals(1, twoGrams.get("cb").get('_'));
+        } finally {
+            // remove edited dict
+            FileUtils.deleteDirectory(FilePaths.getDictDir(Path.of(basePath), dictName).toFile());
+        }
+    }
+
 
 }
