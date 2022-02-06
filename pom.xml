@@ -256,8 +256,40 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <dataFile>${jacoco.out}/merged.exec</dataFile>
+                            <dataFile>${jacoco.merged.data}</dataFile>
                             <outputDirectory>${jacoco.merged.report}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>coverage-check</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.merged.data}</dataFile>
+                            <rules>
+                                <rule>
+                                    <!-- coverage percentage is checked at project level -->
+                                    <element>BUNDLE</element>
+                                    <excludes>
+                                        <exclude>*Test</exclude>
+                                        <exclude>*IT</exclude>
+                                    </excludes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.7</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.7</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>

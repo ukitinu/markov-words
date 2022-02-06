@@ -24,3 +24,6 @@ jobs:
         with:
           rulesets: '.githooks/pmd_java_rules.xml'
           sourcePath: 'src/main/java'
+      - name: Violation check
+        if: steps.pmd.outputs.violations != 0
+        run: exit 1
