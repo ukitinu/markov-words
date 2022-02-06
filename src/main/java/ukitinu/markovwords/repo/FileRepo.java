@@ -68,11 +68,6 @@ public final class FileRepo implements Repo {
     @Override
     public Dict get(String name) {
         try {
-            if (FilePaths.isDeleted(name)) {
-                LOG.info("Cannot get deleted dict {}", name);
-                throw new DataException("Cannot get deleted dict " + name);
-            }
-
             Path filePath = FilePaths.getDictFile(dataPath, name);
             String content = FsUtils.readFile(filePath);
             return dataConverter.deserialiseDict(content);

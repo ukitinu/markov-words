@@ -26,7 +26,11 @@ final class FilePaths {
     }
 
     static Path getDictFile(Path dataPath, String dictName) {
-        return getDictDir(dataPath, dictName, false).resolve(dictName + FILE_EXT);
+        if (isDeleted(dictName)) {
+            return getDictDir(dataPath, dictName, false).resolve(dictName.substring(DEL_PREFIX.length()) + FILE_EXT);
+        } else {
+            return getDictDir(dataPath, dictName, false).resolve(dictName + FILE_EXT);
+        }
     }
 
     static Path getDictFile(Path dataPath, String dictName, boolean isTemp) {

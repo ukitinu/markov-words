@@ -75,6 +75,14 @@ class FileRepoIT {
     }
 
     @Test
+    void get_deleted() {
+        String name = "del-dict";
+        Dict dict = assertDoesNotThrow(() -> repo.get("." + name));
+        assertEquals(name, dict.name());
+        assertEquals(Set.of('a', 'b', 'c', 'd', 'e', 'f', 'g', WORD_END), dict.alphabet());
+    }
+
+    @Test
     void get_errors() {
         var e = assertThrows(DataException.class, () -> repo.get("not-found"));
         assertTrue(e.getCause() instanceof NoSuchFileException);
@@ -84,8 +92,7 @@ class FileRepoIT {
 
         e = assertThrows(DataException.class, () -> repo.get("del-dict"));
         assertNull(e.getCause());
-
-        assertThrows(DataException.class, () -> repo.get(".del-dict"));
+        assertTrue(e.getMessage().contains("Dict has been deleted: "));
     }
 
     @Test

@@ -26,6 +26,7 @@ class FilePathsTest {
     @Test
     void getDictFile() {
         assertEquals(Path.of(dictPath + "/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName));
+        assertEquals(Path.of(path + "/." + dictName + "/" + dictName + ".dat"), FilePaths.getDictFile(path, "." + dictName));
         assertEquals(Path.of(dictPath + "/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName, false));
         assertEquals(Path.of(dictPath + ".tmp/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName, true));
     }
