@@ -2,31 +2,35 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.Repo;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
 @Command(name = "list", aliases = {"ls"}, description = "List the dictionaries")
 public class ListCmd implements Callable<Integer> {
-    private static final Logger LOG = Logger.create(ListCmd.class);
-
     private final Repo repo;
+    private final PrintStream printStream;
 
-    public ListCmd(Repo repo) {
+    public ListCmd(Repo repo, PrintStream printStream) {
         this.repo = repo;
+        this.printStream = printStream;
     }
 
+    /* OPTIONS */
+
     @Option(names = {"-d", "--deleted"}, description = "List the deleted dictionaries only")
-    private boolean listDeleted;
+    boolean listDeleted;
 
     @Option(names = {"-a", "--all"}, description = "List all dictionaries, deleted included")
-    private boolean listAll;
+    boolean listAll;
 
     @Option(names = {"-n", "--name"}, description = "Filter results with the given name, case insensitive")
-    private String name = "";
+    String name = "";
+
+    /* COMMAND */
 
     @Override
     public Integer call() {
@@ -44,8 +48,8 @@ public class ListCmd implements Callable<Integer> {
 
     private void printNames(Collection<String> list) {
         list.stream()
-                .filter(s -> s.toLowerCase(Locale.ROOT).contains(name))
+                .filter(s -> s.toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)))
                 .sorted()
-                .forEach(System.out::println);
+                .forEach(printStream::println);
     }
 }

@@ -22,7 +22,7 @@ public final class FileRepo implements Repo {
     private final Path dataPath;
     private final DataConverter dataConverter;
 
-    static FileRepo create(String dataPath) {
+    public static FileRepo create(String dataPath) {
         Path path = Path.of(dataPath);
         if (!Files.exists(path)) throw new IllegalArgumentException(path + " does not exist");
         if (!Files.isDirectory(path)) throw new IllegalArgumentException(path + " is not a directory");
