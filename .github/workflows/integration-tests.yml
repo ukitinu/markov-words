@@ -40,11 +40,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # adds a comment which shows coverage ratio
-      - name: Report coverage
-        id: jacoco
-        uses: Madrapps/jacoco-report@v1.2
-        with:
-          paths: './target/site/jacoco-merged-report/jacoco.xml'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: env.COV_TOT
-          min-coverage-changed-files: env.COV_NEW
+#      - name: Report coverage
+#        id: jacoco
+#        uses: Madrapps/jacoco-report@v1.2
+#        with:
+#          paths: './target/site/jacoco-merged-report/jacoco.xml'
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          min-coverage-overall: env.COV_TOT
+#          min-coverage-changed-files: env.COV_NEW
