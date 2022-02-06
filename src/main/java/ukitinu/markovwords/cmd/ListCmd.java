@@ -19,8 +19,6 @@ public class ListCmd implements Callable<Integer> {
         this.printStream = printStream;
     }
 
-    /* OPTIONS */
-
     @Option(names = {"-d", "--deleted"}, description = "List the deleted dictionaries only")
     boolean listDeleted;
 
@@ -29,8 +27,6 @@ public class ListCmd implements Callable<Integer> {
 
     @Option(names = {"-n", "--name"}, description = "Filter results with the given name, case insensitive")
     String name = "";
-
-    /* COMMAND */
 
     @Override
     public Integer call() {
