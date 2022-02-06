@@ -1,5 +1,6 @@
 package ukitinu.markovwords.repo;
 
+import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public interface Repo {
 
-    Collection<String> listAll();
+    Couple<Collection<String>> listAll();
 
     Dict get(String name);
 

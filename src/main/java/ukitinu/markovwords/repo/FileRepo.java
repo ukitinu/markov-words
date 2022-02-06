@@ -1,5 +1,6 @@
 package ukitinu.markovwords.repo;
 
+import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
@@ -44,15 +45,17 @@ public final class FileRepo implements Repo {
      * @see FilePaths to see how deleted directories are marked.
      */
     @Override
-    public Collection<String> listAll() {
+    public Couple<Collection<String>> listAll() {
         try (var files = Files.list(dataPath)) {
-            return files
+            Collection<String> names = files
                     .filter(Files::isDirectory)
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .filter(s -> !FilePaths.isDeleted(s))
                     .filter(s -> !FilePaths.isTemp(s))
-                    .collect(Collectors.toList());
+                    .toList();
+            Collection<String> visible = names.stream().filter(s -> !FilePaths.isDeleted(s)).toList();
+            Collection<String> deleted = names.stream().filter(FilePaths::isDeleted).toList();
+            return new Couple<>(visible, deleted);
         } catch (Exception e) {
             LOG.error("Unable to read dir {}: {}", dataPath.toString(), e.toString());
             throw new DataException("Unable to read data dir", e);

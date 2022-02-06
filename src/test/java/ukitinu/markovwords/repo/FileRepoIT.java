@@ -42,7 +42,8 @@ class FileRepoIT {
         try {
             Files.createDirectory(Path.of(path));
             Repo repo = FileRepo.create(path);
-            assertTrue(repo.listAll().isEmpty());
+            assertTrue(repo.listAll().first().isEmpty());
+            assertTrue(repo.listAll().second().isEmpty());
         } finally {
             Files.delete(Path.of(path));
         }
@@ -50,13 +51,14 @@ class FileRepoIT {
 
     @Test
     void listAll() throws IOException {
-        assertEquals(3, repo.listAll().size());
+        assertEquals(3, repo.listAll().first().size());
+        assertEquals(1, repo.listAll().second().size());
 
         try {
             Files.createDirectory(Path.of(basePath + "/dict1"));
             Files.createDirectory(Path.of(basePath + "/dict2"));
             Files.createDirectory(Path.of(basePath + "/.deleted_dict"));
-            assertEquals(5, repo.listAll().size());
+            assertEquals(5, repo.listAll().first().size());
         } finally {
             Files.delete(Path.of(basePath + "/dict1"));
             Files.delete(Path.of(basePath + "/dict2"));
@@ -125,7 +127,9 @@ class FileRepoIT {
             Files.createDirectory(Path.of(basePath + "/" + name));
             Files.createFile(Path.of(basePath + "/" + name + "/" + name));
 
+            assertEquals(1, repo.listAll().second().size());
             assertDoesNotThrow(() -> repo.delete(name));
+            assertEquals(2, repo.listAll().second().size());
 
             assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
             assertTrue(Files.exists(Path.of(basePath + "/." + name)));
