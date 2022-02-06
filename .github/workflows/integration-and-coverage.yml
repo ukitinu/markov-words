@@ -12,9 +12,9 @@ on:
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
-    env:
-      COV_TOT: 60
-      COV_NEW: 75
+#    env:
+#      COV_TOT: 60
+#      COV_NEW: 75
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -51,20 +51,20 @@ jobs:
 #          min-coverage-changed-files: env.COV_NEW
 
       # fails the action if coverage is not enough
-      - name: Check coverage
-        uses: actions/github-script@v5.0.0
-        with:
-          # doesn't seem to work with 'if:' above
-          script: |
-            const { COV_TOT, COV_NEW } = process.env;
-            const covTot = ${{ steps.jacoco.outputs.coverage-overall }};
-            const covNew = ${{ steps.jacoco.outputs.coverage-changed-files }};
-            const totBool = covTot < COV_TOT;
-            const newBool = covNew < COV_NEW;
-            if (totBool || newBool) {
-              const msg = `Code coverage ratio below required minima.\nOverall: ${covTot} (target ${COV_TOT}).\nChanged files: ${covNew} (target ${COV_NEW})`
-              core.setFailed(msg)
-            }
+#      - name: Check coverage
+#        uses: actions/github-script@v5.0.0
+#        with:
+#          # doesn't seem to work with 'if:' above
+#          script: |
+#            const { COV_TOT, COV_NEW } = process.env;
+#            const covTot = ${{ steps.jacoco.outputs.coverage-overall }};
+#            const covNew = ${{ steps.jacoco.outputs.coverage-changed-files }};
+#            const totBool = covTot < COV_TOT;
+#            const newBool = covNew < COV_NEW;
+#            if (totBool || newBool) {
+#              const msg = `Code coverage ratio below required minima.\nOverall: ${covTot} (target ${COV_TOT}).\nChanged files: ${covNew} (target ${COV_NEW})`
+#              core.setFailed(msg)
+#            }
 
       # creates coverage badge from jacoco merged report
       - name: Create badge
