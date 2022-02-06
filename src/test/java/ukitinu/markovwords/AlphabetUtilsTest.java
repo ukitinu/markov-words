@@ -14,11 +14,6 @@ class AlphabetUtilsTest {
     }
 
     @Test
-    void convertToSet_failing() {
-        assertEquals(Set.of('a', 'b', 'c'), AlphabetUtils.convertToSet("abcd"));
-    }
-
-    @Test
     void getAsciiLettersUpper() {
         assertEquals(Set.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
                         'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'),
