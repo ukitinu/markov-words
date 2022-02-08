@@ -34,6 +34,7 @@ public class InfoCmd implements Callable<Integer> {
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to refer to it");
             return 1;
         }
     }

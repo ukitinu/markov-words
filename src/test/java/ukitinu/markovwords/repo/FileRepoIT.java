@@ -148,6 +148,12 @@ class FileRepoIT {
     }
 
     @Test
+    void delete_deleted() {
+        String name = ".del-dict";
+        assertThrows(DataException.class, () -> repo.delete(name));
+    }
+
+    @Test
     void getGramMap_1() {
         String name = "dict-test";
         Map<String, Gram> gramMap = assertDoesNotThrow(() -> repo.getGramMap(name, 1));

@@ -108,6 +108,8 @@ public final class FileRepo implements Repo {
     @Override
     public void delete(String name) {
         try {
+            if (FilePaths.isDeleted(name)) throw new DataException("Dict" + name + "is already in deleted state");
+
             Path dirPath = FilePaths.getDictDir(dataPath, name);
             Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             Files.move(dirPath, deletedPath);

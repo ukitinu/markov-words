@@ -54,7 +54,18 @@ class InfoCmdTest {
     void call_deleted() {
         infoCmd.name = "del-dict";
         assertEquals(1, infoCmd.call());
-        assertEquals("Dict has been deleted: " + infoCmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict has been deleted: " + infoCmd.name + System.lineSeparator()
+                        + "Use ." + infoCmd.name + " to refer to it" + System.lineSeparator(),
+                testStream.toString());
+    }
+
+    @Test
+    void call_deletedWithDot() {
+        infoCmd.name = ".del-dict";
+        assertEquals(0, infoCmd.call());
+        assertEquals("del-dict" + System.lineSeparator()
+                        + "_ a b c d e f g" + System.lineSeparator(),
+                testStream.toString());
     }
 
     @Test
