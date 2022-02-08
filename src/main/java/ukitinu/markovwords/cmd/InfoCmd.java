@@ -2,12 +2,12 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 @Command(name = "info", description = "Shows information about a given dictionary")
@@ -28,27 +28,33 @@ public class InfoCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        var dict = repo.get(name);
-        var oneGrams = verbose ? getGramKeys(1) : Set.of();
-        var twoGrams = verbose ? getGramKeys(2) : Set.of();
-        var threeGrams = verbose ? getGramKeys(3) : Set.of();
+        try {
+            var dict = repo.get(name);
+            printDict(dict);
+            return 0;
+        } catch (DataException e) {
+            printStream.println(e.getMessage());
+            return 1;
+        }
+    }
 
+    private void printDict(Dict dict) {
         String alphabet = toPrintableString(dict.alphabet());
         printStream.println(dict.name());
         printStream.println(alphabet);
         if (verbose) {
-            printStream.println("1-grams: " + toPrintableString(oneGrams));
-            printStream.println("2-grams: " + toPrintableString(twoGrams));
-            printStream.println("3-grams: " + toPrintableString(threeGrams));
+            printStream.println("1-grams: " + getGramKeys(1));
+            printStream.println("2-grams: " + getGramKeys(2));
+            printStream.println("3-grams: " + getGramKeys(3));
         }
-        return 0;
     }
 
-    private Set<String> getGramKeys(int len) {
+    private String getGramKeys(int len) {
         try {
-            return repo.getGramMap(name, len).keySet();
+            var keys = repo.getGramMap(name, len).keySet();
+            return toPrintableString(keys);
         } catch (DataException e) {
-            return Set.of();
+            return "";
         }
     }
 

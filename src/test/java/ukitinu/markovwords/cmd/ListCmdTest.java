@@ -17,7 +17,7 @@ class ListCmdTest {
 
     @Test
     void call() {
-        listCmd.call();
+        assertEquals(0, listCmd.call());
         assertEquals("bad-dict-dir" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
@@ -27,7 +27,7 @@ class ListCmdTest {
     @Test
     void call_filter() {
         listCmd.name = "e";
-        listCmd.call();
+        assertEquals(0, listCmd.call());
         assertEquals("dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
                 testStream.toString());
@@ -36,7 +36,7 @@ class ListCmdTest {
     @Test
     void call_filterCaseInsensitive() {
         listCmd.name = "A";
-        listCmd.call();
+        assertEquals(0, listCmd.call());
         assertEquals("bad-dict-dir" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator(),
                 testStream.toString());
@@ -45,7 +45,7 @@ class ListCmdTest {
     @Test
     void call_deleted() {
         listCmd.listDeleted = true;
-        listCmd.call();
+        assertEquals(0, listCmd.call());
         assertEquals(".del-dict" + System.lineSeparator(), testStream.toString());
     }
 
@@ -53,10 +53,18 @@ class ListCmdTest {
     void call_all() {
         listCmd.name = "e";
         listCmd.listAll = true;
-        listCmd.call();
+        assertEquals(0, listCmd.call());
         assertEquals("dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator()
                         + ".del-dict" + System.lineSeparator(),
                 testStream.toString());
+    }
+
+    @Test
+    void call_notFound() {
+        listCmd.name = "zzzzzzz";
+        listCmd.listAll = true;
+        assertEquals(1, listCmd.call());
+        assertEquals("No results found" + System.lineSeparator(), testStream.toString());
     }
 }

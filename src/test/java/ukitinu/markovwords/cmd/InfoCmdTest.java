@@ -18,7 +18,7 @@ class InfoCmdTest {
     @Test
     void call() {
         infoCmd.name = "dict-name";
-        infoCmd.call();
+        assertEquals(0, infoCmd.call());
         assertEquals("dict-name" + System.lineSeparator()
                         + "' - . 0 1 2 _ a b c" + System.lineSeparator(),
                 testStream.toString());
@@ -28,7 +28,7 @@ class InfoCmdTest {
     void call_verboseWithoutGrams() {
         infoCmd.name = "dict-name";
         infoCmd.verbose = true;
-        infoCmd.call();
+        assertEquals(0, infoCmd.call());
         assertEquals("dict-name" + System.lineSeparator()
                         + "' - . 0 1 2 _ a b c" + System.lineSeparator()
                         + "1-grams: " + System.lineSeparator()
@@ -41,12 +41,26 @@ class InfoCmdTest {
     void call_verbose() {
         infoCmd.name = "dict-test";
         infoCmd.verbose = true;
-        infoCmd.call();
+        assertEquals(0, infoCmd.call());
         assertEquals("dict-test" + System.lineSeparator()
                         + "_ a b c d" + System.lineSeparator()
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
                 testStream.toString());
+    }
+
+    @Test
+    void call_deleted() {
+        infoCmd.name = "del-dict";
+        assertEquals(1, infoCmd.call());
+        assertEquals("Dict has been deleted: " + infoCmd.name + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_notFound() {
+        infoCmd.name = "i-do-not-exist";
+        assertEquals(1, infoCmd.call());
+        assertEquals("Dict not found: " + infoCmd.name + System.lineSeparator(), testStream.toString());
     }
 }
