@@ -26,6 +26,10 @@ public class DeleteCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (!repo.exists(name)) {
+            printStream.println("Given dictionary does not exists: " + name);
+            return 1;
+        }
         try {
             repo.delete(name, permanent);
             printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);

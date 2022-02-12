@@ -23,6 +23,10 @@ public class RestoreCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (!repo.exists(name)) {
+            printStream.println("Given dictionary does not exists: " + name);
+            return 1;
+        }
         try {
             repo.restore(name);
             printStream.println("Dictionary restored: " + name);
