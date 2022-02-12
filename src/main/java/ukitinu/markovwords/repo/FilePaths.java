@@ -72,4 +72,12 @@ final class FilePaths {
     static boolean isDataFile(Path path) {
         return path.toString().endsWith(FILE_EXT);
     }
+
+    static boolean isGramDir(Path path) {
+        return path.toString().endsWith(GRAM_DIR_SUFFIX);
+    }
+
+    static int getGramLength(Path path) {
+        return Integer.parseInt(path.toString().replace(GRAM_DIR_SUFFIX, ""));
+    }
 }

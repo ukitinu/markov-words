@@ -65,6 +65,8 @@ class FileRepoIT {
         }
     }
 
+    //TODO test exists
+
     @Test
     void get_ok() {
         String name = "dict-name";
@@ -157,6 +159,8 @@ class FileRepoIT {
     //TODO delete permanent test
 
     //TODO test restore
+
+    //TODO test getGramMap (versione senza len)
 
     @Test
     void getGramMap_1() {

@@ -81,4 +81,6 @@ class FilePathsTest {
         assertTrue(FilePaths.isDataFile(Path.of("file.dat")));
         assertFalse(FilePaths.isDataFile(Path.of("file")));
     }
+
+    //TODO test isGramDir e getGramLength
 }

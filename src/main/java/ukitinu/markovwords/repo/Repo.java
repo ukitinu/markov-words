@@ -12,6 +12,8 @@ public interface Repo {
 
     Couple<Collection<String>> listAll();
 
+    boolean exists(String name);
+
     Dict get(String name);
 
     Gram getGram(String dictName, String gramValue);
@@ -19,6 +21,8 @@ public interface Repo {
     void delete(String name, boolean permanent);
 
     void restore(String name);
+
+    Map<String, Gram> getGramMap(String name);
 
     Map<String, Gram> getGramMap(String name, int len);
 

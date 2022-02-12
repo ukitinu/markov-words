@@ -12,6 +12,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -60,6 +61,15 @@ public final class FileRepo implements Repo {
             LOG.error("Unable to read dir {}: {}", dataPath.toString(), e.toString());
             throw new DataException("Unable to read data dir", e);
         }
+    }
+
+    /**
+     * Checks whether there is a dictionary with the given name.
+     */
+    @Override
+    public boolean exists(String name) {
+        Path filePath = FilePaths.getDictFile(dataPath, name);
+        return Files.exists(filePath);
     }
 
     /**
@@ -143,12 +153,40 @@ public final class FileRepo implements Repo {
     }
 
     /**
+     * Reads all the gram files of dictionary {@param name}, converts them to {@link Gram}
+     * and then returns a map containing them, with their value as key.
+     *
+     * @param name dict's name.
+     * @return gram.value-gram map of the given dictionary.
+     * @see #getGramMap(String, int) allows to get grams of given length.
+     */
+    @Override
+    public Map<String, Gram> getGramMap(String name) {
+        Path dictDir = FilePaths.getDictDir(dataPath, name);
+        try (var files = Files.list(dictDir)) {
+            Collection<Integer> lengths = files
+                    .filter(Files::isDirectory)
+                    .filter(FilePaths::isGramDir)
+                    .map(FilePaths::getGramLength)
+                    .toList();
+            Map<String, Gram> gramMap = new HashMap<>();
+            for (int len : lengths) gramMap.putAll(getGramMap(name, len));
+
+            return gramMap;
+        } catch (IOException e) {
+            LOG.error("Unable to get grams of {}: {}", name, e.toString());
+            throw new DataException("Unable to get grams of " + name, e);
+        }
+    }
+
+    /**
      * Reads all the gram files of length {@param len} of dictionary {@param name}, converts them to {@link Gram}
      * and then returns a map containing them, with their value as key.
      *
      * @param name dict's name.
      * @param len  gram length.
      * @return gram.value-gram map of the given dictionary.
+     * @see #getGramMap(String) allows to get all grams.
      */
     @Override
     public Map<String, Gram> getGramMap(String name, int len) {
@@ -183,6 +221,8 @@ public final class FileRepo implements Repo {
         upsertGramMap(gramMap, dict.name());
         replaceOriginalWithTemp(dict);
     }
+
+    //region private
 
     /**
      * Creates a temporary directory for the given dictionary, copying, if present, the current content.
@@ -305,5 +345,6 @@ public final class FileRepo implements Repo {
                     .toList();
         }
     }
+    //endregion
 
 }
