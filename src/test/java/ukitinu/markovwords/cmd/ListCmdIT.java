@@ -46,7 +46,8 @@ class ListCmdIT {
     void call_deleted() {
         listCmd.listDeleted = true;
         assertEquals(0, listCmd.call());
-        assertEquals(".del-dict" + System.lineSeparator(), testStream.toString());
+        assertEquals(".del-dict" + System.lineSeparator()
+                + ".restore-test" + System.lineSeparator(), testStream.toString());
     }
 
     @Test
@@ -56,7 +57,8 @@ class ListCmdIT {
         assertEquals(0, listCmd.call());
         assertEquals("dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator()
-                        + ".del-dict" + System.lineSeparator(),
+                        + ".del-dict" + System.lineSeparator()
+                        + ".restore-test" + System.lineSeparator(),
                 testStream.toString());
     }
 

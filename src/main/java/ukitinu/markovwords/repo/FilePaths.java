@@ -74,10 +74,11 @@ final class FilePaths {
     }
 
     static boolean isGramDir(Path path) {
-        return path.toString().endsWith(GRAM_DIR_SUFFIX);
+        return path.getFileName().toString().matches("[1-9][0-9]*" + GRAM_DIR_SUFFIX);
     }
 
     static int getGramLength(Path path) {
-        return Integer.parseInt(path.toString().replace(GRAM_DIR_SUFFIX, ""));
+        if (!isGramDir(path)) throw new IllegalArgumentException("Path is not a gram dir");
+        return Integer.parseInt(path.getFileName().toString().replace(GRAM_DIR_SUFFIX, ""));
     }
 }

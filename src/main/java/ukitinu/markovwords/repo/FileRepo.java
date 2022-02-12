@@ -68,8 +68,9 @@ public final class FileRepo implements Repo {
      */
     @Override
     public boolean exists(String name) {
+        Path dirPath = FilePaths.getDictDir(dataPath, name);
         Path filePath = FilePaths.getDictFile(dataPath, name);
-        return Files.exists(filePath);
+        return Files.exists(dirPath) && Files.exists(filePath);
     }
 
     /**

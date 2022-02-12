@@ -13,6 +13,7 @@
 
 # should always be cancelled automatically at end of tests
 /src/test/resources/empty_dir
+/src/test/resources/dict_dir/delete-test
 /src/test/resources/dict_dir/.delete-test
 /src/test/resources/dict_dir/new
 /src/test/resources/dict_dir/existing

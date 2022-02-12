@@ -51,21 +51,28 @@ class FileRepoIT {
     @Test
     void listAll() throws IOException {
         assertEquals(3, repo.listAll().first().size());
-        assertEquals(1, repo.listAll().second().size());
+        assertEquals(2, repo.listAll().second().size());
 
         try {
-            Files.createDirectory(Path.of(basePath + "/dict1"));
-            Files.createDirectory(Path.of(basePath + "/dict2"));
-            Files.createDirectory(Path.of(basePath + "/.deleted_dict"));
+            Files.createDirectory(Path.of(basePath, "dict1"));
+            Files.createDirectory(Path.of(basePath, "dict2"));
+            Files.createDirectory(Path.of(basePath, ".deleted_dict"));
             assertEquals(5, repo.listAll().first().size());
         } finally {
-            Files.delete(Path.of(basePath + "/dict1"));
-            Files.delete(Path.of(basePath + "/dict2"));
-            Files.delete(Path.of(basePath + "/.deleted_dict"));
+            Files.delete(Path.of(basePath, "dict1"));
+            Files.delete(Path.of(basePath, "dict2"));
+            Files.delete(Path.of(basePath, ".deleted_dict"));
         }
     }
 
-    //TODO test exists
+    @Test
+    void exists() {
+        assertTrue(repo.exists(".del-dict"));
+        assertTrue(repo.exists("dict-name"));
+        assertFalse(repo.exists("bad-dict-dir"));
+        assertFalse(repo.exists("bad-dict-name"));
+        assertFalse(repo.exists("i-do-not-exist"));
+    }
 
     @Test
     void get_ok() {
@@ -132,19 +139,19 @@ class FileRepoIT {
     void delete() throws IOException {
         String name = "delete-test";
         try {
-            Files.createDirectory(Path.of(basePath + "/" + name));
-            Files.createFile(Path.of(basePath + "/" + name + "/" + name + ".dat"));
+            Files.createDirectory(Path.of(basePath, name));
+            Files.createFile(Path.of(basePath, name, name + ".dat"));
 
-            assertEquals(1, repo.listAll().second().size());
-            assertDoesNotThrow(() -> repo.delete(name, false));
             assertEquals(2, repo.listAll().second().size());
+            assertDoesNotThrow(() -> repo.delete(name, false));
+            assertEquals(3, repo.listAll().second().size());
 
-            assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
-            assertTrue(Files.exists(Path.of(basePath + "/." + name)));
-            assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name + ".dat")));
+            assertTrue(Files.notExists(Path.of(basePath, name)));
+            assertTrue(Files.exists(Path.of(basePath, "." + name)));
+            assertTrue(Files.exists(Path.of(basePath, "." + name, name + ".dat")));
         } finally {
-            FsUtils.rmDir(Path.of(basePath + "/" + name));
-            FsUtils.rmDir(Path.of(basePath + "/." + name));
+            FsUtils.rmDir(Path.of(basePath, name));
+            FsUtils.rmDir(Path.of(basePath, "." + name));
         }
     }
 
@@ -154,13 +161,89 @@ class FileRepoIT {
         assertThrows(DataException.class, () -> repo.delete(name, false));
     }
 
-    //TODO delete not existing
+    @Test
+    void delete_notExisting() {
+        assertThrows(DataException.class, () -> repo.delete("i-do-not-exist", false));
+    }
 
-    //TODO delete permanent test
+    @Test
+    void delete_permanent() throws IOException {
+        String name = "delete-test";
+        try {
+            Files.createDirectory(Path.of(basePath, name));
+            Files.createFile(Path.of(basePath, name, name + ".dat"));
 
-    //TODO test restore
+            assertDoesNotThrow(() -> repo.delete(name, true));
 
-    //TODO test getGramMap (versione senza len)
+            assertTrue(Files.notExists(Path.of(basePath, name)));
+            assertTrue(Files.notExists(Path.of(basePath, "." + name)));
+        } finally {
+            FsUtils.rmDir(Path.of(basePath, name));
+            FsUtils.rmDir(Path.of(basePath, "." + name));
+        }
+    }
+
+    @Test
+    void delete_permanentDeleted() throws IOException {
+        String name = "delete-test";
+        try {
+            Files.createDirectory(Path.of(basePath, "." + name));
+            Files.createFile(Path.of(basePath, "." + name, name + ".dat"));
+
+            assertDoesNotThrow(() -> repo.delete("." + name, true));
+
+            assertTrue(Files.notExists(Path.of(basePath, "." + name)));
+            assertTrue(Files.notExists(Path.of(basePath, ".." + name)));
+        } finally {
+            FsUtils.rmDir(Path.of(basePath, "." + name));
+            FsUtils.rmDir(Path.of(basePath, ".." + name));
+        }
+    }
+
+    @Test
+    void restore_failures() throws IOException {
+        String name = "restore-test";
+        try {
+            Files.createDirectory(Path.of(basePath, name));
+            Files.createFile(Path.of(basePath, name, name + ".dat"));
+
+            assertThrows(DataException.class, () -> repo.restore(name));
+            assertThrows(DataException.class, () -> repo.restore(".i-do-not-exist"));
+        } finally {
+            FsUtils.rmDir(Path.of(basePath + "/" + name));
+        }
+    }
+
+    @Test
+    void restore() throws IOException {
+        String name = "restore-test";
+        try {
+            assertDoesNotThrow(() -> repo.restore("." + name));
+            assertTrue(repo.exists(name));
+            assertFalse(repo.exists("." + name));
+            assertEquals(2, repo.getGramMap(name, 1).size());
+            assertEquals(1, repo.getGramMap(name, 2).size());
+        } finally {
+            FsUtils.cpDir(Path.of(basePath, name), Path.of(basePath, "." + name));
+            FsUtils.rmDir(Path.of(basePath, name));
+        }
+    }
+
+    @Test
+    void getGramMap() {
+        String name = "dict-test";
+        Map<String, Gram> gramMap = assertDoesNotThrow(() -> repo.getGramMap(name));
+        assertEquals(3, gramMap.size());
+        assertTrue(gramMap.containsKey("a"));
+        assertTrue(gramMap.containsKey("ba"));
+    }
+
+    @Test
+    void getGramMap_empty() {
+        String name = "dict-name";
+        Map<String, Gram> gramMap = assertDoesNotThrow(() -> repo.getGramMap(name));
+        assertTrue(gramMap.isEmpty());
+    }
 
     @Test
     void getGramMap_1() {
