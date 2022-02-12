@@ -16,7 +16,7 @@ public interface Repo {
 
     Gram getGram(String dictName, String gramValue);
 
-    void delete(String name);
+    void delete(String name, boolean permanent);
 
     Map<String, Gram> getGramMap(String name, int len);
 

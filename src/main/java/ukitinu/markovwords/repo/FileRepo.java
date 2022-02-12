@@ -1,5 +1,6 @@
 package ukitinu.markovwords.repo;
 
+import org.apache.commons.io.FileUtils;
 import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
@@ -103,11 +104,17 @@ public final class FileRepo implements Repo {
     }
 
     /**
-     * The dict's directory is renamed to mark is as deleted.
+     * If {@param permanent} is false, the dict's directory is renamed to mark is as deleted.
+     * If {@param permanent} is true, the directory is deleted permanently.
      */
     @Override
-    public void delete(String name) {
+    public void delete(String name, boolean permanent) {
         try {
+            if (permanent) {
+                FileUtils.deleteDirectory(FilePaths.getDictDir(dataPath, name).toFile());
+                return;
+            }
+
             if (FilePaths.isDeleted(name)) throw new DataException("Dict" + name + "is already in deleted state");
 
             Path dirPath = FilePaths.getDictDir(dataPath, name);

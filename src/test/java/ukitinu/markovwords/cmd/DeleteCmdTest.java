@@ -19,6 +19,8 @@ class DeleteCmdTest {
     private final ByteArrayOutputStream testStream = new ByteArrayOutputStream();
     private final DeleteCmd deleteCmd = new DeleteCmd(repo, new PrintStream(testStream));
 
+    //TODO test permanent deletion
+
     @Test
     void call() throws IOException {
         try {

@@ -135,7 +135,7 @@ class FileRepoIT {
             Files.createFile(Path.of(basePath + "/" + name + "/" + name));
 
             assertEquals(1, repo.listAll().second().size());
-            assertDoesNotThrow(() -> repo.delete(name));
+            assertDoesNotThrow(() -> repo.delete(name, false));
             assertEquals(2, repo.listAll().second().size());
 
             assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
@@ -150,8 +150,12 @@ class FileRepoIT {
     @Test
     void delete_deleted() {
         String name = ".del-dict";
-        assertThrows(DataException.class, () -> repo.delete(name));
+        assertThrows(DataException.class, () -> repo.delete(name, false));
     }
+
+    //TODO delete not existing
+
+    //TODO delete permanent test
 
     @Test
     void getGramMap_1() {

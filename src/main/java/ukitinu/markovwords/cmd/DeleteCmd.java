@@ -18,14 +18,17 @@ public class DeleteCmd implements Callable<Integer> {
         this.printStream = printStream;
     }
 
+    @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
+    boolean permanent;
+
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;
 
     @Override
     public Integer call() {
         try {
-            repo.delete(name);
-            printStream.println("Dictionary deleted: " + name);
+            repo.delete(name, permanent);
+            printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
