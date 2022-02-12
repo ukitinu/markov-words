@@ -1,6 +1,5 @@
 package ukitinu.markovwords.lib;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ class FsUtilsTest {
                     Files.list(Path.of(testDirDest + "/s0/s00")).toList()
             );
         } finally {
-            FileUtils.deleteDirectory(testDirDest.toFile());
+            FsUtils.rmDir(testDirDest);
         }
     }
 }

@@ -1,6 +1,5 @@
 package ukitinu.markovwords.repo;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
@@ -142,8 +141,8 @@ class FileRepoIT {
             assertTrue(Files.exists(Path.of(basePath + "/." + name)));
             assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name)));
         } finally {
-            FileUtils.deleteDirectory(Path.of(basePath + "/" + name).toFile());
-            FileUtils.deleteDirectory(Path.of(basePath + "/." + name).toFile());
+            FsUtils.rmDir(Path.of(basePath + "/" + name));
+            FsUtils.rmDir(Path.of(basePath + "/." + name));
         }
     }
 
@@ -201,7 +200,7 @@ class FileRepoIT {
 
             assertTrue(Files.notExists(FilePaths.getDictDir(Path.of(basePath), dict.name(), true)));
         } finally {
-            FileUtils.deleteDirectory(FilePaths.getDictDir(Path.of(basePath), dict.name()).toFile());
+            FsUtils.rmDir(FilePaths.getDictDir(Path.of(basePath), dict.name()));
         }
     }
 
@@ -255,7 +254,7 @@ class FileRepoIT {
             assertEquals(1, twoGrams.get("cb").get('_'));
         } finally {
             // remove edited dict
-            FileUtils.deleteDirectory(FilePaths.getDictDir(Path.of(basePath), dictName).toFile());
+            FsUtils.rmDir(FilePaths.getDictDir(Path.of(basePath), dictName));
         }
     }
 

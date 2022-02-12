@@ -1,6 +1,5 @@
 package ukitinu.markovwords.repo;
 
-import org.apache.commons.io.FileUtils;
 import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
@@ -111,7 +110,7 @@ public final class FileRepo implements Repo {
     public void delete(String name, boolean permanent) {
         try {
             if (permanent) {
-                FileUtils.deleteDirectory(FilePaths.getDictDir(dataPath, name).toFile());
+                FsUtils.rmDir(FilePaths.getDictDir(dataPath, name));
                 return;
             }
 

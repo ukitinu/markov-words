@@ -24,6 +24,17 @@ public final class FsUtils {
     }
 
     /**
+     * Deletes the given directory (if existing).
+     * If the directory is not empty, deletes its content too.
+     *
+     * @param dir dir path.
+     * @throws IOException if an error occurs during deletion.
+     */
+    public static void rmDir(Path dir) throws IOException {
+        FileUtils.deleteDirectory(dir.toFile());
+    }
+
+    /**
      * Writes the given {@link CharSequence} to the given path, with UTF-8 encoding.
      *
      * @param path    where to write.
@@ -75,7 +86,7 @@ public final class FsUtils {
      * @throws IOException if an error occurs.
      */
     public static void moveAndReplace(Path src, Path dest) throws IOException {
-        FileUtils.deleteDirectory(dest.toFile());
+        rmDir(dest);
         Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 

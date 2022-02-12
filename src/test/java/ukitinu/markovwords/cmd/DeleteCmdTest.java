@@ -1,6 +1,5 @@
 package ukitinu.markovwords.cmd;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.repo.FileRepo;
@@ -29,7 +28,7 @@ class DeleteCmdTest {
             assertEquals("Dictionary deleted: " + deleteCmd.name + System.lineSeparator(), testStream.toString());
         } finally {
             FsUtils.cpDir(Path.of(basePath, "." + deleteCmd.name), Path.of(basePath, deleteCmd.name));
-            FileUtils.deleteDirectory(Path.of(basePath, "." + deleteCmd.name).toFile());
+            FsUtils.rmDir(Path.of(basePath, "." + deleteCmd.name));
         }
     }
 
