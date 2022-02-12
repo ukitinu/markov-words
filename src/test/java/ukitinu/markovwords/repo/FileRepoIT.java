@@ -156,6 +156,8 @@ class FileRepoIT {
 
     //TODO delete permanent test
 
+    //TODO test restore
+
     @Test
     void getGramMap_1() {
         String name = "dict-test";

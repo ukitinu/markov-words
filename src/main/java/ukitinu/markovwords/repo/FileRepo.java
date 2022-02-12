@@ -126,6 +126,23 @@ public final class FileRepo implements Repo {
     }
 
     /**
+     * Restores the given dictionary's directory (if deleted).
+     */
+    @Override
+    public void restore(String name) {
+        try {
+            if (!FilePaths.isDeleted(name)) throw new DataException("Dict" + name + "is not in deleted state");
+
+            Path dirPath = FilePaths.getDictDir(dataPath, name);
+            Path restoredPath = FilePaths.getRestoredDictDir(dataPath, name);
+            Files.move(dirPath, restoredPath);
+        } catch (IOException e) {
+            LOG.error("Unable to restore dict {}: {}", name, e.toString());
+            throw new DataException("Unable to restore dict " + name, e);
+        }
+    }
+
+    /**
      * Reads all the gram files of length {@param len} of dictionary {@param name}, converts them to {@link Gram}
      * and then returns a map containing them, with their value as key.
      *

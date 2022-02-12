@@ -22,7 +22,13 @@ final class FilePaths {
     }
 
     static Path getDeletedDictDir(Path dataPath, String dictName) {
+        if (isDeleted(dictName)) throw new DataException(dictName + " is already deleted");
         return dataPath.resolve(DEL_PREFIX + dictName);
+    }
+
+    static Path getRestoredDictDir(Path dataPath, String dictName) {
+        if (!isDeleted(dictName)) throw new DataException(dictName + " is not deleted");
+        return dataPath.resolve(dictName.substring(DEL_PREFIX.length()));
     }
 
     static Path getDictFile(Path dataPath, String dictName) {

@@ -21,6 +21,13 @@ class FilePathsTest {
     @Test
     void getDeletedDictDir() {
         assertEquals(Path.of(path + "/." + dictName), FilePaths.getDeletedDictDir(path, dictName));
+        assertThrows(DataException.class, () -> FilePaths.getDeletedDictDir(path, "." + dictName));
+    }
+
+    @Test
+    void getRestoredDictDir() {
+        assertEquals(Path.of(path + "/" + dictName), FilePaths.getRestoredDictDir(path, "." + dictName));
+        assertThrows(DataException.class, () -> FilePaths.getRestoredDictDir(path, dictName));
     }
 
     @Test

@@ -18,6 +18,8 @@ public interface Repo {
 
     void delete(String name, boolean permanent);
 
+    void restore(String name);
+
     Map<String, Gram> getGramMap(String name, int len);
 
     void upsert(Dict dict, Map<String, Gram> gramMap);
