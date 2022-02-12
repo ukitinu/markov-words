@@ -133,7 +133,7 @@ class FileRepoIT {
         String name = "delete-test";
         try {
             Files.createDirectory(Path.of(basePath + "/" + name));
-            Files.createFile(Path.of(basePath + "/" + name + "/" + name));
+            Files.createFile(Path.of(basePath + "/" + name + "/" + name + ".dat"));
 
             assertEquals(1, repo.listAll().second().size());
             assertDoesNotThrow(() -> repo.delete(name, false));
@@ -141,7 +141,7 @@ class FileRepoIT {
 
             assertTrue(Files.notExists(Path.of(basePath + "/" + name)));
             assertTrue(Files.exists(Path.of(basePath + "/." + name)));
-            assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name)));
+            assertTrue(Files.exists(Path.of(basePath + "/." + name + "/" + name + ".dat")));
         } finally {
             FsUtils.rmDir(Path.of(basePath + "/" + name));
             FsUtils.rmDir(Path.of(basePath + "/." + name));

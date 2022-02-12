@@ -119,12 +119,14 @@ public final class FileRepo implements Repo {
     @Override
     public void delete(String name, boolean permanent) {
         try {
+            get(name);
+
             if (permanent) {
                 FsUtils.rmDir(FilePaths.getDictDir(dataPath, name));
                 return;
             }
 
-            if (FilePaths.isDeleted(name)) throw new DataException("Dict" + name + "is already in deleted state");
+            if (FilePaths.isDeleted(name)) throw new DataException("Dict " + name + " is already in deleted state");
 
             Path dirPath = FilePaths.getDictDir(dataPath, name);
             Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);

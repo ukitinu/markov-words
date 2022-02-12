@@ -9,7 +9,7 @@ import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ListCmdTest {
+class ListCmdIT {
     private final String basePath = "./src/test/resources/dict_dir";
     private final Repo repo = FileRepo.create(basePath);
     private final ByteArrayOutputStream testStream = new ByteArrayOutputStream();

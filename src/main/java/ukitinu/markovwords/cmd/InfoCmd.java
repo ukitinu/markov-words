@@ -28,10 +28,6 @@ public class InfoCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (!repo.exists(name)) {
-            printStream.println("Given dictionary does not exists: " + name);
-            return 1;
-        }
         try {
             var dict = repo.get(name);
             printDict(dict);

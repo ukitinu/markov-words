@@ -10,6 +10,8 @@ import java.util.concurrent.Callable;
 
 @Command(name = "delete", aliases = {"del"}, description = "Delete the dictionary")
 public class DeleteCmd implements Callable<Integer> {
+    static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
+
     private final Repo repo;
     private final PrintStream printStream;
 
@@ -26,16 +28,14 @@ public class DeleteCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (!repo.exists(name)) {
-            printStream.println("Given dictionary does not exists: " + name);
-            return 1;
-        }
         try {
             repo.delete(name, permanent);
             printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            if (e.getMessage().contains("deleted state")) printStream.println(DEL_PERM_HINT);
+            else if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to " + DEL_PERM_HINT);
             return 1;
         }
     }

@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DeleteCmdTest {
+class DeleteCmdIT {
     private final String basePath = "./src/test/resources/dict_dir";
     private final Repo repo = FileRepo.create(basePath);
     private final ByteArrayOutputStream testStream = new ByteArrayOutputStream();
@@ -36,13 +36,24 @@ class DeleteCmdTest {
     void call_notFound() {
         deleteCmd.name = "not-found";
         assertEquals(1, deleteCmd.call());
-        assertEquals("Unable to delete dict " + deleteCmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict not found: " + deleteCmd.name + System.lineSeparator(), testStream.toString());
     }
 
     @Test
     void call_deleted() {
         deleteCmd.name = ".del-dict";
         assertEquals(1, deleteCmd.call());
-        assertEquals("Dict" + deleteCmd.name + "is already in deleted state" + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict " + deleteCmd.name + " is already in deleted state" + System.lineSeparator()
+                        + DeleteCmd.DEL_PERM_HINT + System.lineSeparator(),
+                testStream.toString());
+    }
+
+    @Test
+    void call_deletedNoDot() {
+        deleteCmd.name = "del-dict";
+        assertEquals(1, deleteCmd.call());
+        assertEquals("Dict has been deleted: " + deleteCmd.name + System.lineSeparator()
+                        + "Use ." + deleteCmd.name + " to " + DeleteCmd.DEL_PERM_HINT + System.lineSeparator(),
+                testStream.toString());
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FsUtilsTest {
+class FsUtilsIT {
 
     @Test
     void cpDir() throws IOException {
