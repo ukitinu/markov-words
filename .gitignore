@@ -16,7 +16,9 @@
 /src/test/resources/dict_dir/delete-test
 /src/test/resources/dict_dir/.delete-test
 /src/test/resources/dict_dir/new
+/src/test/resources/dict_dir/new-dict
 /src/test/resources/dict_dir/existing
+/src/test/resources/dict_dir/restore-test
 
 
 target/

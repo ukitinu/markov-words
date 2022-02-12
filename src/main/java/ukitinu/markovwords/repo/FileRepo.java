@@ -144,7 +144,7 @@ public final class FileRepo implements Repo {
     @Override
     public void restore(String name) {
         try {
-            if (!FilePaths.isDeleted(name)) throw new DataException("Dict" + name + "is not in deleted state");
+            if (!FilePaths.isDeleted(name)) throw new DataException("Dict " + name + " is not in deleted state");
 
             Path dirPath = FilePaths.getDictDir(dataPath, name);
             Path restoredPath = FilePaths.getRestoredDictDir(dataPath, name);
