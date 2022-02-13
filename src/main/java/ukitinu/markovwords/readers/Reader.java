@@ -1,5 +1,6 @@
 package ukitinu.markovwords.readers;
 
+@FunctionalInterface
 public interface Reader {
 
     /**

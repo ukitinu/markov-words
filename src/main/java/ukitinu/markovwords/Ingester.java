@@ -6,5 +6,7 @@ import ukitinu.markovwords.models.Gram;
 import java.util.Map;
 
 public interface Ingester {
+    void ingest(String text, Map<String, Gram> gramMap, Dict dict);
+
     void ingest(String text, Map<String, Gram> gramMap, Dict dict, int len);
 }

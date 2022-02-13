@@ -8,6 +8,14 @@ import java.util.Map;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 public class IngesterImpl implements Ingester {
+
+    @Override
+    public void ingest(String text, Map<String, Gram> gramMap, Dict dict) {
+        for (int len = 1; len <= 3; len++) { //TODO upper limit from config
+            ingest(text, gramMap, dict, len);
+        }
+    }
+
     @Override
     public void ingest(String text, Map<String, Gram> gramMap, Dict dict, int len) {
         if (text == null || gramMap == null || dict == null) {
@@ -15,10 +23,11 @@ public class IngesterImpl implements Ingester {
         }
         if (len <= 0) throw new IllegalArgumentException("len must be positive");
 
-        if (len > text.length()) return;
+        String cleaned = AlphabetUtils.cleanText(text, dict);
+        if (len > cleaned.length()) return;
 
-        Gram current = getGram(text.substring(0, len), gramMap, dict);
-        char[] chars = text.toCharArray();
+        Gram current = getGram(cleaned.substring(0, len), gramMap, dict);
+        char[] chars = cleaned.toCharArray();
 
         for (int i = len; i < chars.length; i++) {
             char letter = chars[i];
