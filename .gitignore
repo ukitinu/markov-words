@@ -19,6 +19,7 @@
 /src/test/resources/dict_dir/new-dict
 /src/test/resources/dict_dir/existing
 /src/test/resources/dict_dir/restore-test
+/src/test/resources/dict_dir/dict-test.backup
 
 
 target/

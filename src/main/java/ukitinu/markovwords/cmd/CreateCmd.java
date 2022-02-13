@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-@Command(name = "delete", aliases = {"del"}, description = "Delete the dictionary")
+@Command(name = "create", description = "Create a dictionary")
 public class CreateCmd implements Callable<Integer> {
     private final Repo repo;
     private final PrintStream printStream;

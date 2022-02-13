@@ -8,7 +8,7 @@ import ukitinu.markovwords.repo.Repo;
 import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
-@Command(name = "delete", aliases = {"del"}, description = "Delete the dictionary")
+@Command(name = "delete", aliases = {"del"}, description = "Delete a dictionary")
 public class DeleteCmd implements Callable<Integer> {
     static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
 
