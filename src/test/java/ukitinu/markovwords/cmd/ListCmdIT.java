@@ -13,6 +13,7 @@ final class ListCmdIT extends CmdITHelper {
     void call() {
         assertEquals(0, cmd.call());
         assertEquals("bad-dict-dir" + System.lineSeparator()
+                        + "dict-complete" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
                 testStream.toString());
@@ -22,7 +23,8 @@ final class ListCmdIT extends CmdITHelper {
     void call_filter() {
         cmd.name = "e";
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator()
+        assertEquals("dict-complete" + System.lineSeparator()
+                        + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
                 testStream.toString());
     }
@@ -49,7 +51,8 @@ final class ListCmdIT extends CmdITHelper {
         cmd.name = "e";
         cmd.listAll = true;
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator()
+        assertEquals("dict-complete" + System.lineSeparator()
+                        + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator()
                         + ".del-dict" + System.lineSeparator()
                         + ".restore-test" + System.lineSeparator(),

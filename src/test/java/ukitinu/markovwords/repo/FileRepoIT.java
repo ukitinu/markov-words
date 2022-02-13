@@ -50,14 +50,15 @@ class FileRepoIT {
 
     @Test
     void listAll() throws IOException {
-        assertEquals(3, repo.listAll().first().size());
+        assertEquals(4, repo.listAll().first().size());
         assertEquals(2, repo.listAll().second().size());
 
         try {
             Files.createDirectory(Path.of(basePath, "dict1"));
             Files.createDirectory(Path.of(basePath, "dict2"));
             Files.createDirectory(Path.of(basePath, ".deleted_dict"));
-            assertEquals(5, repo.listAll().first().size());
+            assertEquals(6, repo.listAll().first().size());
+            assertEquals(3, repo.listAll().second().size());
         } finally {
             Files.delete(Path.of(basePath, "dict1"));
             Files.delete(Path.of(basePath, "dict2"));
@@ -236,6 +237,12 @@ class FileRepoIT {
         assertEquals(3, gramMap.size());
         assertTrue(gramMap.containsKey("a"));
         assertTrue(gramMap.containsKey("ba"));
+    }
+
+    @Test
+    void getGramMap_notExistent() {
+        String name = "i-do-not-exist";
+        assertThrows(DataException.class, () -> repo.getGramMap(name));
     }
 
     @Test
