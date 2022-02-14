@@ -21,11 +21,19 @@ class FilePathsTest {
     @Test
     void getDeletedDictDir() {
         assertEquals(Path.of(path + "/." + dictName), FilePaths.getDeletedDictDir(path, dictName));
+        assertThrows(DataException.class, () -> FilePaths.getDeletedDictDir(path, "." + dictName));
+    }
+
+    @Test
+    void getRestoredDictDir() {
+        assertEquals(Path.of(path + "/" + dictName), FilePaths.getRestoredDictDir(path, "." + dictName));
+        assertThrows(DataException.class, () -> FilePaths.getRestoredDictDir(path, dictName));
     }
 
     @Test
     void getDictFile() {
         assertEquals(Path.of(dictPath + "/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName));
+        assertEquals(Path.of(path + "/." + dictName + "/" + dictName + ".dat"), FilePaths.getDictFile(path, "." + dictName));
         assertEquals(Path.of(dictPath + "/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName, false));
         assertEquals(Path.of(dictPath + ".tmp/" + dictName + ".dat"), FilePaths.getDictFile(path, dictName, true));
     }
@@ -72,5 +80,27 @@ class FilePathsTest {
     void isDataFile() {
         assertTrue(FilePaths.isDataFile(Path.of("file.dat")));
         assertFalse(FilePaths.isDataFile(Path.of("file")));
+    }
+
+    @Test
+    void isGramDir() {
+        assertTrue(FilePaths.isGramDir(Path.of("/dir/di.r/2-grams")));
+        assertTrue(FilePaths.isGramDir(Path.of("c:/dir/di.r/1-grams")));
+        assertTrue(FilePaths.isGramDir(Path.of("dir/di.r/1-grams")));
+        assertTrue(FilePaths.isGramDir(Path.of("/101-grams")));
+        assertFalse(FilePaths.isGramDir(Path.of("-grams")));
+        assertFalse(FilePaths.isGramDir(Path.of("wrong")));
+        assertFalse(FilePaths.isGramDir(Path.of("dir/2-grams/_a")));
+    }
+
+    @Test
+    void getGramLength() {
+        assertEquals(2, FilePaths.getGramLength(Path.of("/dir/di.r/2-grams")));
+        assertEquals(3, FilePaths.getGramLength(Path.of("c:/dir/di.r/3-grams")));
+        assertEquals(1, FilePaths.getGramLength(Path.of("dir/di.r/1-grams")));
+        assertEquals(101, FilePaths.getGramLength(Path.of("/101-grams")));
+        assertThrows(IllegalArgumentException.class, () -> FilePaths.getGramLength(Path.of("-grams")));
+        assertThrows(IllegalArgumentException.class, () -> FilePaths.getGramLength(Path.of("wrong")));
+        assertThrows(IllegalArgumentException.class, () -> FilePaths.getGramLength(Path.of("dir/2-grams/_a")));
     }
 }

@@ -22,11 +22,21 @@ final class FilePaths {
     }
 
     static Path getDeletedDictDir(Path dataPath, String dictName) {
+        if (isDeleted(dictName)) throw new DataException(dictName + " is already deleted");
         return dataPath.resolve(DEL_PREFIX + dictName);
     }
 
+    static Path getRestoredDictDir(Path dataPath, String dictName) {
+        if (!isDeleted(dictName)) throw new DataException(dictName + " is not deleted");
+        return dataPath.resolve(dictName.substring(DEL_PREFIX.length()));
+    }
+
     static Path getDictFile(Path dataPath, String dictName) {
-        return getDictDir(dataPath, dictName, false).resolve(dictName + FILE_EXT);
+        if (isDeleted(dictName)) {
+            return getDictDir(dataPath, dictName, false).resolve(dictName.substring(DEL_PREFIX.length()) + FILE_EXT);
+        } else {
+            return getDictDir(dataPath, dictName, false).resolve(dictName + FILE_EXT);
+        }
     }
 
     static Path getDictFile(Path dataPath, String dictName, boolean isTemp) {
@@ -61,5 +71,14 @@ final class FilePaths {
 
     static boolean isDataFile(Path path) {
         return path.toString().endsWith(FILE_EXT);
+    }
+
+    static boolean isGramDir(Path path) {
+        return path.getFileName().toString().matches("[1-9][0-9]*" + GRAM_DIR_SUFFIX);
+    }
+
+    static int getGramLength(Path path) {
+        if (!isGramDir(path)) throw new IllegalArgumentException("Path is not a gram dir");
+        return Integer.parseInt(path.getFileName().toString().replace(GRAM_DIR_SUFFIX, ""));
     }
 }

@@ -2,21 +2,18 @@ package ukitinu.markovwords;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.readers.StringReader;
-import ukitinu.markovwords.repo.Repo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TextManagerIT {
+class IngesterImplIT {
 
     private final Dict dict = new Dict("test", AlphabetUtils.getAsciiLetters());
-    private final Map<String, Gram> gramMap = new HashMap<>();
+    private Map<String, Gram> gramMap;
     private final String longerText = """
             "the quick brown fox jumps over the lazy dog" is an English-language pangram, a sentence that contains
              all of the letters of the English alphabet.
@@ -26,22 +23,32 @@ class TextManagerIT {
              in the alphabet is desired.
              THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.""";
 
-    private final Repo repo = Mockito.mock(Repo.class);
-    private TextManager textManager;
+    private final Ingester ingester = new IngesterImpl();
 
     @BeforeEach
     void setUp() {
-        Mockito.when(repo.getGramMap(Mockito.eq(dict.name()), Mockito.anyInt())).thenReturn(gramMap);
-        textManager = new TextManager(new StringReader(), new IngesterImpl(), repo);
+        gramMap = new HashMap<>();
     }
 
     @Test
     void ingest() {
-        assertDoesNotThrow(() -> textManager.processText(longerText, dict, 1));
+        assertDoesNotThrow(() -> ingester.ingest(longerText, gramMap, dict));
+        assertFalse(gramMap.isEmpty());
+        assertTrue(gramMap.containsKey("_th"));
+        assertTrue(gramMap.containsKey("OG_"));
+        assertTrue(gramMap.containsKey("z"));
+        assertTrue(gramMap.containsKey("th"));
+        assertTrue(gramMap.containsKey("qui"));
+        assertTrue(gramMap.containsKey("ck"));
+    }
+
+    @Test
+    void ingest_longText() {
+        assertDoesNotThrow(() -> ingester.ingest(longerText, gramMap, dict, 1));
         assertEquals(dict.alphabet().size(), gramMap.size());
-        assertDoesNotThrow(() -> textManager.processText(longerText, dict, 2));
+        assertDoesNotThrow(() -> ingester.ingest(longerText, gramMap, dict, 2));
         assertTrue(gramMap.size() > dict.alphabet().size());
-        assertDoesNotThrow(() -> textManager.processText(longerText, dict, 3));
+        assertDoesNotThrow(() -> ingester.ingest(longerText, gramMap, dict, 3));
     }
 
 }

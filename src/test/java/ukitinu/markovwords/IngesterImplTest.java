@@ -46,30 +46,32 @@ class IngesterImplTest {
         gramMap.put("lo", lo);
 
         assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 2));
-        assertEquals(5, gramMap.size());
+        assertEquals(6, gramMap.size());
 
         assertEquals(1, gramMap.get(WORD_END + "h").get('e'));
-        assertEquals(6, gramMap.get("he").get('l'));
+        assertEquals(6, gramMap.get("he").get('l')); // +1
         assertEquals(1, gramMap.get("el").get('l'));
         assertEquals(1, gramMap.get("ll").get('o'));
         assertEquals(1, gramMap.get("lo").get(WORD_END));
-        assertEquals(2, gramMap.get("lo").get('l'));
+        assertEquals(2, gramMap.get("lo").get('l')); // unchanged
+        assertEquals(1, gramMap.get("o" + WORD_END).get(WORD_END));
     }
 
     @Test
     void ingest_3gram() {
         assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, 3));
-        assertEquals(4, gramMap.size());
+        assertEquals(5, gramMap.size());
 
         assertEquals(1, gramMap.get(WORD_END + "he").get('l'));
         assertEquals(1, gramMap.get("hel").get('l'));
         assertEquals(1, gramMap.get("ell").get('o'));
         assertEquals(1, gramMap.get("llo").get(WORD_END));
+        assertEquals(1, gramMap.get("lo" + WORD_END).get(WORD_END));
     }
 
     @Test
     void ingest_noOp() {
-        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, text.length() + 1));
+        assertDoesNotThrow(() -> ingester.ingest(text, gramMap, dict, text.length() + 3)); // 2 WORD_ENDs + 1
         assertTrue(gramMap.isEmpty());
     }
 

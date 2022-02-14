@@ -1,7 +1,12 @@
 package ukitinu.markovwords;
 
+import ukitinu.markovwords.models.Dict;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class AlphabetUtils {
     private static final char ASCII_A_UPPER = 65;
@@ -64,6 +69,37 @@ public final class AlphabetUtils {
      */
     public static Set<Character> getAsciiDigits() {
         return getAsciiRange(ASCII_0, ASCII_9);
+    }
+
+    /**
+     * Cleans the input text according to the following rules:<br>
+     * <li>all characters not contained in the dict's alphabet are replaced by WORD_END,</li>
+     * <li>consecutive WORD_END chars are squeezed into one,</li>
+     * <li>the returned text always ends with a WORD_END,</li>
+     * <li>the returned text always starts with a WORD_END,</li>
+     * where WORD_END is the char {@link ukitinu.markovwords.AlphabetUtils#WORD_END}.
+     *
+     * @param text text to clean.
+     * @param dict dictionary to use.
+     * @return text to ingest.
+     */
+    public static String cleanText(String text, Dict dict) {
+        List<Character> list = new ArrayList<>();
+
+        list.add(WORD_END);
+        for (char letter : text.toCharArray()) {
+            if (dict.alphabet().contains(letter) && letter != WORD_END) {
+                list.add(letter);
+            } else {
+                if (list.get(list.size() - 1) != WORD_END) {
+                    list.add(WORD_END);
+                }
+            }
+        }
+
+        if (list.get(list.size() - 1) != WORD_END) list.add(WORD_END);
+
+        return list.stream().map(String::valueOf).collect(Collectors.joining());
     }
 
     /**
