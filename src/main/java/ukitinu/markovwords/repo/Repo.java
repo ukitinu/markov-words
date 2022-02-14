@@ -22,6 +22,8 @@ public interface Repo {
 
     void restore(String name);
 
+    boolean hasGramMap(String name, int len);
+
     Map<String, Gram> getGramMap(String name);
 
     Map<String, Gram> getGramMap(String name, int len);

@@ -39,11 +39,21 @@ public class WriteCmd implements Callable<Integer> {
         }
         try {
             var gramMap = repo.getGramMap(name);
+            checkGramMap(gramMap);
+
             for (int i = 0; i < num; i++) printStream.println(generate(gramMap));
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
             return 1;
+        }
+    }
+
+    private void checkGramMap(Map<String, Gram> gramMap) {
+        if (gramMap.isEmpty()) throw new DataException("No grams in the dictionary");
+        if (!gramMap.containsKey(String.valueOf(WORD_END))) throw new DataException("Missing WORD_END gram");
+        for (int len = 1; len <= depth; len++) {
+            if (!repo.hasGramMap(name, len)) throw new DataException("Missing " + len + "-grams");
         }
     }
 

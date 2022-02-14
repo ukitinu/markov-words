@@ -105,6 +105,19 @@ class FileRepoIT {
     }
 
     @Test
+    void hasGramMap() {
+        assertThrows(IllegalArgumentException.class, ()->repo.hasGramMap("dict-name", -2));
+        assertThrows(IllegalArgumentException.class, ()->repo.hasGramMap("dict-name", 0));
+
+        assertFalse(repo.hasGramMap("dict-name", 1));
+        assertFalse(repo.hasGramMap("dict-name", 2));
+        assertFalse(repo.hasGramMap(".del-dict", 1));
+
+        assertTrue(repo.hasGramMap("dict-complete", 1));
+        assertTrue(repo.hasGramMap("dict-test", 2));
+    }
+
+    @Test
     void getGram_ok() {
         String dictName = "dict-test";
         String gram1 = "a";

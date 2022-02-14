@@ -39,4 +39,26 @@ final class WriteCmdIT extends CmdITHelper {
         assertEquals(1, cmd.call());
         assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
     }
+
+    @Test
+    void call_empty() {
+        cmd.name = "dict-name";
+        assertEquals(1, cmd.call());
+        assertEquals("No grams in the dictionary" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_wordEnd() {
+        cmd.name = "dict-test";
+        assertEquals(1, cmd.call());
+        assertEquals("Missing WORD_END gram" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_missing() {
+        cmd.name = "dict-complete";
+        cmd.depth = 3;
+        assertEquals(1, cmd.call());
+        assertEquals("Missing 3-grams" + System.lineSeparator(), testStream.toString());
+    }
 }

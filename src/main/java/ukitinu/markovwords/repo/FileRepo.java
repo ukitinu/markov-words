@@ -156,6 +156,31 @@ public final class FileRepo implements Repo {
     }
 
     /**
+     * Checks whether the dictionary with the given name has grams of the given length.
+     *
+     * @param name name of the dictionary to check
+     * @param len  length of the grams.
+     * @return {@code true} if there is at least one {@code len}-gram, {@code false} otherwise.
+     */
+    @Override
+    public boolean hasGramMap(String name, int len) {
+        try {
+            if (len < 1) throw new IllegalArgumentException("gram length must be positive");
+
+            Path gramDir = FilePaths.getGramDir(dataPath, name, len);
+            if (Files.isDirectory(gramDir)) {
+                try (var entries = Files.list(gramDir)) {
+                    return entries.findFirst().isPresent();
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            LOG.error("Unable to check {}-grams of {}: {}", len, name, e.toString());
+            throw new DataException("Unable to check " + len + "-grams of " + name, e);
+        }
+    }
+
+    /**
      * Reads all the gram files of dictionary {@param name}, converts them to {@link Gram}
      * and then returns a map containing them, with their value as key.
      *
