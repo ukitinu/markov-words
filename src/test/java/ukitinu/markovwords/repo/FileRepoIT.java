@@ -80,6 +80,7 @@ class FileRepoIT {
         String name = "dict-name";
         Dict dict = assertDoesNotThrow(() -> repo.get(name));
         assertEquals(name, dict.name());
+        assertTrue(dict.desc().isEmpty());
         assertEquals(Set.of('a', 'b', 'c', '0', '1', '2', '\'', '.', '-', WORD_END), dict.alphabet());
     }
 
@@ -88,6 +89,7 @@ class FileRepoIT {
         String name = "del-dict";
         Dict dict = assertDoesNotThrow(() -> repo.get("." + name));
         assertEquals(name, dict.name());
+        assertEquals("DELETED!", dict.desc());
         assertEquals(Set.of('a', 'b', 'c', 'd', 'e', 'f', 'g', WORD_END), dict.alphabet());
     }
 

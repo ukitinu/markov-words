@@ -40,10 +40,11 @@ public class InfoCmd implements Callable<Integer> {
     }
 
     private void printDict(Dict dict) {
-        String alphabet = toPrintableString(dict.alphabet());
         printStream.println(dict.name());
-        printStream.println(alphabet);
+        if (!dict.desc().isEmpty()) printStream.println(dict.desc());
+
         if (verbose) {
+            printStream.println(toPrintableString(dict.alphabet()));
             printStream.println("1-grams: " + getGramKeys(1));
             printStream.println("2-grams: " + getGramKeys(2));
             printStream.println("3-grams: " + getGramKeys(3));

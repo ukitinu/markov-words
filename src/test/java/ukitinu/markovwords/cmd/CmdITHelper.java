@@ -5,7 +5,7 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.ByteArrayOutputStream;
 
-sealed abstract class CmdITHelper permits DeleteCmdIT, InfoCmdIT, ListCmdIT, RenameCmdIT,
+sealed abstract class CmdITHelper permits DeleteCmdIT, InfoCmdIT, ListCmdIT, UpdateCmdIT,
         RestoreCmdIT, CreateCmdIT, ReadCmdIT, WriteCmdIT {
     final String basePath = "./src/test/resources/dict_dir";
     final Repo repo = FileRepo.create(basePath);

@@ -14,11 +14,11 @@ class DataConverter {
     static final char GRAM_MAP_SEP = ';';
 
     /**
-     * Converts the dictionary in a string with the dict name on the first line, and the alphabet on the second.
+     * Converts the dictionary in a string with its values separated by {@link #NAME_SEP}.
      */
     String serialiseDict(Dict dict) {
         StringBuilder sb = new StringBuilder();
-        sb.append(dict.name()).append(NAME_SEP);
+        sb.append(dict.name()).append(NAME_SEP).append(dict.desc()).append(NAME_SEP);
         dict.alphabet().forEach(sb::append);
         return sb.toString();
     }
@@ -35,18 +35,22 @@ class DataConverter {
     }
 
     /**
-     * Reads the input, everything before {@link #NAME_SEP} is saved into the name, everything after into the alphabet.
+     * Reads the input, everything before the first {@link #NAME_SEP} is the name, before the second is the description,
+     * everything after goes into the alphabet.
      */
     Dict deserialiseDict(CharSequence cs) {
-        var pair = readSlice(cs, 0, NAME_SEP);
-        String name = pair.first();
+        var namePair = readSlice(cs, 0, NAME_SEP);
+        String name = namePair.first();
+
+        var descPair = readSlice(cs, namePair.second(), NAME_SEP);
+        String desc = descPair.first();
 
         Set<Character> alphabet = new HashSet<>();
-        for (int i = pair.second(); i < cs.length(); i++) {
+        for (int i = descPair.second(); i < cs.length(); i++) {
             alphabet.add(cs.charAt(i));
         }
 
-        return new Dict(name, alphabet);
+        return new Dict(name, desc, alphabet);
     }
 
     /**
