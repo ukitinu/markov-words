@@ -10,11 +10,18 @@ final class InfoCmdIT extends CmdITHelper {
     private final InfoCmd cmd = new InfoCmd(repo, new PrintStream(testStream));
 
     @Test
-    void call() {
+    void call_noDesc() {
         cmd.name = "dict-name";
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator()
-                        + "' - . 0 1 2 _ a b c" + System.lineSeparator(),
+        assertEquals("dict-name" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call() {
+        cmd.name = "dict-complete";
+        assertEquals(0, cmd.call());
+        assertEquals("dict-complete" + System.lineSeparator()
+                        + "A very good description" + System.lineSeparator(),
                 testStream.toString());
     }
 
@@ -37,6 +44,7 @@ final class InfoCmdIT extends CmdITHelper {
         cmd.verbose = true;
         assertEquals(0, cmd.call());
         assertEquals("dict-test" + System.lineSeparator()
+                        + "description:test" + System.lineSeparator()
                         + "_ a b c d" + System.lineSeparator()
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
@@ -58,7 +66,7 @@ final class InfoCmdIT extends CmdITHelper {
         cmd.name = ".del-dict";
         assertEquals(0, cmd.call());
         assertEquals("del-dict" + System.lineSeparator()
-                        + "_ a b c d e f g" + System.lineSeparator(),
+                        + "DELETED!" + System.lineSeparator(),
                 testStream.toString());
     }
 

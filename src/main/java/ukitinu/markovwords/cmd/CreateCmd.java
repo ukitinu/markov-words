@@ -21,11 +21,14 @@ public class CreateCmd implements Callable<Integer> {
         this.printStream = printStream;
     }
 
-    @Option(names = {"-a", "--alphabet"}, description = "Dictionary alphabet", required = true)
-    String alphabet;
-
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;
+
+    @Option(names = {"-d", "--desc"}, description = "Dictionary description", required = true)
+    String desc = "";
+
+    @Option(names = {"-a", "--alphabet"}, description = "Dictionary alphabet", required = true)
+    String alphabet;
 
     @Override
     public Integer call() {
@@ -34,7 +37,7 @@ public class CreateCmd implements Callable<Integer> {
             return 1;
         }
         try {
-            Dict dict = new Dict(name, AlphabetUtils.convertToSet(alphabet));
+            Dict dict = new Dict(name, desc, AlphabetUtils.convertToSet(alphabet));
             repo.upsert(dict, Map.of());
             printStream.println("New dictionary created: " + name);
             return 0;

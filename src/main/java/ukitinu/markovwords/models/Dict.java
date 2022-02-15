@@ -9,12 +9,12 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 public final class Dict {
     private final String name;
-    private final String description;
+    private final String desc;
     private final Set<Character> alphabet;
 
-    public Dict(String name, String description, Set<Character> alphabet) {
+    public Dict(String name, String desc, Set<Character> alphabet) {
         this.name = name;
-        this.description = description;
+        this.desc = desc;
         this.alphabet = new HashSet<>(alphabet);
         this.alphabet.add(WORD_END);
     }
@@ -28,7 +28,7 @@ public final class Dict {
     }
 
     public String desc() {
-        return description;
+        return desc;
     }
 
     public Set<Character> alphabet() {
