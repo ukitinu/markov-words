@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
@@ -14,6 +15,8 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "write", description = "Generates words out of the dictionary")
 public class WriteCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(WriteCmd.class);
+
     private final Repo repo;
     private final PrintStream printStream;
 

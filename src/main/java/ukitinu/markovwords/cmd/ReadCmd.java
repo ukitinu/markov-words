@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -17,6 +18,8 @@ import java.util.concurrent.Callable;
 
 @Command(name = "read", description = "Read input text and add it to the dictionary")
 public class ReadCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(ReadCmd.class);
+
     private final Repo repo;
     private final PrintStream printStream;
     private final Ingester ingester;

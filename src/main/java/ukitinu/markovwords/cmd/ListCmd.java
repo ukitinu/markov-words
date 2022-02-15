@@ -3,6 +3,7 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Couple;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 
 @Command(name = "list", aliases = {"ls"}, description = "List the dictionaries")
 public class ListCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(ListCmd.class);
+
     private final Repo repo;
     private final PrintStream printStream;
 

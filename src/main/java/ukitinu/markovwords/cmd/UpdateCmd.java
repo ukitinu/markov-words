@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
 
 @Command(name = "update", description = "Updates a dictionary")
 public class UpdateCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(UpdateCmd.class);
 
     private final Repo repo;
     private final PrintStream printStream;
