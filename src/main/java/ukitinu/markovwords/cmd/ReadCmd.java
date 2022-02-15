@@ -4,15 +4,14 @@ import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.Ingester;
+import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.readers.FileReader;
-import ukitinu.markovwords.readers.Reader;
-import ukitinu.markovwords.readers.StringReader;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -47,8 +46,8 @@ public class ReadCmd implements Callable<Integer> {
             Dict dict = repo.get(name);
             Map<String, Gram> gramMap = repo.getGramMap(dict.name());
 
-            if (input.text != null) processText(input.text, dict, gramMap, new StringReader());
-            else processText(input.file, dict, gramMap, new FileReader());
+            if (input.text != null) processText(input.text, dict, gramMap, s -> s);
+            else processText(input.file, dict, gramMap, s -> FsUtils.readFileSafe(Path.of(s)));
 
             repo.upsert(dict, gramMap);
 
@@ -63,6 +62,18 @@ public class ReadCmd implements Callable<Integer> {
     private void processText(String src, Dict dict, Map<String, Gram> gramMap, Reader reader) {
         String text = reader.read(src);
         ingester.ingest(text, gramMap, dict);
+    }
+
+    @FunctionalInterface
+    private interface Reader {
+        /**
+         * Reads the text contained in the source, returning an UTF-8 string.<br>
+         * Exceptions are logged and an empty string is returned, so that the process may continue as no-op.
+         *
+         * @param src source of the text.
+         * @return content read from the source.
+         */
+        String read(String src);
     }
 
 }

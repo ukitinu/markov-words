@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public final class FsUtils {
+    private static final Logger LOG = Logger.create(FsUtils.class);
+
     private FsUtils() {
         throw new IllegalStateException("non-instantiable");
     }
@@ -51,9 +53,26 @@ public final class FsUtils {
      * @param path file path.
      * @return file content, as UTF-8
      * @throws IOException if an error occurs whilst reading
+     * @see #readFileSafe(Path) for a version that logs IOExceptions and returns an empty string
      */
     public static String readFile(Path path) throws IOException {
         return Files.readString(path, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Reads the content of the file at {@param path}, with UTF-8 encoding.
+     *
+     * @param path file path.
+     * @return file content, as UTF-8
+     * @see #readFile(Path) for a throwing version of this method.
+     */
+    public static String readFileSafe(Path path) {
+        try {
+            return readFile(path);
+        } catch (IOException e) {
+            LOG.error("Unable to read {}: {}", path, e.getMessage());
+            return "";
+        }
     }
 
     /**
