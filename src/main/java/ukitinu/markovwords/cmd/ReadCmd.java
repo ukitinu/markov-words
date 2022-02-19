@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -17,6 +18,8 @@ import java.util.concurrent.Callable;
 
 @Command(name = "read", description = "Read input text and add it to the dictionary")
 public class ReadCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(ReadCmd.class);
+
     private final Repo repo;
     private final PrintStream printStream;
     private final Ingester ingester;
@@ -42,6 +45,7 @@ public class ReadCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("read -- name={} text={} file={}", name, input.text, input.file);
         try {
             Dict dict = repo.get(name);
             Map<String, Gram> gramMap = repo.getGramMap(dict.name());
@@ -52,9 +56,11 @@ public class ReadCmd implements Callable<Integer> {
             repo.upsert(dict, gramMap);
 
             printStream.println("Text read, dictionary " + name + " updated");
+            LOG.info("read -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            LOG.error("read -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

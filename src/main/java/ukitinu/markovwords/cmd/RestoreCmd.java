@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
@@ -10,6 +11,8 @@ import java.util.concurrent.Callable;
 
 @Command(name = "restore", description = "Restore a deleted dictionary")
 public class RestoreCmd implements Callable<Integer> {
+    private static final Logger LOG = Logger.create(RestoreCmd.class);
+
     private final Repo repo;
     private final PrintStream printStream;
 
@@ -23,16 +26,20 @@ public class RestoreCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("restore -- name={}", name);
         if (!repo.exists(name)) {
             printStream.println("Given dictionary does not exists: " + name);
+            LOG.warn("restore -- ko: given dictionary does not exists: {}", name);
             return 1;
         }
         try {
             repo.restore(name);
             printStream.println("Dictionary restored: " + name);
+            LOG.info("restore -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            LOG.error("restore -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

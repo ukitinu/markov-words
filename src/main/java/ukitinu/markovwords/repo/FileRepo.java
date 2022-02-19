@@ -85,7 +85,6 @@ public final class FileRepo implements Repo {
         } catch (NoSuchFileException e) {
             Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             if (Files.isDirectory(deletedPath)) {
-                LOG.error("Dict {} has been deleted", name);
                 throw new DataException("Dict has been deleted: " + name);
             } else {
                 LOG.error("Dict {} not found (either dir or .dat file)", name);
@@ -266,6 +265,7 @@ public final class FileRepo implements Repo {
             Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
             FsUtils.cpDir(dictDir, tmpDir);
         } catch (IOException e) {
+            LOG.error("Failed to create tmp dir {} for dict {}: {}", tmpDir, dict.name(), e.toString());
             throw new DataException(String.format("Failed to create %s: %s", tmpDir, e.getMessage()), e);
         }
     }
@@ -277,11 +277,12 @@ public final class FileRepo implements Repo {
      * @throws DataException if an error occurs while writing the file or creating the directory.
      */
     private void upsertDict(Dict dict) {
+        Path dictFile = FilePaths.getDictFile(dataPath, dict.name(), true);
         try {
-            Path dictFile = FilePaths.getDictFile(dataPath, dict.name(), true);
             String dictString = dataConverter.serialiseDict(dict);
             FsUtils.writeToFile(dictFile, dictString);
         } catch (IOException e) {
+            LOG.error("Failed to upsert dict {} data in {}: {}", dict.name(), dictFile, e.toString());
             throw new DataException(String.format("Failed to upsert dictionary %s: %s", dict.name(), e.getMessage()), e);
         }
     }
@@ -322,6 +323,7 @@ public final class FileRepo implements Repo {
                 if (!currentContent.equals(gramString)) FsUtils.writeToFile(gramPath, gramString);
             }
         } catch (IOException e) {
+            LOG.error("Failed to upsert gram {} in dict {}: {}", gram.getValue(), dictName, e.toString());
             throw new DataException(String.format("Failed to upsert gram %s: %s", gramPath, e.getMessage()), e);
         }
     }
@@ -338,6 +340,7 @@ public final class FileRepo implements Repo {
         try {
             FsUtils.moveAndReplace(tmpDir, dictDir);
         } catch (IOException e) {
+            LOG.error("Failed to replace {} with {}: {}", dictDir, tmpDir, e.toString());
             throw new DataException(String.format("Failed to replace %s with %s: %s", dictDir, tmpDir, e.getMessage()), e);
         }
     }
