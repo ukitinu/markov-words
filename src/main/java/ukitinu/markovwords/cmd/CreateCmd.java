@@ -35,17 +35,21 @@ public class CreateCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("create -- name={} desc={} alphabet={}", name, desc, alphabet);
         if (repo.exists(name)) {
             printStream.println("There is already a dictionary named " + name);
+            LOG.warn("create -- ko: there is already a dictionary named {}", name);
             return 1;
         }
         try {
             Dict dict = new Dict(name, desc, AlphabetUtils.convertToSet(alphabet));
             repo.upsert(dict, Map.of());
             printStream.println("New dictionary created: " + name);
+            LOG.info("create -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            LOG.error("create -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

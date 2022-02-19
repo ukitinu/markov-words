@@ -30,14 +30,17 @@ public class DeleteCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("delete -- name={} permanent={}", name, permanent);
         try {
             repo.delete(name, permanent);
             printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
+            LOG.info("delete -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
             if (e.getMessage().contains("deleted state")) printStream.println(DEL_PERM_HINT);
             else if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to " + DEL_PERM_HINT);
+            LOG.error("delete -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

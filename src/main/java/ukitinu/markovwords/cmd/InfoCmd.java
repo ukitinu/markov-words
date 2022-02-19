@@ -31,13 +31,16 @@ public class InfoCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("info -- name={} verbose={}", name, verbose);
         try {
             var dict = repo.get(name);
             printDict(dict);
+            LOG.info("info -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
             if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to refer to it");
+            LOG.error("info -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

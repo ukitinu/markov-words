@@ -35,15 +35,18 @@ public class ListCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("list -- name={} all={} deleted={}", name, listAll, listDeleted);
         var lists = repo.listAll();
         Collection<String> names = getNameList(lists);
 
         if (names.isEmpty()) {
             printStream.println("No results found");
+            LOG.warn("list -- ko: no results");
             return 1;
         }
 
         names.forEach(printStream::println);
+        LOG.info("list -- ok");
         return 0;
     }
 

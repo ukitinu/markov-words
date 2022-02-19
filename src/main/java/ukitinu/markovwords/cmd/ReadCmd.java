@@ -45,6 +45,7 @@ public class ReadCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("read -- name={} text={} file={}", name, input.text, input.file);
         try {
             Dict dict = repo.get(name);
             Map<String, Gram> gramMap = repo.getGramMap(dict.name());
@@ -55,9 +56,11 @@ public class ReadCmd implements Callable<Integer> {
             repo.upsert(dict, gramMap);
 
             printStream.println("Text read, dictionary " + name + " updated");
+            LOG.info("read -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            LOG.error("read -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }

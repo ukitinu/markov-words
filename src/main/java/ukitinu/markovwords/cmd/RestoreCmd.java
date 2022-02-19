@@ -26,16 +26,20 @@ public class RestoreCmd implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LOG.info("restore -- name={}", name);
         if (!repo.exists(name)) {
             printStream.println("Given dictionary does not exists: " + name);
+            LOG.warn("restore -- ko: given dictionary does not exists: {}", name);
             return 1;
         }
         try {
             repo.restore(name);
             printStream.println("Dictionary restored: " + name);
+            LOG.info("restore -- ok");
             return 0;
         } catch (DataException e) {
             printStream.println(e.getMessage());
+            LOG.error("restore -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
