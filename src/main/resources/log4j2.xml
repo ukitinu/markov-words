@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <RollingFile
+                name="rollingFile"
+                fileName="./logs/markov-words.log"
+                filePattern="./logs/markov-words.log.%d{yyyy-MM-dd}.%i.gz"
+                ignoreExceptions="false">
+            <PatternLayout pattern="%d{ISO8601} : %-5level : %-10c{1} : %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="4 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="rollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
