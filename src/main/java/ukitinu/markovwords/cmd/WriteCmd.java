@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -9,27 +10,22 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "write", description = "Generates words out of the dictionary")
-public class WriteCmd implements Callable<Integer> {
+public class WriteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public WriteCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public WriteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth")
-    int depth = 2; //TODO config = MAX-1
+    int depth = Property.WRITE_DEPTH.num();
 
     @Option(names = {"--num"}, description = "Number of words to generate")
-    int num = 1;
+    int num = Property.WRITE_NUM.num();
 
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;
@@ -41,7 +37,7 @@ public class WriteCmd implements Callable<Integer> {
             validate();
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("write -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -57,7 +53,7 @@ public class WriteCmd implements Callable<Integer> {
         var gramMap = repo.getGramMap(name);
         checkGramMap(gramMap);
 
-        for (int i = 0; i < num; i++) printStream.println(generate(gramMap));
+        for (int i = 0; i < num; i++) outStream.println(generate(gramMap));
 
         LOG.info("write -- ok");
         return 0;

@@ -6,18 +6,13 @@ import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
-import java.util.concurrent.Callable;
 
 @Command(name = "restore", description = "Restore a deleted dictionary")
-public class RestoreCmd implements Callable<Integer> {
+public class RestoreCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(RestoreCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public RestoreCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public RestoreCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-n", "--name"}, description = "Deleted dictionary name", required = true)
@@ -30,7 +25,7 @@ public class RestoreCmd implements Callable<Integer> {
             validate();
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("restore -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -44,7 +39,7 @@ public class RestoreCmd implements Callable<Integer> {
 
     private int exec() {
         repo.restore(name);
-        printStream.println("Dictionary restored: " + name);
+        outStream.println("Dictionary restored: " + name);
         LOG.info("restore -- ok");
         return 0;
     }

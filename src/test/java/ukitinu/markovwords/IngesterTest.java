@@ -12,9 +12,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
-class IngesterImplTest {
+class IngesterTest {
 
-    private final Ingester ingester = new IngesterImpl();
+    private final Ingester ingester = new Ingester();
     private final Dict dict = new Dict("test", Set.of('h', 'e', 'l', 'o'));
     private final String text = WORD_END + "hello";
     private Map<String, Gram> gramMap;

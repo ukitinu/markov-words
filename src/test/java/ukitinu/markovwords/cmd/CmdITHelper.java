@@ -9,5 +9,6 @@ sealed abstract class CmdITHelper permits DeleteCmdIT, InfoCmdIT, ListCmdIT, Upd
         RestoreCmdIT, CreateCmdIT, ReadCmdIT, WriteCmdIT {
     final String basePath = "./src/test/resources/dict_dir";
     final Repo repo = FileRepo.create(basePath);
-    final ByteArrayOutputStream testStream = new ByteArrayOutputStream();
+    final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
 }

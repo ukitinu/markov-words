@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IngesterImplIT {
+class IngesterIT {
 
     private final Dict dict = new Dict("test", AlphabetUtils.getAsciiLetters());
     private Map<String, Gram> gramMap;
@@ -23,7 +23,7 @@ class IngesterImplIT {
              in the alphabet is desired.
              THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.""";
 
-    private final Ingester ingester = new IngesterImpl();
+    private final Ingester ingester = new Ingester();
 
     @BeforeEach
     void setUp() {

@@ -13,19 +13,15 @@ import ukitinu.markovwords.repo.Repo;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 @Command(name = "read", description = "Read input text and add it to the dictionary")
-public class ReadCmd implements Callable<Integer> {
+public class ReadCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(ReadCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
     private final Ingester ingester;
 
-    public ReadCmd(Repo repo, PrintStream printStream, Ingester ingester) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public ReadCmd(Repo repo, PrintStream outStream, PrintStream errStream, Ingester ingester) {
+        super(repo, outStream, errStream);
         this.ingester = ingester;
     }
 
@@ -48,7 +44,7 @@ public class ReadCmd implements Callable<Integer> {
         try {
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("read -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -63,7 +59,7 @@ public class ReadCmd implements Callable<Integer> {
 
         repo.upsert(dict, gramMap);
 
-        printStream.println("Text read, dictionary " + name + " updated");
+        outStream.println("Text read, dictionary " + name + " updated");
         LOG.info("read -- ok");
         return 0;
     }

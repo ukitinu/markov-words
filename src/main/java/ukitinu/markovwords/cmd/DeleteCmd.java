@@ -6,19 +6,14 @@ import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
-import java.util.concurrent.Callable;
 
 @Command(name = "delete", description = "Delete a dictionary")
-public class DeleteCmd implements Callable<Integer> {
+public class DeleteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(DeleteCmd.class);
     static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public DeleteCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public DeleteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
@@ -33,9 +28,9 @@ public class DeleteCmd implements Callable<Integer> {
         try {
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted state")) printStream.println(DEL_PERM_HINT);
-            else if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to " + DEL_PERM_HINT);
+            errStream.println(e.getMessage());
+            if (e.getMessage().contains("deleted state")) errStream.println(DEL_PERM_HINT);
+            else if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to " + DEL_PERM_HINT);
             LOG.error("delete -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -43,7 +38,7 @@ public class DeleteCmd implements Callable<Integer> {
 
     private int exec() {
         repo.delete(name, permanent);
-        printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
+        outStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
         LOG.info("delete -- ok");
         return 0;
     }
