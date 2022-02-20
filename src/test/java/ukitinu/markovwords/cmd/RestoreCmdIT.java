@@ -31,7 +31,7 @@ final class RestoreCmdIT extends CmdITHelper {
     void call_notExisting() {
         cmd.name = "i-do-not-exist";
         assertEquals(1, cmd.call());
-        assertEquals("Given dictionary does not exists: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("given dictionary does not exists: " + cmd.name + System.lineSeparator(), testStream.toString());
     }
 
     @Test

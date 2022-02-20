@@ -3,7 +3,6 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
-import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
@@ -27,21 +26,27 @@ public class RestoreCmd implements Callable<Integer> {
     @Override
     public Integer call() {
         LOG.info("restore -- name={}", name);
-        if (!repo.exists(name)) {
-            printStream.println("Given dictionary does not exists: " + name);
-            LOG.warn("restore -- ko: given dictionary does not exists: {}", name);
-            return 1;
-        }
         try {
-            repo.restore(name);
-            printStream.println("Dictionary restored: " + name);
-            LOG.info("restore -- ok");
-            return 0;
-        } catch (DataException e) {
+            validate();
+            return exec();
+        } catch (Exception e) {
             printStream.println(e.getMessage());
             LOG.error("restore -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
+    }
+
+    private void validate() {
+        if (!repo.exists(name)) {
+            throw new IllegalArgumentException("given dictionary does not exists: " + name);
+        }
+    }
+
+    private int exec() {
+        repo.restore(name);
+        printStream.println("Dictionary restored: " + name);
+        LOG.info("restore -- ok");
+        return 0;
     }
 
 }

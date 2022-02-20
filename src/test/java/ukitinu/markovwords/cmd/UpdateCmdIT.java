@@ -95,7 +95,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newName = "dict-name";
         assertEquals(1, cmd.call());
-        assertEquals("New name " + cmd.newName + " is already in use" + System.lineSeparator(), testStream.toString());
+        assertEquals("new name " + cmd.newName + " is already in use" + System.lineSeparator(), testStream.toString());
     }
 
     @Test
@@ -110,8 +110,24 @@ final class UpdateCmdIT extends CmdITHelper {
     void call_noOptions() {
         cmd.name = "dict-test";
         assertEquals(1, cmd.call());
-        assertEquals("Missing option: at least one of --new-name or --new-desc must be specified" + System.lineSeparator(),
+        assertEquals("missing option: at least one of --new-name or --new-desc must be specified" + System.lineSeparator(),
                 testStream.toString());
+    }
+
+    @Test
+    void call_invalidName() {
+        cmd.name = "old-name";
+        cmd.newName = "_invalid";
+        assertEquals(1, cmd.call());
+        assertEquals("dict name must consist of english letters, digits and dashes and must start with a letter" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_invalidDesc() {
+        cmd.name = "old-name";
+        cmd.newDesc = "invalid\n";
+        assertEquals(1, cmd.call());
+        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(), testStream.toString());
     }
 
 }

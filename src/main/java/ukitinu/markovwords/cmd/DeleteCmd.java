@@ -3,7 +3,6 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
-import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
@@ -32,17 +31,21 @@ public class DeleteCmd implements Callable<Integer> {
     public Integer call() {
         LOG.info("delete -- name={} permanent={}", name, permanent);
         try {
-            repo.delete(name, permanent);
-            printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
-            LOG.info("delete -- ok");
-            return 0;
-        } catch (DataException e) {
+            return exec();
+        } catch (Exception e) {
             printStream.println(e.getMessage());
             if (e.getMessage().contains("deleted state")) printStream.println(DEL_PERM_HINT);
             else if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to " + DEL_PERM_HINT);
             LOG.error("delete -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
+    }
+
+    private int exec() {
+        repo.delete(name, permanent);
+        printStream.println(permanent ? "Dictionary deleted permanently: " + name : "Dictionary deleted: " + name);
+        LOG.info("delete -- ok");
+        return 0;
     }
 
 }

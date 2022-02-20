@@ -36,6 +36,16 @@ public class ListCmd implements Callable<Integer> {
     @Override
     public Integer call() {
         LOG.info("list -- name={} all={} deleted={}", name, listAll, listDeleted);
+        try {
+            return exec();
+        } catch (Exception e) {
+            printStream.println(e.getMessage());
+            LOG.error("list -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
+            return 1;
+        }
+    }
+
+    private int exec() {
         var lists = repo.listAll();
         Collection<String> names = getNameList(lists);
 

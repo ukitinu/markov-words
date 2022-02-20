@@ -3,9 +3,9 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.AlphabetUtils;
+import ukitinu.markovwords.Validator;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
-import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
@@ -36,22 +36,32 @@ public class CreateCmd implements Callable<Integer> {
     @Override
     public Integer call() {
         LOG.info("create -- name={} desc={} alphabet={}", name, desc, alphabet);
-        if (repo.exists(name)) {
-            printStream.println("There is already a dictionary named " + name);
-            LOG.warn("create -- ko: there is already a dictionary named {}", name);
-            return 1;
-        }
         try {
-            Dict dict = new Dict(name, desc, AlphabetUtils.convertToSet(alphabet));
-            repo.upsert(dict, Map.of());
-            printStream.println("New dictionary created: " + name);
-            LOG.info("create -- ok");
-            return 0;
-        } catch (DataException e) {
+            validate();
+            return exec();
+        } catch (Exception e) {
             printStream.println(e.getMessage());
             LOG.error("create -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
+    }
+
+    private void validate() {
+        Validator.validateDictName(name);
+        Validator.validateDictDesc(desc);
+        Validator.validateDictAlphabet(alphabet);
+
+        if (repo.exists(name)) {
+            throw new IllegalArgumentException("there is already a dictionary named " + name);
+        }
+    }
+
+    private int exec() {
+        Dict dict = new Dict(name, desc, AlphabetUtils.convertToSet(alphabet));
+        repo.upsert(dict, Map.of());
+        printStream.println("New dictionary created: " + name);
+        LOG.info("create -- ok");
+        return 0;
     }
 
 }

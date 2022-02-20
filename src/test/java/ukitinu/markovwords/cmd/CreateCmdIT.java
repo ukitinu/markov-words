@@ -57,7 +57,32 @@ final class CreateCmdIT extends CmdITHelper {
     @Test
     void call_alreadyExists() {
         cmd.name = "dict-name";
+        cmd.alphabet = "abc";
         assertEquals(1, cmd.call());
-        assertEquals("There is already a dictionary named " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("there is already a dictionary named " + cmd.name + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_invalidName() {
+        cmd.name = "";
+        assertEquals(1, cmd.call());
+        assertEquals("dict name must not be empty" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_invalidDesc() {
+        cmd.name = "my-name";
+        cmd.desc = "\n";
+        assertEquals(1, cmd.call());
+        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(), testStream.toString());
+    }
+
+    @Test
+    void call_invalidAlphabet() {
+        cmd.name = "my-name";
+        cmd.alphabet = "abc" + WORD_END;
+        assertEquals(1, cmd.call());
+        assertEquals("invalid alphabet:" + System.lineSeparator()
+                + "invalid unicode at position 3 with hex value 5f" + System.lineSeparator(), testStream.toString());
     }
 }

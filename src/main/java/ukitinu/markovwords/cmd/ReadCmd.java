@@ -8,7 +8,6 @@ import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
@@ -47,22 +46,26 @@ public class ReadCmd implements Callable<Integer> {
     public Integer call() {
         LOG.info("read -- name={} text={} file={}", name, input.text, input.file);
         try {
-            Dict dict = repo.get(name);
-            Map<String, Gram> gramMap = repo.getGramMap(dict.name());
-
-            if (input.text != null) processText(input.text, dict, gramMap, s -> s);
-            else processText(input.file, dict, gramMap, s -> FsUtils.readFileSafe(Path.of(s)));
-
-            repo.upsert(dict, gramMap);
-
-            printStream.println("Text read, dictionary " + name + " updated");
-            LOG.info("read -- ok");
-            return 0;
-        } catch (DataException e) {
+            return exec();
+        } catch (Exception e) {
             printStream.println(e.getMessage());
             LOG.error("read -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
+    }
+
+    private int exec() {
+        Dict dict = repo.get(name);
+        Map<String, Gram> gramMap = repo.getGramMap(dict.name());
+
+        if (input.text != null) processText(input.text, dict, gramMap, s -> s);
+        else processText(input.file, dict, gramMap, s -> FsUtils.readFileSafe(Path.of(s)));
+
+        repo.upsert(dict, gramMap);
+
+        printStream.println("Text read, dictionary " + name + " updated");
+        LOG.info("read -- ok");
+        return 0;
     }
 
     private void processText(String src, Dict dict, Map<String, Gram> gramMap, Reader reader) {

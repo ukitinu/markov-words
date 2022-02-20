@@ -37,24 +37,30 @@ public class WriteCmd implements Callable<Integer> {
     @Override
     public Integer call() {
         LOG.info("write -- name={} num={} depth={}", name, num, depth);
-        if (!repo.exists(name)) {
-            printStream.println("Dict not found: " + name);
-            LOG.warn("write -- ko: dict not found: {}", name);
-            return 1;
-        }
         try {
-            var gramMap = repo.getGramMap(name);
-            checkGramMap(gramMap);
-
-            for (int i = 0; i < num; i++) printStream.println(generate(gramMap));
-
-            LOG.info("write -- ok");
-            return 0;
-        } catch (DataException e) {
+            validate();
+            return exec();
+        } catch (Exception e) {
             printStream.println(e.getMessage());
             LOG.error("write -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
+    }
+
+    private void validate() {
+        if (!repo.exists(name)) {
+            throw new IllegalArgumentException("dict not found: " + name);
+        }
+    }
+
+    private int exec() {
+        var gramMap = repo.getGramMap(name);
+        checkGramMap(gramMap);
+
+        for (int i = 0; i < num; i++) printStream.println(generate(gramMap));
+
+        LOG.info("write -- ok");
+        return 0;
     }
 
     private void checkGramMap(Map<String, Gram> gramMap) {

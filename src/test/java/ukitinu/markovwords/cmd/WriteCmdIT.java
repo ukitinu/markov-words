@@ -37,7 +37,7 @@ final class WriteCmdIT extends CmdITHelper {
     void call_notExists() {
         cmd.name = "i-do-no-exist";
         assertEquals(1, cmd.call());
-        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
     }
 
     @Test
