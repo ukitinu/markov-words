@@ -9,18 +9,13 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
 @Command(name = "info", description = "Shows information about a given dictionary")
-public class InfoCmd implements Callable<Integer> {
+public class InfoCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(InfoCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public InfoCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public InfoCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose output")
@@ -35,8 +30,8 @@ public class InfoCmd implements Callable<Integer> {
         try {
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted")) printStream.println("Use ." + name + " to refer to it");
+            errStream.println(e.getMessage());
+            if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to refer to it");
             LOG.error("info -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -50,14 +45,14 @@ public class InfoCmd implements Callable<Integer> {
     }
 
     private void printDict(Dict dict) {
-        printStream.println(dict.name());
-        if (!dict.desc().isEmpty()) printStream.println(dict.desc());
+        outStream.println(dict.name());
+        if (!dict.desc().isEmpty()) outStream.println(dict.desc());
 
         if (verbose) {
-            printStream.println(toPrintableString(dict.alphabet()));
-            printStream.println("1-grams: " + getGramKeys(1));
-            printStream.println("2-grams: " + getGramKeys(2));
-            printStream.println("3-grams: " + getGramKeys(3));
+            outStream.println(toPrintableString(dict.alphabet()));
+            outStream.println("1-grams: " + getGramKeys(1));
+            outStream.println("2-grams: " + getGramKeys(2));
+            outStream.println("3-grams: " + getGramKeys(3));
         }
     }
 

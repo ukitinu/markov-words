@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class RestoreCmdIT extends CmdITHelper {
-    private final RestoreCmd cmd = new RestoreCmd(repo, new PrintStream(testStream));
+    private final RestoreCmd cmd = new RestoreCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call() throws IOException {
@@ -19,7 +19,7 @@ final class RestoreCmdIT extends CmdITHelper {
         cmd.name = "." + name;
         try {
             assertEquals(0, cmd.call());
-            assertEquals("Dictionary restored: " + cmd.name + System.lineSeparator(), testStream.toString());
+            assertEquals("Dictionary restored: " + cmd.name + System.lineSeparator(), outStream.toString());
             assertTrue(repo.exists(name));
         } finally {
             FsUtils.cpDir(Path.of(basePath, name), Path.of(basePath, cmd.name));
@@ -31,13 +31,13 @@ final class RestoreCmdIT extends CmdITHelper {
     void call_notExisting() {
         cmd.name = "i-do-not-exist";
         assertEquals(1, cmd.call());
-        assertEquals("given dictionary does not exists: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("given dictionary does not exists: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 
     @Test
     void call_notDeleted() {
         cmd.name = "dict-name";
         assertEquals(1, cmd.call());
-        assertEquals("Dict " + cmd.name + " is not in deleted state" + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict " + cmd.name + " is not in deleted state" + System.lineSeparator(), errStream.toString());
     }
 }

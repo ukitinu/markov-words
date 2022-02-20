@@ -7,7 +7,7 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ListCmdIT extends CmdITHelper {
-    private final ListCmd cmd = new ListCmd(repo, new PrintStream(testStream));
+    private final ListCmd cmd = new ListCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call() {
@@ -16,7 +16,7 @@ final class ListCmdIT extends CmdITHelper {
                         + "dict-complete" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -26,7 +26,7 @@ final class ListCmdIT extends CmdITHelper {
         assertEquals("dict-complete" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator()
                         + "dict-test" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -35,7 +35,7 @@ final class ListCmdIT extends CmdITHelper {
         assertEquals(0, cmd.call());
         assertEquals("bad-dict-dir" + System.lineSeparator()
                         + "dict-name" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -43,7 +43,7 @@ final class ListCmdIT extends CmdITHelper {
         cmd.listDeleted = true;
         assertEquals(0, cmd.call());
         assertEquals(".del-dict" + System.lineSeparator()
-                + ".restore-test" + System.lineSeparator(), testStream.toString());
+                + ".restore-test" + System.lineSeparator(), outStream.toString());
     }
 
     @Test
@@ -56,7 +56,7 @@ final class ListCmdIT extends CmdITHelper {
                         + "dict-test" + System.lineSeparator()
                         + ".del-dict" + System.lineSeparator()
                         + ".restore-test" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -64,6 +64,6 @@ final class ListCmdIT extends CmdITHelper {
         cmd.name = "zzzzzzz";
         cmd.listAll = true;
         assertEquals(1, cmd.call());
-        assertEquals("No results found" + System.lineSeparator(), testStream.toString());
+        assertEquals("No results found" + System.lineSeparator(), errStream.toString());
     }
 }

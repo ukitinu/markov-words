@@ -15,14 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class DeleteCmdIT extends CmdITHelper {
-    private final DeleteCmd cmd = new DeleteCmd(repo, new PrintStream(testStream));
+    private final DeleteCmd cmd = new DeleteCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call() throws IOException {
         try {
             cmd.name = "dict-name";
             assertEquals(0, cmd.call());
-            assertEquals("Dictionary deleted: " + cmd.name + System.lineSeparator(), testStream.toString());
+            assertEquals("Dictionary deleted: " + cmd.name + System.lineSeparator(), outStream.toString());
             assertTrue(Files.exists(Path.of(basePath + "/." + cmd.name)));
         } finally {
             FsUtils.cpDir(Path.of(basePath, "." + cmd.name), Path.of(basePath, cmd.name));
@@ -34,7 +34,7 @@ final class DeleteCmdIT extends CmdITHelper {
     void call_notFound() {
         cmd.name = "not-found";
         assertEquals(1, cmd.call());
-        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 
     @Test
@@ -43,7 +43,7 @@ final class DeleteCmdIT extends CmdITHelper {
         assertEquals(1, cmd.call());
         assertEquals("Dict " + cmd.name + " is already in deleted state" + System.lineSeparator()
                         + DeleteCmd.DEL_PERM_HINT + System.lineSeparator(),
-                testStream.toString());
+                errStream.toString());
     }
 
     @Test
@@ -52,7 +52,7 @@ final class DeleteCmdIT extends CmdITHelper {
         assertEquals(1, cmd.call());
         assertEquals("Dict has been deleted: " + cmd.name + System.lineSeparator()
                         + "Use ." + cmd.name + " to " + DeleteCmd.DEL_PERM_HINT + System.lineSeparator(),
-                testStream.toString());
+                errStream.toString());
     }
 
     @Test
@@ -63,7 +63,7 @@ final class DeleteCmdIT extends CmdITHelper {
             repo.upsert(new Dict(cmd.name, Set.of()), Map.of());
             assertTrue(repo.exists(cmd.name));
             assertEquals(0, cmd.call());
-            assertEquals("Dictionary deleted permanently: " + cmd.name + System.lineSeparator(), testStream.toString());
+            assertEquals("Dictionary deleted permanently: " + cmd.name + System.lineSeparator(), outStream.toString());
             assertTrue(Files.notExists(Path.of(basePath + "/" + cmd.name)));
             assertTrue(Files.notExists(Path.of(basePath + "/." + cmd.name)));
         } finally {
@@ -83,7 +83,7 @@ final class DeleteCmdIT extends CmdITHelper {
 
             assertTrue(repo.exists(cmd.name));
             assertEquals(0, cmd.call());
-            assertEquals("Dictionary deleted permanently: " + cmd.name + System.lineSeparator(), testStream.toString());
+            assertEquals("Dictionary deleted permanently: " + cmd.name + System.lineSeparator(), outStream.toString());
             assertTrue(Files.notExists(Path.of(basePath + "/" + cmd.name)));
         } finally {
             FsUtils.rmDir(Path.of(basePath + "/" + cmd.name));

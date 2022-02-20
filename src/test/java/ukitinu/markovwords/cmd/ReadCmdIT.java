@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 final class ReadCmdIT extends CmdITHelper {
-    private final ReadCmd cmd = new ReadCmd(repo, new PrintStream(testStream), new Ingester());
+    private final ReadCmd cmd = new ReadCmd(repo, new PrintStream(outStream), new PrintStream(errStream), new Ingester());
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ final class ReadCmdIT extends CmdITHelper {
             assertFalse(gramMap.containsKey(String.valueOf(WORD_END)));
 
             assertEquals(0, cmd.call());
-            assertEquals("Text read, dictionary " + cmd.name + " updated" + System.lineSeparator(), testStream.toString());
+            assertEquals("Text read, dictionary " + cmd.name + " updated" + System.lineSeparator(), outStream.toString());
 
             gramMap = repo.getGramMap(cmd.name);
             assertTrue(gramMap.containsKey(cmd.input.text));
@@ -57,7 +57,7 @@ final class ReadCmdIT extends CmdITHelper {
             assertFalse(gramMap.containsKey(String.valueOf(WORD_END)));
 
             assertEquals(0, cmd.call());
-            assertEquals("Text read, dictionary " + cmd.name + " updated" + System.lineSeparator(), testStream.toString());
+            assertEquals("Text read, dictionary " + cmd.name + " updated" + System.lineSeparator(), outStream.toString());
 
             gramMap = repo.getGramMap(cmd.name);
             assertTrue(gramMap.containsKey(inputContent));
@@ -74,6 +74,6 @@ final class ReadCmdIT extends CmdITHelper {
         cmd.name = "i-do-no-exist";
         cmd.input.text = "abc";
         assertEquals(1, cmd.call());
-        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 }

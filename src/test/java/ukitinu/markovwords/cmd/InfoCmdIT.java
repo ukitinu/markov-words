@@ -7,13 +7,13 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class InfoCmdIT extends CmdITHelper {
-    private final InfoCmd cmd = new InfoCmd(repo, new PrintStream(testStream));
+    private final InfoCmd cmd = new InfoCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call_noDesc() {
         cmd.name = "dict-name";
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator(), testStream.toString());
+        assertEquals("dict-name" + System.lineSeparator(), outStream.toString());
     }
 
     @Test
@@ -22,7 +22,7 @@ final class InfoCmdIT extends CmdITHelper {
         assertEquals(0, cmd.call());
         assertEquals("dict-complete" + System.lineSeparator()
                         + "A very good description" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -35,7 +35,7 @@ final class InfoCmdIT extends CmdITHelper {
                         + "1-grams: " + System.lineSeparator()
                         + "2-grams: " + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -49,7 +49,7 @@ final class InfoCmdIT extends CmdITHelper {
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
@@ -58,7 +58,7 @@ final class InfoCmdIT extends CmdITHelper {
         assertEquals(1, cmd.call());
         assertEquals("Dict has been deleted: " + cmd.name + System.lineSeparator()
                         + "Use ." + cmd.name + " to refer to it" + System.lineSeparator(),
-                testStream.toString());
+                errStream.toString());
     }
 
     @Test
@@ -67,13 +67,13 @@ final class InfoCmdIT extends CmdITHelper {
         assertEquals(0, cmd.call());
         assertEquals("del-dict" + System.lineSeparator()
                         + "DELETED!" + System.lineSeparator(),
-                testStream.toString());
+                outStream.toString());
     }
 
     @Test
     void call_notFound() {
         cmd.name = "i-do-not-exist";
         assertEquals(1, cmd.call());
-        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 }

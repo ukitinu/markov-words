@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 final class UpdateCmdIT extends CmdITHelper {
-    private final UpdateCmd cmd = new UpdateCmd(repo, new PrintStream(testStream));
+    private final UpdateCmd cmd = new UpdateCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call_changeName() throws IOException {
@@ -27,7 +27,7 @@ final class UpdateCmdIT extends CmdITHelper {
 
             assertEquals("Dictionary updated" + System.lineSeparator()
                             + "name: " + cmd.name + " -> " + cmd.newName + System.lineSeparator(),
-                    testStream.toString());
+                    outStream.toString());
 
             assertEquals(new Dict(cmd.newName, Set.of('a', 'b', 'c', 'd')), repo.get(cmd.newName));
             assertEquals(3, repo.getGramMap(cmd.newName).size());
@@ -53,7 +53,7 @@ final class UpdateCmdIT extends CmdITHelper {
 
             assertEquals("Dictionary updated" + System.lineSeparator()
                             + "description: description:test -> " + cmd.newDesc + System.lineSeparator(),
-                    testStream.toString());
+                    outStream.toString());
         } finally {
             FsUtils.rmDir(Path.of(basePath, cmd.name));
             FsUtils.cpDir(Path.of(basePath, cmd.name + ".backup"), Path.of(basePath, cmd.name));
@@ -76,7 +76,7 @@ final class UpdateCmdIT extends CmdITHelper {
             assertEquals("Dictionary updated" + System.lineSeparator()
                             + "name: " + cmd.name + " -> " + cmd.newName + System.lineSeparator()
                             + "description: description:test -> " + cmd.newDesc + System.lineSeparator(),
-                    testStream.toString());
+                    outStream.toString());
 
             assertEquals(new Dict(cmd.newName, Set.of('a', 'b', 'c', 'd')), repo.get(cmd.newName));
             assertEquals(cmd.newDesc, repo.get(cmd.newName).desc());
@@ -95,7 +95,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newName = "dict-name";
         assertEquals(1, cmd.call());
-        assertEquals("new name " + cmd.newName + " is already in use" + System.lineSeparator(), testStream.toString());
+        assertEquals("new name " + cmd.newName + " is already in use" + System.lineSeparator(), errStream.toString());
     }
 
     @Test
@@ -103,7 +103,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newName = "new-name";
         assertEquals(1, cmd.call());
-        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("Dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 
     @Test
@@ -111,7 +111,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "dict-test";
         assertEquals(1, cmd.call());
         assertEquals("missing option: at least one of --new-name or --new-desc must be specified" + System.lineSeparator(),
-                testStream.toString());
+                errStream.toString());
     }
 
     @Test
@@ -119,7 +119,8 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newName = "_invalid";
         assertEquals(1, cmd.call());
-        assertEquals("dict name must consist of english letters, digits and dashes and must start with a letter" + System.lineSeparator(), testStream.toString());
+        assertEquals("dict name must consist of english letters, digits and dashes and must start with a letter" + System.lineSeparator(),
+                errStream.toString());
     }
 
     @Test
@@ -127,7 +128,8 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newDesc = "invalid\n";
         assertEquals(1, cmd.call());
-        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(), testStream.toString());
+        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(),
+                errStream.toString());
     }
 
 }

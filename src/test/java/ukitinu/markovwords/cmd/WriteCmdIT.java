@@ -9,15 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 final class WriteCmdIT extends CmdITHelper {
-    private final WriteCmd cmd = new WriteCmd(repo, new PrintStream(testStream));
+    private final WriteCmd cmd = new WriteCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
 
     @Test
     void call() {
         cmd.name = "dict-complete";
         assertEquals(0, cmd.call());
-        assertEquals(1, testStream.toString().split(System.lineSeparator()).length);
-        assertFalse(testStream.toString().contains(String.valueOf(WORD_END)));
-        assertFalse(testStream.toString().isBlank());
+        assertEquals(1, outStream.toString().split(System.lineSeparator()).length);
+        assertFalse(outStream.toString().contains(String.valueOf(WORD_END)));
+        assertFalse(outStream.toString().isBlank());
     }
 
     @Test
@@ -25,7 +25,7 @@ final class WriteCmdIT extends CmdITHelper {
         cmd.name = "dict-complete";
         cmd.num = 5;
         assertEquals(0, cmd.call());
-        String[] words = testStream.toString().split(System.lineSeparator());
+        String[] words = outStream.toString().split(System.lineSeparator());
         assertEquals(cmd.num, words.length);
         for (String word : words) {
             assertFalse(word.contains(String.valueOf(WORD_END)));
@@ -37,21 +37,21 @@ final class WriteCmdIT extends CmdITHelper {
     void call_notExists() {
         cmd.name = "i-do-no-exist";
         assertEquals(1, cmd.call());
-        assertEquals("dict not found: " + cmd.name + System.lineSeparator(), testStream.toString());
+        assertEquals("dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
     }
 
     @Test
     void call_empty() {
         cmd.name = "dict-name";
         assertEquals(1, cmd.call());
-        assertEquals("No grams in the dictionary" + System.lineSeparator(), testStream.toString());
+        assertEquals("No grams in the dictionary" + System.lineSeparator(), errStream.toString());
     }
 
     @Test
     void call_wordEnd() {
         cmd.name = "dict-test";
         assertEquals(1, cmd.call());
-        assertEquals("Missing WORD_END gram" + System.lineSeparator(), testStream.toString());
+        assertEquals("Missing WORD_END gram" + System.lineSeparator(), errStream.toString());
     }
 
     @Test
@@ -59,6 +59,6 @@ final class WriteCmdIT extends CmdITHelper {
         cmd.name = "dict-complete";
         cmd.depth = 3;
         assertEquals(1, cmd.call());
-        assertEquals("Missing 3-grams" + System.lineSeparator(), testStream.toString());
+        assertEquals("Missing 3-grams" + System.lineSeparator(), errStream.toString());
     }
 }

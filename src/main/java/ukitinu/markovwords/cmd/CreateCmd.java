@@ -10,18 +10,13 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 @Command(name = "create", description = "Create a dictionary")
-public class CreateCmd implements Callable<Integer> {
+public class CreateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(CreateCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public CreateCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public CreateCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
@@ -40,7 +35,7 @@ public class CreateCmd implements Callable<Integer> {
             validate();
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("create -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -59,7 +54,7 @@ public class CreateCmd implements Callable<Integer> {
     private int exec() {
         Dict dict = new Dict(name, desc, AlphabetUtils.convertToSet(alphabet));
         repo.upsert(dict, Map.of());
-        printStream.println("New dictionary created: " + name);
+        outStream.println("New dictionary created: " + name);
         LOG.info("create -- ok");
         return 0;
     }

@@ -10,20 +10,15 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "write", description = "Generates words out of the dictionary")
-public class WriteCmd implements Callable<Integer> {
+public class WriteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public WriteCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public WriteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth")
@@ -42,7 +37,7 @@ public class WriteCmd implements Callable<Integer> {
             validate();
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("write -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -58,7 +53,7 @@ public class WriteCmd implements Callable<Integer> {
         var gramMap = repo.getGramMap(name);
         checkGramMap(gramMap);
 
-        for (int i = 0; i < num; i++) printStream.println(generate(gramMap));
+        for (int i = 0; i < num; i++) outStream.println(generate(gramMap));
 
         LOG.info("write -- ok");
         return 0;

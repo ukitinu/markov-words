@@ -10,18 +10,13 @@ import ukitinu.markovwords.repo.Repo;
 
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 @Command(name = "update", description = "Updates a dictionary")
-public class UpdateCmd implements Callable<Integer> {
+public class UpdateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(UpdateCmd.class);
 
-    private final Repo repo;
-    private final PrintStream printStream;
-
-    public UpdateCmd(Repo repo, PrintStream printStream) {
-        this.repo = repo;
-        this.printStream = printStream;
+    public UpdateCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+        super(repo, outStream, errStream);
     }
 
     @Option(names = {"-n", "--name"}, description = "Dictionary to update", required = true)
@@ -40,7 +35,7 @@ public class UpdateCmd implements Callable<Integer> {
             validate();
             return exec();
         } catch (Exception e) {
-            printStream.println(e.getMessage());
+            errStream.println(e.getMessage());
             LOG.error("update -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -87,9 +82,9 @@ public class UpdateCmd implements Callable<Integer> {
     }
 
     private void printUpdates(Dict oldDict, Dict newDict) {
-        printStream.println("Dictionary updated");
-        if (!isMissing(newName)) printStream.println("name: " + oldDict.name() + " -> " + newDict.name());
-        if (!isMissing(newDesc)) printStream.println("description: " + oldDict.desc() + " -> " + newDict.desc());
+        outStream.println("Dictionary updated");
+        if (!isMissing(newName)) outStream.println("name: " + oldDict.name() + " -> " + newDict.name());
+        if (!isMissing(newDesc)) outStream.println("description: " + oldDict.desc() + " -> " + newDict.desc());
     }
 
 }
