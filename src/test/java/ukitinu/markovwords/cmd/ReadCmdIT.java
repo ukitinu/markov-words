@@ -2,7 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ukitinu.markovwords.IngesterImpl;
+import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 final class ReadCmdIT extends CmdITHelper {
-    private final ReadCmd cmd = new ReadCmd(repo, new PrintStream(testStream), new IngesterImpl());
+    private final ReadCmd cmd = new ReadCmd(repo, new PrintStream(testStream), new Ingester());
 
     @BeforeEach
     void setUp() {
