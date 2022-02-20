@@ -1,5 +1,6 @@
 package ukitinu.markovwords;
 
+import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -10,7 +11,7 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 public class Ingester {
 
     public void ingest(String text, Map<String, Gram> gramMap, Dict dict) {
-        for (int len = 1; len <= 3; len++) { //TODO upper limit from config
+        for (int len = 1; len <= Property.GRAM_MAX_LEN.num(); len++) {
             ingest(text, gramMap, dict, len);
         }
     }

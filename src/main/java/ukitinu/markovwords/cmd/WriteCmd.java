@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -26,10 +27,10 @@ public class WriteCmd implements Callable<Integer> {
     }
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth")
-    int depth = 2; //TODO config = MAX-1
+    int depth = Property.WRITE_DEPTH.num();
 
     @Option(names = {"--num"}, description = "Number of words to generate")
-    int num = 1;
+    int num = Property.WRITE_NUM.num();
 
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;
