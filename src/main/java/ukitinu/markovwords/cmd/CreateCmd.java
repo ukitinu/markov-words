@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Alphabet;
 import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.Validator;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class CreateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(CreateCmd.class);
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Option(names = {"-d", "--desc"}, description = "Dictionary description")

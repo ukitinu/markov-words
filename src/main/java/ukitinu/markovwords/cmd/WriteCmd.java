@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
@@ -18,10 +19,10 @@ public class WriteCmd extends AbstractCmd {
     @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
     int depth = Property.WRITE_DEPTH.num();
 
-    @Option(names = {"--num"}, description = "Number of words to generate (default in write.num in properties file)")
+    @Option(names = {"-n", "--num"}, description = "Number of words to generate (default in write.num in properties file)")
     int num = Property.WRITE_NUM.num();
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override

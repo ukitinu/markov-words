@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-@Command(name = "list", aliases = {"ls"}, description = "List the dictionaries")
+@Command(name = "list", description = "List the dictionaries")
 public class ListCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(ListCmd.class);
 

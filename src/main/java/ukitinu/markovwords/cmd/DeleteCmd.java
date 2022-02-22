@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.FilePaths;
 
@@ -13,7 +14,7 @@ public class DeleteCmd extends AbstractCmd {
     @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
     boolean permanent;
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary to delete")
     String name;
 
     @Override

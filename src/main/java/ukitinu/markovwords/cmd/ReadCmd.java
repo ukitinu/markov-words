@@ -3,6 +3,7 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
@@ -28,7 +29,7 @@ public class ReadCmd extends AbstractCmd {
         String file;
     }
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override

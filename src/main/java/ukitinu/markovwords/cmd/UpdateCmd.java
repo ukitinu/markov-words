@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Validator;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
@@ -13,10 +14,10 @@ import java.util.Map;
 public class UpdateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(UpdateCmd.class);
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary to update", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary to update")
     String name;
 
-    @Option(names = {"-N", "--new-name"}, description = "New name")
+    @Option(names = {"-n", "--new-name"}, description = "New name")
     String newName;
 
     @Option(names = {"-d", "--new-desc"}, description = "New description")

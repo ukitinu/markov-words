@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum Alphabet {
-    ASCII_SIMPLE(AlphabetUtils.getAsciiSimple()),
-    ASCII_LETTERS(AlphabetUtils.getAsciiLetters()),
+    ALPHANUM(AlphabetUtils.getAsciiSimple()),
+    LETTERS(AlphabetUtils.getAsciiLetters()),
     UPPER(AlphabetUtils.getAsciiLettersUpper()),
     LOWER(AlphabetUtils.getAsciiLettersLower()),
     DIGITS(AlphabetUtils.getAsciiDigits()),

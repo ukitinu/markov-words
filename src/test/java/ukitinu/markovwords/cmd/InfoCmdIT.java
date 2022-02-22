@@ -28,7 +28,7 @@ final class InfoCmdIT {
         cmd.name = "dict-name";
         assertEquals(0, cmd.call());
         assertEquals("name: dict-name" + System.lineSeparator()
-                + "desc: <empty>" + System.lineSeparator(), outStream.toString());
+                + "desc: " + System.lineSeparator(), outStream.toString());
     }
 
     @Test
@@ -46,8 +46,8 @@ final class InfoCmdIT {
         cmd.verbose = true;
         assertEquals(0, cmd.call());
         assertEquals("name: dict-name" + System.lineSeparator()
-                        + "desc: <empty>" + System.lineSeparator()
-                        + "alphabet: ' - . 0 1 2 _ a b c" + System.lineSeparator()
+                        + "desc: " + System.lineSeparator()
+                        + "alphabet: '-.012_abc" + System.lineSeparator()
                         + "1-grams: " + System.lineSeparator()
                         + "2-grams: " + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
@@ -61,7 +61,7 @@ final class InfoCmdIT {
         assertEquals(0, cmd.call());
         assertEquals("name: dict-test" + System.lineSeparator()
                         + "desc: description:test" + System.lineSeparator()
-                        + "alphabet: _ a b c d" + System.lineSeparator()
+                        + "alphabet: _abcd" + System.lineSeparator()
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
