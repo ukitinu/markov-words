@@ -3,6 +3,7 @@ package ukitinu.markovwords;
 import ukitinu.markovwords.lib.Logger;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 public enum Conf {
@@ -35,6 +36,8 @@ public enum Conf {
         static {
             try (var is = new FileInputStream(PROP_FILE)) {
                 PROPS.load(is);
+            } catch (FileNotFoundException e) {
+                LOG.warn("File {} not found", PROP_FILE);
             } catch (Exception e) {
                 LOG.error("Unable to read {} file: {}", PROP_FILE, e.getMessage());
                 MarkovWords.ERR.println("Unable to read " + PROP_FILE + " file: " + e.getMessage());
