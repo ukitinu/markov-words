@@ -38,13 +38,12 @@ class ValidatorTest {
     @Test
     void validateDictAlphabet() {
         assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet(null));
-        assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("\t"));
-        assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("\n"));
-        assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("\r"));
         assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("abc" + WORD_END));
+        assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("abc" + "\n"));
         assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("\u001D"));
         assertThrows(IllegalArgumentException.class, () -> Validator.validateDictAlphabet("\u009C"));
 
         assertDoesNotThrow(() -> Validator.validateDictAlphabet("aA7&%!|'\"à.,-<ç$@€"));
+        assertDoesNotThrow(() -> Validator.validateDictAlphabet(""));
     }
 }

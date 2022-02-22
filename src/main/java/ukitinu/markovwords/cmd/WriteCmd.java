@@ -15,10 +15,10 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 public class WriteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
-    @Option(names = {"-d", "--depth"}, description = "Gram depth (default value in properties file)")
+    @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
     int depth = Property.WRITE_DEPTH.num();
 
-    @Option(names = {"--num"}, description = "Number of words to generate (default value in properties file)")
+    @Option(names = {"--num"}, description = "Number of words to generate (default in write.num in properties file)")
     int num = Property.WRITE_NUM.num();
 
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)

@@ -30,9 +30,7 @@ public final class Validator {
     }
 
     public static void validateDictAlphabet(String alphabet) {
-        if (alphabet == null || alphabet.isBlank()) {
-            throw new IllegalArgumentException("dict alphabet must not be empty");
-        }
+        if (alphabet == null) throw new IllegalArgumentException("dict alphabet must not be null");
         StringBuilder err = new StringBuilder();
         char[] chars = alphabet.toCharArray();
         for (int i = 0; i < chars.length; i++) {

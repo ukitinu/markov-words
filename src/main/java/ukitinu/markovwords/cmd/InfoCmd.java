@@ -5,6 +5,7 @@ import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.repo.DataException;
+import ukitinu.markovwords.repo.FilePaths;
 
 import java.util.Collection;
 
@@ -25,7 +26,7 @@ public class InfoCmd extends AbstractCmd {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to refer to it");
+            if (e.getMessage().contains("deleted")) errStream.println("Use " + FilePaths.DEL_PREFIX + name + " to refer to it");
             LOG.error("info -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }

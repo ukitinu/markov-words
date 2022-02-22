@@ -2,6 +2,7 @@ package ukitinu.markovwords.cmd;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.Alphabet;
 import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
@@ -47,6 +48,36 @@ final class CreateCmdIT {
         } finally {
             FsUtils.rmDir(Path.of(basePath, cmd.name));
         }
+    }
+
+    @Test
+    void call_withBase() throws IOException {
+        cmd.name = "new-dict";
+        cmd.desc = "description";
+        cmd.alphabet = "abc";
+        cmd.base = Alphabet.DIGITS;
+        try {
+            assertFalse(repo.exists(cmd.name));
+            assertEquals(0, cmd.call());
+            assertEquals("New dictionary created: " + cmd.name + System.lineSeparator(), outStream.toString());
+            assertTrue(repo.exists(cmd.name));
+
+            Dict dict = assertDoesNotThrow(() -> repo.get(cmd.name));
+            assertEquals(cmd.name, dict.name());
+            assertEquals(cmd.desc, dict.desc());
+            assertEquals(AlphabetUtils.convertToSet(cmd.alphabet + WORD_END + "1234567890"), dict.alphabet());
+        } finally {
+            FsUtils.rmDir(Path.of(basePath, cmd.name));
+        }
+    }
+
+    @Test
+    void call_noBaseNoAlphabet() {
+        cmd.name = "new-dict";
+        cmd.desc = "description";
+        assertEquals(1, cmd.call());
+        assertEquals("missing option: at least one of --alphabet or --base must be specified" + System.lineSeparator(),
+                errStream.toString());
     }
 
     @Test

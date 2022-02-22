@@ -27,6 +27,7 @@ public class MarkovWords {
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new MarkovWords())
+                .setCaseInsensitiveEnumValuesAllowed(true)
                 .execute(args);
         System.exit(exitCode);
     }

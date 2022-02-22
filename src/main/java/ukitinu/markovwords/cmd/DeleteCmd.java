@@ -3,6 +3,7 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
+import ukitinu.markovwords.repo.FilePaths;
 
 @Command(name = "delete", description = "Delete a dictionary")
 public class DeleteCmd extends AbstractCmd {
@@ -22,8 +23,11 @@ public class DeleteCmd extends AbstractCmd {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted state")) errStream.println(DEL_PERM_HINT);
-            else if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to " + DEL_PERM_HINT);
+            if (e.getMessage().contains("deleted state")) {
+                errStream.println(DEL_PERM_HINT);
+            } else if (e.getMessage().contains("deleted")) {
+                errStream.println("Use " + FilePaths.DEL_PREFIX + name + " to " + DEL_PERM_HINT);
+            }
             LOG.error("delete -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
