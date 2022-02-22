@@ -1,19 +1,21 @@
-package ukitinu.markovwords.conf;
+package ukitinu.markovwords;
 
 import ukitinu.markovwords.lib.Logger;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
-public enum Property {
+public enum Conf {
     DATA_PATH("data.path", "./.data"),
     GRAM_MAX_LEN("gram.max_length", "3"),
     WRITE_DEPTH("write.depth", "2"),
-    WRITE_NUM("write.num", "1");
+    WRITE_NUM("write.num", "1"),
+    WRITE_MAX_LEN("write.max_length", "100");
 
     private final String value;
 
-    Property(String key, String defaultValue) {
+    Conf(String key, String defaultValue) {
         String read = Reader.get(key);
         this.value = read != null ? read : defaultValue;
     }
@@ -34,8 +36,11 @@ public enum Property {
         static {
             try (var is = new FileInputStream(PROP_FILE)) {
                 PROPS.load(is);
+            } catch (FileNotFoundException e) {
+                LOG.warn("File {} not found", PROP_FILE);
             } catch (Exception e) {
                 LOG.error("Unable to read {} file: {}", PROP_FILE, e.getMessage());
+                MarkovWords.ERR.println("Unable to read " + PROP_FILE + " file: " + e.getMessage());
                 System.exit(1);
             }
         }

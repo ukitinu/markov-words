@@ -1,9 +1,13 @@
 package ukitinu.markovwords.cmd;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
+import ukitinu.markovwords.repo.FileRepo;
+import ukitinu.markovwords.repo.Repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -14,8 +18,18 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class DeleteCmdIT extends CmdITHelper {
-    private final DeleteCmd cmd = new DeleteCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
+final class DeleteCmdIT {
+    private final String basePath = "./src/test/resources/dict_dir";
+    private final Repo repo = FileRepo.create(basePath);
+    private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private final DeleteCmd cmd = new DeleteCmd();
+
+    @BeforeEach
+    void setUp() {
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
+    }
 
     @Test
     void call() throws IOException {

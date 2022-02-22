@@ -2,37 +2,36 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import ukitinu.markovwords.conf.Property;
+import picocli.CommandLine.Parameters;
+import ukitinu.markovwords.Conf;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Map;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
-@Command(name = "write", description = "Generates words out of the dictionary")
+@Command(name = "write", description = "Generate words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
+    private static final int LEN_ROOF = 513; // 512 + 1
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
-    public WriteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
+    @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
+    int depth = Conf.WRITE_DEPTH.num();
 
-    @Option(names = {"-d", "--depth"}, description = "Gram depth")
-    int depth = Property.WRITE_DEPTH.num();
+    @Option(names = {"-n", "--num"}, description = "Number of words to generate (default in write.num in properties file)")
+    int num = Conf.WRITE_NUM.num();
 
-    @Option(names = {"--num"}, description = "Number of words to generate")
-    int num = Property.WRITE_NUM.num();
+    @Option(names = {"-m", "--max-len"}, description = "Max length of a generated word (default in write.max_length in properties file)")
+    int maxLen = Conf.WRITE_MAX_LEN.num();
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override
     public Integer call() {
-        LOG.info("write -- name={} num={} depth={}", name, num, depth);
+        LOG.info("write -- name={} num={} depth={} max-len={}", name, num, depth, maxLen);
         try {
             validate();
             return exec();
@@ -46,6 +45,9 @@ public class WriteCmd extends AbstractCmd {
     private void validate() {
         if (!repo.exists(name)) {
             throw new IllegalArgumentException("dict not found: " + name);
+        }
+        if (maxLen <= 0) {
+            throw new IllegalArgumentException("max-len value must be positive");
         }
     }
 
@@ -72,7 +74,7 @@ public class WriteCmd extends AbstractCmd {
         Gram gram = gramMap.get(String.valueOf(WORD_END));
 
         char next = gram.next();
-        while (next != WORD_END) {
+        while (next != WORD_END && word.length() < maxLen && word.length() < LEN_ROOF) {
             word.append(next);
             var nextGram = pickNextGram(gram, gramMap, next);
             next = nextGram.next();
@@ -81,8 +83,16 @@ public class WriteCmd extends AbstractCmd {
         return word.toString();
     }
 
+    /**
+     * The logic is that if the next gram should either be the previous plus the current character if its length is
+     * below {@link #depth}, or the previous, with its first char dropped, plus the current.<br>
+     * If the required gram is not found in the dictionary, it falls back to the 1-gram of {@param next}.
+     */
     private Gram pickNextGram(Gram current, Map<String, Gram> gramMap, char next) {
-        if (current.getValue().length() < depth) return gramMap.get(current.getValue() + next);
-        return gramMap.get(current.getValue().substring(1) + next);
+        var simpleNext = gramMap.get(String.valueOf(next));
+        if (current.getValue().length() < depth) {
+            return gramMap.getOrDefault(current.getValue() + next, simpleNext);
+        }
+        return gramMap.getOrDefault(current.getValue().substring(1) + next, simpleNext);
     }
 }

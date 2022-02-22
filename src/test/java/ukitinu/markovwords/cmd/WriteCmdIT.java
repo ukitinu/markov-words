@@ -1,15 +1,29 @@
 package ukitinu.markovwords.cmd;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.repo.FileRepo;
+import ukitinu.markovwords.repo.Repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
-final class WriteCmdIT extends CmdITHelper {
-    private final WriteCmd cmd = new WriteCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
+final class WriteCmdIT {
+    private final String basePath = "./src/test/resources/dict_dir";
+    private final Repo repo = FileRepo.create(basePath);
+    private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private final WriteCmd cmd = new WriteCmd();
+
+    @BeforeEach
+    void setUp() {
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
+    }
 
     @Test
     void call() {
@@ -38,6 +52,14 @@ final class WriteCmdIT extends CmdITHelper {
         cmd.name = "i-do-no-exist";
         assertEquals(1, cmd.call());
         assertEquals("dict not found: " + cmd.name + System.lineSeparator(), errStream.toString());
+    }
+
+    @Test
+    void call_invalidMaxLen() {
+        cmd.name = "dict-name";
+        cmd.maxLen = 0;
+        assertEquals(1, cmd.call());
+        assertEquals("max-len value must be positive" + System.lineSeparator(), errStream.toString());
     }
 
     @Test

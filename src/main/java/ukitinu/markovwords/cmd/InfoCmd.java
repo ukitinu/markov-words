@@ -2,26 +2,22 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.repo.DataException;
-import ukitinu.markovwords.repo.Repo;
+import ukitinu.markovwords.repo.FilePaths;
 
-import java.io.PrintStream;
 import java.util.Collection;
 
-@Command(name = "info", description = "Shows information about a given dictionary")
+@Command(name = "info", description = "Show information about a given dictionary")
 public class InfoCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(InfoCmd.class);
-
-    public InfoCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose output")
     boolean verbose;
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override
@@ -31,7 +27,8 @@ public class InfoCmd extends AbstractCmd {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to refer to it");
+            if (e.getMessage().contains("deleted"))
+                errStream.println("Use " + FilePaths.DEL_PREFIX + name + " to refer to it");
             LOG.error("info -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
@@ -45,11 +42,11 @@ public class InfoCmd extends AbstractCmd {
     }
 
     private void printDict(Dict dict) {
-        outStream.println(dict.name());
-        if (!dict.desc().isEmpty()) outStream.println(dict.desc());
+        outStream.println("name: " + dict.name());
+        outStream.println("desc: " + (!dict.desc().isEmpty() ? dict.desc() : ""));
 
         if (verbose) {
-            outStream.println(toPrintableString(dict.alphabet()));
+            outStream.println("alphabet: " + toPrintableString(dict.alphabet(), ""));
             outStream.println("1-grams: " + getGramKeys(1));
             outStream.println("2-grams: " + getGramKeys(2));
             outStream.println("3-grams: " + getGramKeys(3));
@@ -59,14 +56,14 @@ public class InfoCmd extends AbstractCmd {
     private String getGramKeys(int len) {
         try {
             var keys = repo.getGramMap(name, len).keySet();
-            return toPrintableString(keys);
+            return toPrintableString(keys, " ");
         } catch (DataException e) {
             return "";
         }
     }
 
-    private String toPrintableString(Collection<?> collection) {
-        return String.join(" ", collection
+    private String toPrintableString(Collection<?> collection, String delimiter) {
+        return String.join(delimiter, collection
                 .stream()
                 .map(String::valueOf)
                 .sorted()

@@ -2,24 +2,19 @@ package ukitinu.markovwords.cmd;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.lib.Logger;
-import ukitinu.markovwords.repo.Repo;
+import ukitinu.markovwords.repo.FilePaths;
 
-import java.io.PrintStream;
-
-@Command(name = "delete", description = "Delete a dictionary")
+@Command(name = "delete", description = "Delete a dictionary (may be restored afterwards if 'permanent' is NOT selected)")
 public class DeleteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(DeleteCmd.class);
     static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
 
-    public DeleteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
-
-    @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
+    @Option(names = {"-p", "--permanent"}, description = "Permanent deletion (UNABLE to restore afterwards)")
     boolean permanent;
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary to delete")
     String name;
 
     @Override
@@ -29,8 +24,11 @@ public class DeleteCmd extends AbstractCmd {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            if (e.getMessage().contains("deleted state")) errStream.println(DEL_PERM_HINT);
-            else if (e.getMessage().contains("deleted")) errStream.println("Use ." + name + " to " + DEL_PERM_HINT);
+            if (e.getMessage().contains("deleted state")) {
+                errStream.println(DEL_PERM_HINT);
+            } else if (e.getMessage().contains("deleted")) {
+                errStream.println("Use " + FilePaths.DEL_PREFIX + name + " to " + DEL_PERM_HINT);
+            }
             LOG.error("delete -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }

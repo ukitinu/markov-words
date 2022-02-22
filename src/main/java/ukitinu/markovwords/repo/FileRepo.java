@@ -25,7 +25,13 @@ public final class FileRepo implements Repo {
 
     public static FileRepo create(String dataPath) {
         Path path = Path.of(dataPath);
-        if (!Files.exists(path)) throw new IllegalArgumentException(path + " does not exist");
+        if (!Files.exists(path)) {
+            try {
+                FsUtils.mkDir(path);
+            } catch (IOException e) {
+                throw new DataException("unable to create " + path + " : " + e.getMessage());
+            }
+        }
         if (!Files.isDirectory(path)) throw new IllegalArgumentException(path + " is not a directory");
         return new FileRepo(path);
     }
@@ -35,7 +41,7 @@ public final class FileRepo implements Repo {
         this.dataConverter = new DataConverter();
     }
 
-    public Path getDataPath() {
+    Path getDataPath() {
         return dataPath;
     }
 

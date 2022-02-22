@@ -2,9 +2,9 @@ package ukitinu.markovwords.repo;
 
 import java.nio.file.Path;
 
-final class FilePaths {
+public final class FilePaths {
     private static final String FILE_EXT = ".dat";
-    private static final String DEL_PREFIX = ".";
+    public static final String DEL_PREFIX = ".";
     private static final String GRAM_DIR_SUFFIX = "-grams";
     private static final String TMP_SUFFIX = ".tmp";
 
@@ -61,7 +61,7 @@ final class FilePaths {
         return getGramDir(dataPath, dictName, len, isTemp).resolve(gramValue + FILE_EXT);
     }
 
-    static boolean isDeleted(String filename) {
+    public static boolean isDeleted(String filename) {
         return filename.startsWith(DEL_PREFIX);
     }
 

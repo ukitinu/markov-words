@@ -15,7 +15,7 @@ public final class Validator {
     public static void validateDictName(String name) {
         if (name == null || name.isBlank()) throw new IllegalArgumentException("dict name must not be empty");
         if (!name.matches("^[a-zA-Z][a-zA-Z0-9\\-]*$")) {
-            throw new IllegalArgumentException("dict name must consist of english letters, digits and dashes and must start with a letter");
+            throw new IllegalArgumentException("dict name must consist of English letters, digits and dashes and must start with a letter");
         }
     }
 
@@ -25,23 +25,23 @@ public final class Validator {
             throw new IllegalArgumentException("dict desc max length is " + DICT_DESC_MAX_LEN + " characters (current is " + desc.length() + ")");
         }
         if (!desc.matches("^[\\p{Alnum}\\p{Punct} ]*$")) {
-            throw new IllegalArgumentException("dict desc must consist of english letters, digits, whitespace and punctuation only");
+            throw new IllegalArgumentException("dict desc must consist of English letters, digits, whitespace and punctuation only");
         }
     }
 
     public static void validateDictAlphabet(String alphabet) {
-        if (alphabet == null || alphabet.isBlank()) {
-            throw new IllegalArgumentException("dict alphabet must not be empty");
-        }
+        if (alphabet == null) throw new IllegalArgumentException("dict alphabet must not be null");
         StringBuilder err = new StringBuilder();
         char[] chars = alphabet.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (c <= UNICODE_C0 || c == WORD_END || (c >= UNICODE_C1_START && c <= UNICODE_C1_END)) {
-                err.append("invalid unicode at position ")
+                err.append("\t") // NOPMD
+                        .append("invalid unicode at position ")
                         .append(i)
                         .append(" with hex value ")
                         .append(Integer.toHexString(c))
+                        .append(c == WORD_END ? " (reserved character)" : " (control characters not allowed)")
                         .append(System.lineSeparator());
             }
         }

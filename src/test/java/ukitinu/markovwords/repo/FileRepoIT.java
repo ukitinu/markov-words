@@ -23,16 +23,22 @@ class FileRepoIT {
      * Do not test exception message equality as it is OS-dependant.
      */
     @Test
-    void createFileRepo() {
-        var e1 = assertThrows(IllegalArgumentException.class, () -> FileRepo.create("./src/test/resources/not_exists"));
-        assertTrue(e1.getMessage().endsWith("does not exist"));
-        var e2 = assertThrows(IllegalArgumentException.class, () -> FileRepo.create("./src/test/resources/dict_dir/afile.txt"));
-        assertTrue(e2.getMessage().endsWith("is not a directory"));
+    void createFileRepo() throws IOException {
+        final String notExists = "./src/test/resources/not_exists";
+        try {
+            var e = assertThrows(IllegalArgumentException.class, () -> FileRepo.create("./src/test/resources/dict_dir/afile.txt"));
+            assertTrue(e.getMessage().endsWith("is not a directory"));
 
-        FileRepo r1 = assertDoesNotThrow(() -> FileRepo.create("./src/test/resources/dict_dir"));
-        FileRepo r2 = assertDoesNotThrow(() -> FileRepo.create("./src/test/resources/dict_dir/../dict_dir"));
+            FileRepo r0 = assertDoesNotThrow(() -> FileRepo.create(notExists));
+            assertTrue(r0.getDataPath().toFile().exists());
 
-        assertEquals(r1.getDataPath(), r2.getDataPath());
+            FileRepo r1 = assertDoesNotThrow(() -> FileRepo.create("./src/test/resources/dict_dir"));
+            FileRepo r2 = assertDoesNotThrow(() -> FileRepo.create("./src/test/resources/dict_dir/../dict_dir"));
+
+            assertEquals(r1.getDataPath(), r2.getDataPath());
+        } finally {
+            FsUtils.rmDir(Path.of(notExists));
+        }
     }
 
     @Test
@@ -108,8 +114,8 @@ class FileRepoIT {
 
     @Test
     void hasGramMap() {
-        assertThrows(IllegalArgumentException.class, ()->repo.hasGramMap("dict-name", -2));
-        assertThrows(IllegalArgumentException.class, ()->repo.hasGramMap("dict-name", 0));
+        assertThrows(IllegalArgumentException.class, () -> repo.hasGramMap("dict-name", -2));
+        assertThrows(IllegalArgumentException.class, () -> repo.hasGramMap("dict-name", 0));
 
         assertFalse(repo.hasGramMap("dict-name", 1));
         assertFalse(repo.hasGramMap("dict-name", 2));

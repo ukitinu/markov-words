@@ -1,9 +1,13 @@
 package ukitinu.markovwords.cmd;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.models.Dict;
+import ukitinu.markovwords.repo.FileRepo;
+import ukitinu.markovwords.repo.Repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -11,8 +15,18 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-final class UpdateCmdIT extends CmdITHelper {
-    private final UpdateCmd cmd = new UpdateCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
+final class UpdateCmdIT {
+    private final String basePath = "./src/test/resources/dict_dir";
+    private final Repo repo = FileRepo.create(basePath);
+    private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private final UpdateCmd cmd = new UpdateCmd();
+
+    @BeforeEach
+    void setUp() {
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
+    }
 
     @Test
     void call_changeName() throws IOException {
@@ -119,7 +133,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newName = "_invalid";
         assertEquals(1, cmd.call());
-        assertEquals("dict name must consist of english letters, digits and dashes and must start with a letter" + System.lineSeparator(),
+        assertEquals("dict name must consist of English letters, digits and dashes and must start with a letter" + System.lineSeparator(),
                 errStream.toString());
     }
 
@@ -128,7 +142,7 @@ final class UpdateCmdIT extends CmdITHelper {
         cmd.name = "old-name";
         cmd.newDesc = "invalid\n";
         assertEquals(1, cmd.call());
-        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(),
+        assertEquals("dict desc must consist of English letters, digits, whitespace and punctuation only" + System.lineSeparator(),
                 errStream.toString());
     }
 

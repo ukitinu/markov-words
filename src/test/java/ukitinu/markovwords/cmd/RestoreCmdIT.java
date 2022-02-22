@@ -1,8 +1,12 @@
 package ukitinu.markovwords.cmd;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ukitinu.markovwords.lib.FsUtils;
+import ukitinu.markovwords.repo.FileRepo;
+import ukitinu.markovwords.repo.Repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -10,8 +14,18 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class RestoreCmdIT extends CmdITHelper {
-    private final RestoreCmd cmd = new RestoreCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
+final class RestoreCmdIT {
+    private final String basePath = "./src/test/resources/dict_dir";
+    private final Repo repo = FileRepo.create(basePath);
+    private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private final RestoreCmd cmd = new RestoreCmd();
+
+    @BeforeEach
+    void setUp() {
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
+    }
 
     @Test
     void call() throws IOException {

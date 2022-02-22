@@ -3,14 +3,13 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -18,12 +17,7 @@ import java.util.Map;
 public class ReadCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(ReadCmd.class);
 
-    private final Ingester ingester;
-
-    public ReadCmd(Repo repo, PrintStream outStream, PrintStream errStream, Ingester ingester) {
-        super(repo, outStream, errStream);
-        this.ingester = ingester;
-    }
+    private final Ingester ingester = new Ingester();
 
     @ArgGroup(multiplicity = "1")
     ReadInput input;
@@ -35,7 +29,7 @@ public class ReadCmd extends AbstractCmd {
         String file;
     }
 
-    @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
+    @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override

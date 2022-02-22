@@ -1,13 +1,27 @@
 package ukitinu.markovwords.cmd;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ukitinu.markovwords.repo.FileRepo;
+import ukitinu.markovwords.repo.Repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class ListCmdIT extends CmdITHelper {
-    private final ListCmd cmd = new ListCmd(repo, new PrintStream(outStream), new PrintStream(errStream));
+final class ListCmdIT {
+    private final String basePath = "./src/test/resources/dict_dir";
+    private final Repo repo = FileRepo.create(basePath);
+    private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private final ListCmd cmd = new ListCmd();
+
+    @BeforeEach
+    void setUp() {
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
+    }
 
     @Test
     void call() {

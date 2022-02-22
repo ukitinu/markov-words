@@ -4,7 +4,6 @@ import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
