@@ -75,8 +75,16 @@ public class WriteCmd extends AbstractCmd {
         return word.toString();
     }
 
+    /**
+     * The logic is that if the next gram should either be the previous plus the current character if its length is
+     * below {@link #depth}, or the previous, with its first char dropped, plus the current.<br>
+     * If the required gram is not found in the dictionary, it falls back to the 1-gram of {@param next}.
+     */
     private Gram pickNextGram(Gram current, Map<String, Gram> gramMap, char next) {
-        if (current.getValue().length() < depth) return gramMap.get(current.getValue() + next);
-        return gramMap.get(current.getValue().substring(1) + next);
+        var simpleNext = gramMap.get(String.valueOf(next));
+        if (current.getValue().length() < depth) {
+            return gramMap.getOrDefault(current.getValue() + next, simpleNext);
+        }
+        return gramMap.getOrDefault(current.getValue().substring(1) + next, simpleNext);
     }
 }
