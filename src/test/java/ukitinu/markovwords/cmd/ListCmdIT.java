@@ -20,7 +20,7 @@ final class ListCmdIT {
 
     @BeforeEach
     void setUp() {
-        cmd.init(repo, new PrintStream(outStream), new PrintStream(errStream));
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
     }
 
     @Test

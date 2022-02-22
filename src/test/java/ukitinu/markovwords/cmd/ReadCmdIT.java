@@ -2,7 +2,6 @@ package ukitinu.markovwords.cmd;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.repo.FileRepo;
 import ukitinu.markovwords.repo.Repo;
@@ -25,7 +24,7 @@ final class ReadCmdIT {
 
     @BeforeEach
     void setUp() {
-        cmd.init(repo, new PrintStream(outStream), new PrintStream(errStream));
+        cmd.redirect(repo, new PrintStream(outStream), new PrintStream(errStream));
         cmd.input = new ReadCmd.ReadInput();
     }
 

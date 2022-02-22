@@ -129,7 +129,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ukitinu.markovwords.Main</mainClass>
+                                    <mainClass>ukitinu.markovwords.MarkovWords</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
