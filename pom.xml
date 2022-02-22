@@ -6,7 +6,7 @@
 
     <groupId>ukitinu</groupId>
     <artifactId>markov-words</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>markov-words</name>
@@ -21,8 +21,7 @@
         <versions.log4j>2.17.1</versions.log4j>
         <versions.lombok>1.18.22</versions.lombok>
         <versions.junit>5.8.2</versions.junit>
-        <versions.mockito>4.2.0</versions.mockito>
-        <versions.picocli>4.6.2</versions.picocli>
+        <versions.picocli>4.6.3</versions.picocli>
         <!-- PLUGINS -->
         <versions.surefire>3.0.0-M5</versions.surefire>
         <!-- JaCoCo -->
@@ -71,11 +70,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${versions.junit}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${versions.mockito}</version>
         </dependency>
         <!-- PLUGINS -->
         <dependency>
