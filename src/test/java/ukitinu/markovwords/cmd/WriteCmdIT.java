@@ -55,6 +55,14 @@ final class WriteCmdIT {
     }
 
     @Test
+    void call_invalidMaxLen() {
+        cmd.name = "dict-name";
+        cmd.maxLen = 0;
+        assertEquals(1, cmd.call());
+        assertEquals("max-len value must be positive" + System.lineSeparator(), errStream.toString());
+    }
+
+    @Test
     void call_empty() {
         cmd.name = "dict-name";
         assertEquals(1, cmd.call());

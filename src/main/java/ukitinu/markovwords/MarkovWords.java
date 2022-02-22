@@ -3,7 +3,6 @@ package ukitinu.markovwords;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import ukitinu.markovwords.cmd.*;
-import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.repo.FileRepo;
 import ukitinu.markovwords.repo.Repo;
 
@@ -23,7 +22,7 @@ import java.io.PrintStream;
 public class MarkovWords {
     public static final PrintStream OUT = System.out;
     public static final PrintStream ERR = System.err;
-    public static final Repo REPO = FileRepo.create(Property.DATA_PATH.str());
+    public static final Repo REPO = FileRepo.create(Conf.DATA_PATH.str());
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new MarkovWords())

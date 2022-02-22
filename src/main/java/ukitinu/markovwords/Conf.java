@@ -1,20 +1,20 @@
-package ukitinu.markovwords.conf;
+package ukitinu.markovwords;
 
-import ukitinu.markovwords.MarkovWords;
 import ukitinu.markovwords.lib.Logger;
 
 import java.io.FileInputStream;
 import java.util.Properties;
 
-public enum Property {
+public enum Conf {
     DATA_PATH("data.path", "./.data"),
     GRAM_MAX_LEN("gram.max_length", "3"),
     WRITE_DEPTH("write.depth", "2"),
-    WRITE_NUM("write.num", "1");
+    WRITE_NUM("write.num", "1"),
+    WRITE_MAX_LEN("write.max_length", "100");
 
     private final String value;
 
-    Property(String key, String defaultValue) {
+    Conf(String key, String defaultValue) {
         String read = Reader.get(key);
         this.value = read != null ? read : defaultValue;
     }

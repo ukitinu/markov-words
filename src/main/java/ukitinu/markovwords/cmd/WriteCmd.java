@@ -3,7 +3,7 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import ukitinu.markovwords.conf.Property;
+import ukitinu.markovwords.Conf;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
@@ -14,20 +14,24 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "write", description = "Generates words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
+    private static final int LEN_ROOF = 513;
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
-    int depth = Property.WRITE_DEPTH.num();
+    int depth = Conf.WRITE_DEPTH.num();
 
     @Option(names = {"-n", "--num"}, description = "Number of words to generate (default in write.num in properties file)")
-    int num = Property.WRITE_NUM.num();
+    int num = Conf.WRITE_NUM.num();
+
+    @Option(names = {"-m", "--max-len"}, description = "Max length of a generated word (default in write.max_length in properties file)")
+    int maxLen = Conf.WRITE_MAX_LEN.num();
 
     @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
 
     @Override
     public Integer call() {
-        LOG.info("write -- name={} num={} depth={}", name, num, depth);
+        LOG.info("write -- name={} num={} depth={} max-len={}", name, num, depth, maxLen);
         try {
             validate();
             return exec();
@@ -41,6 +45,9 @@ public class WriteCmd extends AbstractCmd {
     private void validate() {
         if (!repo.exists(name)) {
             throw new IllegalArgumentException("dict not found: " + name);
+        }
+        if (maxLen <= 0) {
+            throw new IllegalArgumentException("max-len value must be positive");
         }
     }
 
@@ -67,7 +74,7 @@ public class WriteCmd extends AbstractCmd {
         Gram gram = gramMap.get(String.valueOf(WORD_END));
 
         char next = gram.next();
-        while (next != WORD_END) {
+        while (next != WORD_END && word.length() < maxLen && word.length() < LEN_ROOF) {
             word.append(next);
             var nextGram = pickNextGram(gram, gramMap, next);
             next = nextGram.next();
