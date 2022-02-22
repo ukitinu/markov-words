@@ -119,7 +119,7 @@ final class CreateCmdIT {
         cmd.name = "my-name";
         cmd.desc = "\n";
         assertEquals(1, cmd.call());
-        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(),
+        assertEquals("dict desc must consist of English letters, digits, whitespace and punctuation only" + System.lineSeparator(),
                 errStream.toString());
     }
 

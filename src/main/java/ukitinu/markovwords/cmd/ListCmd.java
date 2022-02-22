@@ -16,7 +16,7 @@ public class ListCmd extends AbstractCmd {
     @Option(names = {"-d", "--deleted"}, description = "List the deleted dictionaries only")
     boolean listDeleted;
 
-    @Option(names = {"-a", "--all"}, description = "List all dictionaries, deleted included")
+    @Option(names = {"-a", "--all"}, description = "List all dictionaries, deleted included (supersedes --deleted)")
     boolean listAll;
 
     @Option(names = {"-n", "--name"}, description = "Filter results with the given name, case insensitive")

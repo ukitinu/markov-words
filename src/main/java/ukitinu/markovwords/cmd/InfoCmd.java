@@ -10,7 +10,7 @@ import ukitinu.markovwords.repo.FilePaths;
 
 import java.util.Collection;
 
-@Command(name = "info", description = "Shows information about a given dictionary")
+@Command(name = "info", description = "Show information about a given dictionary")
 public class InfoCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(InfoCmd.class);
 

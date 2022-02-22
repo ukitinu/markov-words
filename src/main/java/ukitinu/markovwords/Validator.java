@@ -15,7 +15,7 @@ public final class Validator {
     public static void validateDictName(String name) {
         if (name == null || name.isBlank()) throw new IllegalArgumentException("dict name must not be empty");
         if (!name.matches("^[a-zA-Z][a-zA-Z0-9\\-]*$")) {
-            throw new IllegalArgumentException("dict name must consist of english letters, digits and dashes and must start with a letter");
+            throw new IllegalArgumentException("dict name must consist of English letters, digits and dashes and must start with a letter");
         }
     }
 
@@ -25,7 +25,7 @@ public final class Validator {
             throw new IllegalArgumentException("dict desc max length is " + DICT_DESC_MAX_LEN + " characters (current is " + desc.length() + ")");
         }
         if (!desc.matches("^[\\p{Alnum}\\p{Punct} ]*$")) {
-            throw new IllegalArgumentException("dict desc must consist of english letters, digits, whitespace and punctuation only");
+            throw new IllegalArgumentException("dict desc must consist of English letters, digits, whitespace and punctuation only");
         }
     }
 

@@ -133,7 +133,7 @@ final class UpdateCmdIT {
         cmd.name = "old-name";
         cmd.newName = "_invalid";
         assertEquals(1, cmd.call());
-        assertEquals("dict name must consist of english letters, digits and dashes and must start with a letter" + System.lineSeparator(),
+        assertEquals("dict name must consist of English letters, digits and dashes and must start with a letter" + System.lineSeparator(),
                 errStream.toString());
     }
 
@@ -142,7 +142,7 @@ final class UpdateCmdIT {
         cmd.name = "old-name";
         cmd.newDesc = "invalid\n";
         assertEquals(1, cmd.call());
-        assertEquals("dict desc must consist of english letters, digits, whitespace and punctuation only" + System.lineSeparator(),
+        assertEquals("dict desc must consist of English letters, digits, whitespace and punctuation only" + System.lineSeparator(),
                 errStream.toString());
     }
 

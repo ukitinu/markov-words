@@ -12,17 +12,19 @@ import ukitinu.markovwords.models.Dict;
 import java.util.Map;
 import java.util.Set;
 
-@Command(name = "create", description = "Create a dictionary")
+import static ukitinu.markovwords.AlphabetUtils.WORD_END;
+
+@Command(name = "create", description = "Create a new empty dictionary")
 public class CreateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(CreateCmd.class);
 
-    @Parameters(paramLabel = "NAME", description = "Dictionary name")
+    @Parameters(paramLabel = "NAME", description = "Dictionary name (English letters, digits and dashes allowed, must start with a letter)")
     String name;
 
-    @Option(names = {"-d", "--desc"}, description = "Dictionary description")
+    @Option(names = {"-d", "--desc"}, description = "Dictionary description (English letters, digits, whitespace and punctuation only)")
     String desc = "";
 
-    @Option(names = {"-a", "--alphabet"}, description = "Dictionary alphabet. Use together with --base to add to it, or use it alone")
+    @Option(names = {"-a", "--alphabet"}, description = "Dictionary alphabet. Use together with --base to add to it, or use it alone. Cannot contain " + WORD_END)
     String alphabet = "";
 
     @Option(names = {"-b", "--base"}, description = "Base alphabet, empty by default. Valid values: ${COMPLETION-CANDIDATES}")

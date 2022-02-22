@@ -12,9 +12,9 @@ import java.util.Map;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
-@Command(name = "write", description = "Generates words out of the dictionary")
+@Command(name = "write", description = "Generate words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
-    private static final int LEN_ROOF = 513;
+    private static final int LEN_ROOF = 513; // 512 + 1
     private static final Logger LOG = Logger.create(WriteCmd.class);
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")

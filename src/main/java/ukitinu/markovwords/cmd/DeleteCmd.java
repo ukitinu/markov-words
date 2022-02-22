@@ -6,12 +6,12 @@ import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.repo.FilePaths;
 
-@Command(name = "delete", description = "Delete a dictionary")
+@Command(name = "delete", description = "Delete a dictionary (may be restored afterwards if 'permanent' is NOT selected)")
 public class DeleteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(DeleteCmd.class);
     static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
 
-    @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
+    @Option(names = {"-p", "--permanent"}, description = "Permanent deletion (UNABLE to restore afterwards)")
     boolean permanent;
 
     @Parameters(paramLabel = "NAME", description = "Dictionary to delete")

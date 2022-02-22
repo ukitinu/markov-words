@@ -10,7 +10,7 @@ import ukitinu.markovwords.models.Gram;
 
 import java.util.Map;
 
-@Command(name = "update", description = "Updates a dictionary")
+@Command(name = "update", description = "Update a dictionary (name and/or description)")
 public class UpdateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(UpdateCmd.class);
 
