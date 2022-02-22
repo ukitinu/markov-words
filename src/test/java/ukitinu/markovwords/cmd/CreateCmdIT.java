@@ -98,6 +98,6 @@ final class CreateCmdIT {
         cmd.alphabet = "abc" + WORD_END;
         assertEquals(1, cmd.call());
         assertEquals("invalid alphabet:" + System.lineSeparator()
-                + "invalid unicode at position 3 with hex value 5f" + System.lineSeparator(), errStream.toString());
+                + "invalid unicode at position 3 with hex value 5f (reserved character)" + System.lineSeparator(), errStream.toString());
     }
 }

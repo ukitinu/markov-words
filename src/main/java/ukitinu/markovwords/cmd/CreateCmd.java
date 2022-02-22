@@ -16,7 +16,7 @@ public class CreateCmd extends AbstractCmd {
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;
 
-    @Option(names = {"-d", "--desc"}, description = "Dictionary description", required = true)
+    @Option(names = {"-d", "--desc"}, description = "Dictionary description")
     String desc = "";
 
     @Option(names = {"-a", "--alphabet"}, description = "Dictionary alphabet", required = true)

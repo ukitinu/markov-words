@@ -16,7 +16,7 @@ import java.io.PrintStream;
                 ReadCmd.class, RestoreCmd.class, UpdateCmd.class, WriteCmd.class,
                 CommandLine.HelpCommand.class
         },
-        description = "Markov chains-based word generator",
+        description = "Trainable word generator based on Markov Chains",
         mixinStandardHelpOptions = true,
         version = "1.0.0"
 )

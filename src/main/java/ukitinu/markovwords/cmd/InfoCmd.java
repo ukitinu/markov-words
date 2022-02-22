@@ -39,11 +39,11 @@ public class InfoCmd extends AbstractCmd {
     }
 
     private void printDict(Dict dict) {
-        outStream.println(dict.name());
-        if (!dict.desc().isEmpty()) outStream.println(dict.desc());
+        outStream.println("name: " + dict.name());
+        outStream.println("desc: " + (!dict.desc().isEmpty() ? dict.desc() : "<empty>"));
 
         if (verbose) {
-            outStream.println(toPrintableString(dict.alphabet()));
+            outStream.println("alphabet: " + toPrintableString(dict.alphabet()));
             outStream.println("1-grams: " + getGramKeys(1));
             outStream.println("2-grams: " + getGramKeys(2));
             outStream.println("3-grams: " + getGramKeys(3));

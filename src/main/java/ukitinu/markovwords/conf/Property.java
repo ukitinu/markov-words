@@ -1,5 +1,6 @@
 package ukitinu.markovwords.conf;
 
+import ukitinu.markovwords.MarkovWords;
 import ukitinu.markovwords.lib.Logger;
 
 import java.io.FileInputStream;
@@ -36,6 +37,7 @@ public enum Property {
                 PROPS.load(is);
             } catch (Exception e) {
                 LOG.error("Unable to read {} file: {}", PROP_FILE, e.getMessage());
+                MarkovWords.ERR.println("Unable to read " + PROP_FILE + " file: " + e.getMessage());
                 System.exit(1);
             }
         }

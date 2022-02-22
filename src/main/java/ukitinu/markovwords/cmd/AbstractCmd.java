@@ -15,7 +15,7 @@ abstract class AbstractCmd implements Callable<Integer> {
     /**
      * Use this instead of constructor because picocli prefers to have nullary constructors for the subcommand classes.
      */
-    public void redirect(Repo repo, PrintStream outStream, PrintStream errStream) {
+    void redirect(Repo repo, PrintStream outStream, PrintStream errStream) {
         this.repo = repo;
         this.outStream = outStream;
         this.errStream = errStream;

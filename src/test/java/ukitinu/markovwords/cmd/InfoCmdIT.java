@@ -27,15 +27,16 @@ final class InfoCmdIT {
     void call_noDesc() {
         cmd.name = "dict-name";
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator(), outStream.toString());
+        assertEquals("name: dict-name" + System.lineSeparator()
+                + "desc: <empty>" + System.lineSeparator(), outStream.toString());
     }
 
     @Test
     void call() {
         cmd.name = "dict-complete";
         assertEquals(0, cmd.call());
-        assertEquals("dict-complete" + System.lineSeparator()
-                        + "A very good description" + System.lineSeparator(),
+        assertEquals("name: dict-complete" + System.lineSeparator()
+                        + "desc: A very good description" + System.lineSeparator(),
                 outStream.toString());
     }
 
@@ -44,8 +45,9 @@ final class InfoCmdIT {
         cmd.name = "dict-name";
         cmd.verbose = true;
         assertEquals(0, cmd.call());
-        assertEquals("dict-name" + System.lineSeparator()
-                        + "' - . 0 1 2 _ a b c" + System.lineSeparator()
+        assertEquals("name: dict-name" + System.lineSeparator()
+                        + "desc: <empty>" + System.lineSeparator()
+                        + "alphabet: ' - . 0 1 2 _ a b c" + System.lineSeparator()
                         + "1-grams: " + System.lineSeparator()
                         + "2-grams: " + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
@@ -57,9 +59,9 @@ final class InfoCmdIT {
         cmd.name = "dict-test";
         cmd.verbose = true;
         assertEquals(0, cmd.call());
-        assertEquals("dict-test" + System.lineSeparator()
-                        + "description:test" + System.lineSeparator()
-                        + "_ a b c d" + System.lineSeparator()
+        assertEquals("name: dict-test" + System.lineSeparator()
+                        + "desc: description:test" + System.lineSeparator()
+                        + "alphabet: _ a b c d" + System.lineSeparator()
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
@@ -79,8 +81,8 @@ final class InfoCmdIT {
     void call_deletedWithDot() {
         cmd.name = ".del-dict";
         assertEquals(0, cmd.call());
-        assertEquals("del-dict" + System.lineSeparator()
-                        + "DELETED!" + System.lineSeparator(),
+        assertEquals("name: del-dict" + System.lineSeparator()
+                        + "desc: DELETED!" + System.lineSeparator(),
                 outStream.toString());
     }
 

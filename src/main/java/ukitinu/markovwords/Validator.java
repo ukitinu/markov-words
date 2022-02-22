@@ -38,10 +38,12 @@ public final class Validator {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (c <= UNICODE_C0 || c == WORD_END || (c >= UNICODE_C1_START && c <= UNICODE_C1_END)) {
-                err.append("invalid unicode at position ")
+                err.append("\t") // NOPMD
+                        .append("invalid unicode at position ")
                         .append(i)
                         .append(" with hex value ")
                         .append(Integer.toHexString(c))
+                        .append(c == WORD_END ? " (reserved character)" : " (control characters not allowed)")
                         .append(System.lineSeparator());
             }
         }
