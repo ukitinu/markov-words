@@ -24,8 +24,8 @@ You can also get one of the pre-built dictionaries and use it immediately instea
 
 
 ## Quick guide
-How to call the various commands is explained using the CLI, what follows here is more about the "big picture" (quite
-pretentious to call it so, small as it is, but I couldn't find a better name).
+How to call the various commands is explained using the CLI (use `mkw help command`), what follows here is more about 
+the "big picture" (quite pretentious to call it so, but I couldn't find a better name).
 
 The user can **create** dictionaries, with a *name* and an *alphabet*. An alphabet is the set of symbols that will make up the
 dictionary's words. Most characters are allowed, apart from [control codes](https://en.wikipedia.org/wiki/C0_and_C1_control_codes),
@@ -48,5 +48,7 @@ to create new ones, **read** to improve their accuracy, and **write** to generat
 
 
 ## Pre-build dictionaries
-TODO #11
+Some sample dictionaries can be found in [samples](./samples). They can be used immediately after being copied 
+to one's own data directory.  
+More info can be found in the samples dir.
 
