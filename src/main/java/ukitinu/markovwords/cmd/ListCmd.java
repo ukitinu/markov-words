@@ -4,9 +4,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.lib.Logger;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -14,10 +12,6 @@ import java.util.stream.Collectors;
 @Command(name = "list", aliases = {"ls"}, description = "List the dictionaries")
 public class ListCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(ListCmd.class);
-
-    public ListCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-d", "--deleted"}, description = "List the deleted dictionaries only")
     boolean listDeleted;

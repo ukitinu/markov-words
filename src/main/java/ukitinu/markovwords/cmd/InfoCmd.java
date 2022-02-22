@@ -5,18 +5,12 @@ import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.repo.DataException;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Collection;
 
 @Command(name = "info", description = "Shows information about a given dictionary")
 public class InfoCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(InfoCmd.class);
-
-    public InfoCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose output")
     boolean verbose;

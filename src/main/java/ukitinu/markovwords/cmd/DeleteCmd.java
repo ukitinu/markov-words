@@ -3,18 +3,11 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Logger;
-import ukitinu.markovwords.repo.Repo;
-
-import java.io.PrintStream;
 
 @Command(name = "delete", description = "Delete a dictionary")
 public class DeleteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(DeleteCmd.class);
     static final String DEL_PERM_HINT = "refer to it with 'permanent' option on to remove it completely";
-
-    public DeleteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-p", "--permanent"}, description = "Permanent deletion")
     boolean permanent;

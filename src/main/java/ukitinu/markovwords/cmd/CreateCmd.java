@@ -6,18 +6,12 @@ import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.Validator;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Map;
 
 @Command(name = "create", description = "Create a dictionary")
 public class CreateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(CreateCmd.class);
-
-    public CreateCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-n", "--name"}, description = "Dictionary name", required = true)
     String name;

@@ -8,9 +8,7 @@ import ukitinu.markovwords.lib.FsUtils;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -18,12 +16,7 @@ import java.util.Map;
 public class ReadCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(ReadCmd.class);
 
-    private final Ingester ingester;
-
-    public ReadCmd(Repo repo, PrintStream outStream, PrintStream errStream, Ingester ingester) {
-        super(repo, outStream, errStream);
-        this.ingester = ingester;
-    }
+    private final Ingester ingester = new Ingester();
 
     @ArgGroup(multiplicity = "1")
     ReadInput input;

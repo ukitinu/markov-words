@@ -6,9 +6,7 @@ import ukitinu.markovwords.conf.Property;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Map;
 
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
@@ -16,10 +14,6 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 @Command(name = "write", description = "Generates words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(WriteCmd.class);
-
-    public WriteCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth")
     int depth = Property.WRITE_DEPTH.num();

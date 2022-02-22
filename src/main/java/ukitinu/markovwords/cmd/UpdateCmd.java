@@ -6,18 +6,12 @@ import ukitinu.markovwords.Validator;
 import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
-import ukitinu.markovwords.repo.Repo;
 
-import java.io.PrintStream;
 import java.util.Map;
 
 @Command(name = "update", description = "Updates a dictionary")
 public class UpdateCmd extends AbstractCmd {
     private static final Logger LOG = Logger.create(UpdateCmd.class);
-
-    public UpdateCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
-        super(repo, outStream, errStream);
-    }
 
     @Option(names = {"-n", "--name"}, description = "Dictionary to update", required = true)
     String name;

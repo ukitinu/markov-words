@@ -7,11 +7,14 @@ import java.util.concurrent.Callable;
 
 abstract class AbstractCmd implements Callable<Integer> {
 
-    final Repo repo;
-    final PrintStream outStream;
-    final PrintStream errStream;
+    protected Repo repo;
+    protected PrintStream outStream;
+    protected PrintStream errStream;
 
-    AbstractCmd(Repo repo, PrintStream outStream, PrintStream errStream) {
+    /**
+     * Use this instead of constructor because picocli prefers to have nullary constructors for the subcommand classes.
+     */
+    public void init(Repo repo, PrintStream outStream, PrintStream errStream) {
         this.repo = repo;
         this.outStream = outStream;
         this.errStream = errStream;
