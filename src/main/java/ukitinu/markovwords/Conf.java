@@ -30,7 +30,7 @@ public enum Conf {
 
     private static final class Reader {
         private static final Logger LOG = Logger.create(Reader.class);
-        private static final String PROP_FILE = "markov-words.properties";
+        private static final String PROP_FILE = "mkw.properties";
         private static final Properties PROPS = new Properties();
 
         static {

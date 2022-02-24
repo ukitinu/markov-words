@@ -6,7 +6,6 @@ import ukitinu.markovwords.models.Dict;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 class AlphabetUtilsTest {
@@ -45,6 +44,17 @@ class AlphabetUtilsTest {
         assertTrue(cleaned.endsWith(String.valueOf(WORD_END)));
         String expected = String.format("%sc%sb%sA%s", WORD_END, WORD_END, WORD_END, WORD_END);
         assertEquals(expected, cleaned);
+    }
+
+    @Test
+    void cleanText_blank() {
+        var dict = new Dict("test", Set.of());
+
+        String cleaned = assertDoesNotThrow(() -> AlphabetUtils.cleanText("  ", dict));
+        assertEquals("", cleaned);
+
+        cleaned = assertDoesNotThrow(() -> AlphabetUtils.cleanText(null, dict));
+        assertEquals("", cleaned);
     }
 
     @Test

@@ -33,7 +33,7 @@ public final class AlphabetUtils {
     /**
      * @return Set of letters A-Z, a-z, 0-9
      */
-    public static Set<Character> getAsciiSimple() {
+    static Set<Character> getAsciiSimple() {
         Set<Character> set = new HashSet<>();
         set.addAll(getAsciiLetters());
         set.addAll(getAsciiDigits());
@@ -43,7 +43,7 @@ public final class AlphabetUtils {
     /**
      * @return Set of letters A-Z, a-z
      */
-    public static Set<Character> getAsciiLetters() {
+    static Set<Character> getAsciiLetters() {
         Set<Character> set = new HashSet<>();
         set.addAll(getAsciiLettersUpper());
         set.addAll(getAsciiLettersLower());
@@ -53,21 +53,21 @@ public final class AlphabetUtils {
     /**
      * @return Set of letters A-Z
      */
-    public static Set<Character> getAsciiLettersUpper() {
+    static Set<Character> getAsciiLettersUpper() {
         return getAsciiRange(ASCII_A_UPPER, ASCII_Z_UPPER);
     }
 
     /**
      * @return Set of letters a-z
      */
-    public static Set<Character> getAsciiLettersLower() {
+    static Set<Character> getAsciiLettersLower() {
         return getAsciiRange(ASCII_A_LOWER, ASCII_Z_LOWER);
     }
 
     /**
      * @return Set of letters 0-9
      */
-    public static Set<Character> getAsciiDigits() {
+    static Set<Character> getAsciiDigits() {
         return getAsciiRange(ASCII_0, ASCII_9);
     }
 
@@ -83,7 +83,9 @@ public final class AlphabetUtils {
      * @param dict dictionary to use.
      * @return text to ingest.
      */
-    public static String cleanText(String text, Dict dict) {
+    static String cleanText(String text, Dict dict) {
+        if (text == null || text.isBlank()) return "";
+
         List<Character> list = new ArrayList<>();
 
         list.add(WORD_END);

@@ -1,12 +1,12 @@
 package ukitinu.markovwords.lib;
 
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.LoggerFactory;;
 
 class Log implements Logger {
-    private final org.apache.logging.log4j.Logger log;
+    private final org.slf4j.Logger log;
 
     Log(Class<?> clazz) {
-        this.log = LogManager.getLogger(clazz);
+        this.log = LoggerFactory.getLogger(clazz);
     }
 
     @Override

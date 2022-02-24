@@ -18,7 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- DEPENDENCIES -->
         <versions.commons-io>2.11.0</versions.commons-io>
-        <versions.log4j>2.17.1</versions.log4j>
+        <versions.logger>1.2.10</versions.logger>
         <versions.lombok>1.18.22</versions.lombok>
         <versions.junit>5.8.2</versions.junit>
         <versions.picocli>4.6.3</versions.picocli>
@@ -48,14 +48,14 @@
         </dependency>
         <!-- LOGGING -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${versions.log4j}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${versions.logger}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${versions.log4j}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${versions.logger}</version>
         </dependency>
         <!-- LOMBOK -->
         <dependency>
