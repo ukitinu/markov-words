@@ -31,3 +31,7 @@ target/
 *.tar
 *.gz
 
+# pre-built dictionaries
+!/samples/dunmer-family.tar.gz
+!/samples/dunmer-female.tar.gz
+!/samples/dunmer-male.tar.gz
