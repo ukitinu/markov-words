@@ -13,7 +13,6 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "write", description = "Generate words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
-    private static final int LEN_ROOF = 513; // 512 + 1
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
     int depth = Conf.WRITE_DEPTH.num();
@@ -45,6 +44,18 @@ public class WriteCmd extends AbstractCmd {
         if (maxLen <= 0) {
             throw new IllegalArgumentException("max-len value must be positive");
         }
+        if (num <= 0) {
+            throw new IllegalArgumentException("num value must be positive");
+        }
+        if (depth <= 0) {
+            throw new IllegalArgumentException("depth value must be positive");
+        }
+        if (Conf.GRAM_MAX_LEN.num() <= 0) {
+            throw new IllegalArgumentException("'gram.max_length' property must be positive");
+        }
+        if (depth > Conf.GRAM_MAX_LEN.num()) {
+            throw new IllegalArgumentException("depth value must be lesser or equal than 'gram.max_length' property");
+        }
     }
 
     private int exec() {
@@ -69,7 +80,7 @@ public class WriteCmd extends AbstractCmd {
         Gram gram = gramMap.get(String.valueOf(WORD_END));
 
         char next = gram.next();
-        while (next != WORD_END && word.length() < maxLen && word.length() < LEN_ROOF) {
+        while (next != WORD_END && word.length() <= maxLen) {
             word.append(next);
             var nextGram = pickNextGram(gram, gramMap, next);
             next = nextGram.next();

@@ -10,6 +10,9 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 public class Ingester {
 
     public void ingest(String text, Map<String, Gram> gramMap, Dict dict) {
+        if (Conf.GRAM_MAX_LEN.num() <= 0) {
+            throw new IllegalArgumentException("'gram.max_length' property must be positive");
+        }
         for (int len = 1; len <= Conf.GRAM_MAX_LEN.num(); len++) {
             ingest(text, gramMap, dict, len);
         }

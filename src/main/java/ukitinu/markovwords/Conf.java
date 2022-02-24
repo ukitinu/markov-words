@@ -36,7 +36,7 @@ public enum Conf {
                 # Path where the dictionaries' data is stored
                 data.path=./.data
                                 
-                # gram.max_length >= 0
+                # gram.max_length >= 1
                 # Every n-gram directory contains (potentially) a number of file in the order of (alphabet_size)^n
                 # For example, an alphabet consisting of a-zA-Z0-9, could potentially have around 250k 3-grams,
                 # which is why I heavily suggest not to go above 3, or even lowering it to 2
@@ -50,11 +50,11 @@ public enum Conf {
                 # Sets the default number when using the 'write' command
                 write.num=1
                                 
-                # 1 <= write.max_length <= 512
+                # write.max_length >= 1
                 # Sets the default max length for a word generated with the 'write' command
                 # Non-positive values will cause failure of the 'write' command, values exceeding 512 will be ignored and 512 will be used
                 write.max_length=64
-                                
+                          
                 """;
 
         private static final Properties PROPS = new Properties();
