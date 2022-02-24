@@ -64,6 +64,7 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>${versions.jacoco}</version>
             <type>maven-plugin</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
