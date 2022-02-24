@@ -1,7 +1,5 @@
 package ukitinu.markovwords;
 
-import ukitinu.markovwords.lib.Logger;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
@@ -29,7 +27,6 @@ public enum Conf {
     }
 
     private static final class Reader {
-        private static final Logger LOG = Logger.create(Reader.class);
         private static final String PROP_FILE = "mkw.properties";
         private static final Properties PROPS = new Properties();
 
@@ -37,9 +34,8 @@ public enum Conf {
             try (var is = new FileInputStream(PROP_FILE)) {
                 PROPS.load(is);
             } catch (FileNotFoundException e) {
-                LOG.warn("File {} not found", PROP_FILE);
+                MarkovWords.ERR.println(PROP_FILE + " not found");
             } catch (Exception e) {
-                LOG.error("Unable to read {} file: {}", PROP_FILE, e.getMessage());
                 MarkovWords.ERR.println("Unable to read " + PROP_FILE + " file: " + e.getMessage());
                 System.exit(1);
             }

@@ -2,7 +2,6 @@ package ukitinu.markovwords.repo;
 
 import ukitinu.markovwords.lib.Couple;
 import ukitinu.markovwords.lib.FsUtils;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -18,8 +17,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class FileRepo implements Repo {
-    private static final Logger LOG = Logger.create(FileRepo.class);
-
     private final Path dataPath;
     private final DataConverter dataConverter;
 
@@ -64,7 +61,6 @@ public final class FileRepo implements Repo {
             Collection<String> deleted = names.stream().filter(FilePaths::isDeleted).toList();
             return new Couple<>(visible, deleted);
         } catch (Exception e) {
-            LOG.error("Unable to read dir {}: {}", dataPath.toString(), e.toString());
             throw new DataException("Unable to read data dir", e);
         }
     }
@@ -93,11 +89,9 @@ public final class FileRepo implements Repo {
             if (Files.isDirectory(deletedPath)) {
                 throw new DataException("Dict has been deleted: " + name);
             } else {
-                LOG.error("Dict {} not found (either dir or .dat file)", name);
                 throw new DataException("Dict not found: " + name, e);
             }
         } catch (IOException e) {
-            LOG.error("Unable to read dict {}: {}", name, e.toString());
             throw new DataException("Unable to read dict " + name, e);
         }
     }
@@ -110,10 +104,8 @@ public final class FileRepo implements Repo {
             String content = FsUtils.readFile(gramPath);
             return dataConverter.deserialiseGram(content, dict);
         } catch (NoSuchFileException e) {
-            LOG.error("Gram {} of Dict {} not found", gramValue, dictName);
             throw new DataException("Gram " + gramValue + " of Dict " + dictName + " not found");
         } catch (IOException e) {
-            LOG.error("Unable to read gram {} of dict {}: {}", gramValue, dictName, e.toString());
             throw new DataException("Unable to read gram " + gramValue + " of Dic " + dictName, e);
         }
     }
@@ -138,7 +130,6 @@ public final class FileRepo implements Repo {
             Path deletedPath = FilePaths.getDeletedDictDir(dataPath, name);
             Files.move(dirPath, deletedPath);
         } catch (IOException e) {
-            LOG.error("Unable to delete dict {}: {}", name, e.toString());
             throw new DataException("Unable to delete dict " + name, e);
         }
     }
@@ -155,7 +146,6 @@ public final class FileRepo implements Repo {
             Path restoredPath = FilePaths.getRestoredDictDir(dataPath, name);
             Files.move(dirPath, restoredPath);
         } catch (IOException e) {
-            LOG.error("Unable to restore dict {}: {}", name, e.toString());
             throw new DataException("Unable to restore dict " + name, e);
         }
     }
@@ -180,7 +170,6 @@ public final class FileRepo implements Repo {
             }
             return false;
         } catch (IOException e) {
-            LOG.error("Unable to check {}-grams of {}: {}", len, name, e.toString());
             throw new DataException("Unable to check " + len + "-grams of " + name, e);
         }
     }
@@ -207,7 +196,6 @@ public final class FileRepo implements Repo {
 
             return gramMap;
         } catch (IOException e) {
-            LOG.error("Unable to get grams of {}: {}", name, e.toString());
             throw new DataException("Unable to get grams of " + name, e);
         }
     }
@@ -233,7 +221,6 @@ public final class FileRepo implements Repo {
                     .collect(Collectors.toMap(Gram::getValue, Function.identity()));
 
         } catch (IOException e) {
-            LOG.error("Unable to get {}-grams of {}: {}", len, name, e.toString());
             throw new DataException("Unable to get " + len + "-grams of " + name, e);
         }
     }
@@ -271,7 +258,6 @@ public final class FileRepo implements Repo {
             Path dictDir = FilePaths.getDictDir(dataPath, dict.name(), false);
             FsUtils.cpDir(dictDir, tmpDir);
         } catch (IOException e) {
-            LOG.error("Failed to create tmp dir {} for dict {}: {}", tmpDir, dict.name(), e.toString());
             throw new DataException(String.format("Failed to create %s: %s", tmpDir, e.getMessage()), e);
         }
     }
@@ -288,7 +274,6 @@ public final class FileRepo implements Repo {
             String dictString = dataConverter.serialiseDict(dict);
             FsUtils.writeToFile(dictFile, dictString);
         } catch (IOException e) {
-            LOG.error("Failed to upsert dict {} data in {}: {}", dict.name(), dictFile, e.toString());
             throw new DataException(String.format("Failed to upsert dictionary %s: %s", dict.name(), e.getMessage()), e);
         }
     }
@@ -329,7 +314,6 @@ public final class FileRepo implements Repo {
                 if (!currentContent.equals(gramString)) FsUtils.writeToFile(gramPath, gramString);
             }
         } catch (IOException e) {
-            LOG.error("Failed to upsert gram {} in dict {}: {}", gram.getValue(), dictName, e.toString());
             throw new DataException(String.format("Failed to upsert gram %s: %s", gramPath, e.getMessage()), e);
         }
     }
@@ -346,7 +330,6 @@ public final class FileRepo implements Repo {
         try {
             FsUtils.moveAndReplace(tmpDir, dictDir);
         } catch (IOException e) {
-            LOG.error("Failed to replace {} with {}: {}", dictDir, tmpDir, e.toString());
             throw new DataException(String.format("Failed to replace %s with %s: %s", dictDir, tmpDir, e.getMessage()), e);
         }
     }

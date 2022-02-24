@@ -4,7 +4,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Conf;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
 
@@ -15,7 +14,6 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 @Command(name = "write", description = "Generate words out of the dictionary")
 public class WriteCmd extends AbstractCmd {
     private static final int LEN_ROOF = 513; // 512 + 1
-    private static final Logger LOG = Logger.create(WriteCmd.class);
 
     @Option(names = {"-d", "--depth"}, description = "Gram depth (default in write.depth in properties file)")
     int depth = Conf.WRITE_DEPTH.num();
@@ -31,13 +29,11 @@ public class WriteCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("write -- name={} num={} depth={} max-len={}", name, num, depth, maxLen);
         try {
             validate();
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            LOG.error("write -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -57,7 +53,6 @@ public class WriteCmd extends AbstractCmd {
 
         for (int i = 0; i < num; i++) outStream.println(generate(gramMap));
 
-        LOG.info("write -- ok");
         return 0;
     }
 

@@ -6,7 +6,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Ingester;
 import ukitinu.markovwords.lib.FsUtils;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -15,8 +14,6 @@ import java.util.Map;
 
 @Command(name = "read", description = "Read input text and add it to the dictionary")
 public class ReadCmd extends AbstractCmd {
-    private static final Logger LOG = Logger.create(ReadCmd.class);
-
     private final Ingester ingester = new Ingester();
 
     @ArgGroup(multiplicity = "1")
@@ -34,12 +31,10 @@ public class ReadCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("read -- name={} text={} file={}", name, input.text, input.file);
         try {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            LOG.error("read -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -54,7 +49,6 @@ public class ReadCmd extends AbstractCmd {
         repo.upsert(dict, gramMap);
 
         outStream.println("Text read, dictionary " + name + " updated");
-        LOG.info("read -- ok");
         return 0;
     }
 

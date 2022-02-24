@@ -4,7 +4,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Validator;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.models.Gram;
 
@@ -12,7 +11,6 @@ import java.util.Map;
 
 @Command(name = "update", description = "Update a dictionary (name and/or description)")
 public class UpdateCmd extends AbstractCmd {
-    private static final Logger LOG = Logger.create(UpdateCmd.class);
 
     @Parameters(paramLabel = "NAME", description = "Dictionary to update")
     String name;
@@ -25,13 +23,11 @@ public class UpdateCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("update -- name={} new-name={} new-desc={}", name, newName, newDesc);
         try {
             validate();
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            LOG.error("update -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -61,14 +57,11 @@ public class UpdateCmd extends AbstractCmd {
 
         // if there is no new name then this would delete the updated dict
         if (!isMissing(newName)) {
-            LOG.info("update -- removing previous version");
             repo.delete(name, true);
-            LOG.info("update -- removed previous version");
         }
 
         printUpdates(currentDict, newDict);
 
-        LOG.info("update -- ok");
         return 0;
     }
 

@@ -6,7 +6,6 @@ import picocli.CommandLine.Parameters;
 import ukitinu.markovwords.Alphabet;
 import ukitinu.markovwords.AlphabetUtils;
 import ukitinu.markovwords.Validator;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 
 import java.util.Map;
@@ -16,7 +15,6 @@ import static ukitinu.markovwords.AlphabetUtils.WORD_END;
 
 @Command(name = "create", description = "Create a new empty dictionary")
 public class CreateCmd extends AbstractCmd {
-    private static final Logger LOG = Logger.create(CreateCmd.class);
 
     @Parameters(paramLabel = "NAME", description = "Dictionary name (English letters, digits and dashes allowed, must start with a letter)")
     String name;
@@ -32,13 +30,11 @@ public class CreateCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("create -- name={} desc={} base={} alphabet={}", name, desc, base, alphabet);
         try {
             validate();
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            LOG.error("create -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -64,7 +60,6 @@ public class CreateCmd extends AbstractCmd {
         Dict dict = new Dict(name, desc, dictChars);
         repo.upsert(dict, Map.of());
         outStream.println("New dictionary created: " + name);
-        LOG.info("create -- ok");
         return 0;
     }
 

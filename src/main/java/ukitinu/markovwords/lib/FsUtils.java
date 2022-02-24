@@ -1,6 +1,7 @@
 package ukitinu.markovwords.lib;
 
 import org.apache.commons.io.FileUtils;
+import ukitinu.markovwords.MarkovWords;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,8 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public final class FsUtils {
-    private static final Logger LOG = Logger.create(FsUtils.class);
-
     private FsUtils() {
         throw new IllegalStateException("non-instantiable");
     }
@@ -70,7 +69,7 @@ public final class FsUtils {
         try {
             return readFile(path);
         } catch (IOException e) {
-            LOG.error("Unable to read {}: {}", path, e.getMessage());
+            MarkovWords.ERR.println("Unable to read " + path + ": " + e.getMessage());
             return "";
         }
     }

@@ -3,7 +3,6 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import ukitinu.markovwords.lib.Logger;
 import ukitinu.markovwords.models.Dict;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.FilePaths;
@@ -12,7 +11,6 @@ import java.util.Collection;
 
 @Command(name = "info", description = "Show information about a given dictionary")
 public class InfoCmd extends AbstractCmd {
-    private static final Logger LOG = Logger.create(InfoCmd.class);
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose output")
     boolean verbose;
@@ -22,14 +20,12 @@ public class InfoCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("info -- name={} verbose={}", name, verbose);
         try {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
             if (e.getMessage().contains("deleted"))
                 errStream.println("Use " + FilePaths.DEL_PREFIX + name + " to refer to it");
-            LOG.error("info -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -37,7 +33,6 @@ public class InfoCmd extends AbstractCmd {
     private int exec() {
         var dict = repo.get(name);
         printDict(dict);
-        LOG.info("info -- ok");
         return 0;
     }
 

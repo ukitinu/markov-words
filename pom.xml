@@ -18,7 +18,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- DEPENDENCIES -->
         <versions.commons-io>2.11.0</versions.commons-io>
-        <versions.logger>1.2.10</versions.logger>
         <versions.lombok>1.18.22</versions.lombok>
         <versions.junit>5.8.2</versions.junit>
         <versions.picocli>4.6.3</versions.picocli>
@@ -46,18 +45,6 @@
             <artifactId>picocli</artifactId>
             <version>${versions.picocli}</version>
         </dependency>
-        <!-- LOGGING -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${versions.logger}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${versions.logger}</version>
-        </dependency>
-        <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

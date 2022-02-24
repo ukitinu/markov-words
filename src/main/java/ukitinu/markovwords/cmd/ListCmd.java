@@ -3,7 +3,6 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import ukitinu.markovwords.lib.Couple;
-import ukitinu.markovwords.lib.Logger;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 
 @Command(name = "list", description = "List the dictionaries")
 public class ListCmd extends AbstractCmd {
-    private static final Logger LOG = Logger.create(ListCmd.class);
 
     @Option(names = {"-d", "--deleted"}, description = "List the deleted dictionaries only")
     boolean listDeleted;
@@ -24,12 +22,10 @@ public class ListCmd extends AbstractCmd {
 
     @Override
     public Integer call() {
-        LOG.info("list -- name={} all={} deleted={}", name, listAll, listDeleted);
         try {
             return exec();
         } catch (Exception e) {
             errStream.println(e.getMessage());
-            LOG.error("list -- ko: {} {}", e.getClass().getSimpleName(), e.getMessage());
             return 1;
         }
     }
@@ -40,12 +36,10 @@ public class ListCmd extends AbstractCmd {
 
         if (names.isEmpty()) {
             errStream.println("No results found");
-            LOG.warn("list -- ko: no results");
             return 1;
         }
 
         names.forEach(outStream::println);
-        LOG.info("list -- ok");
         return 0;
     }
 
