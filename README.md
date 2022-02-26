@@ -4,7 +4,7 @@
 # Markov Words
 ### Random word generator based on Markov chains, with "trainable" datasets.
 
-<img align="right" src="https://user-images.githubusercontent.com/52630493/155839196-a6a9895a-2f44-449a-9fda-bc67fb11a7f4.PNG" width="650">
+<img align="right" src="https://user-images.githubusercontent.com/52630493/155839196-a6a9895a-2f44-449a-9fda-bc67fb11a7f4.PNG" width="600">
 This project was born out of my desire to have a reliable way to create words that sound kind of similar to others,
 where *others* could be a language, a dialect, the names of all the characters of Tolkien's Legendarium and so on.
 
