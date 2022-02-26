@@ -4,10 +4,10 @@
 # Markov Words
 ### Random word generator based on Markov chains, with "trainable" datasets.
 
-<img align="right" src="https://user-images.githubusercontent.com/52630493/155839196-a6a9895a-2f44-449a-9fda-bc67fb11a7f4.PNG" width="550">
+<img src="https://user-images.githubusercontent.com/52630493/155839196-a6a9895a-2f44-449a-9fda-bc67fb11a7f4.PNG" width="694">
+
 This project was born out of my desire to have a reliable way to create words that sound kind of similar to others,
 where *others* could be a language, a dialect, the names of all the characters of Tolkien's Legendarium and so on.
-
 
 I also took the opportunity to try out some of the new Java 17 features, [Picocli](https://picocli.info/), a CLI library
 for Java, and [GraalVM](https://www.graalvm.org/), a JVM perfectly suited for Java CLIs.
