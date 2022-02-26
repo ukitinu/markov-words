@@ -19,11 +19,11 @@ a mechanism based on Markov chains.
 ## Installation
 TODO #22  
 Extract the archive where you want to run the application and then start using it: run the bash/batch/elf file to learn
-how the CLI works.  
+how the CLI works (the first time will generate the configuration file and exit immediately).  
 You can also get one of the pre-built dictionaries and use it immediately instead of creating your own.  
 To create new dictionaries on Windows, it is necessary to enable case sensitive file names for the data directory. I
 tried to follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/case-sensitivity), but it didn't work (I got
-a request not supported error or something like that).
+a "request not supported" error or something like that).
 
 
 ## Quick guide
@@ -44,10 +44,6 @@ get the `info` about one.
 
 I expect that most of these commands will go unused, apart from `list` to check the available dictionaries, `create`
 to create new ones, `read` to improve their accuracy, and `write` to generate words.
-
-
-## More in depth
-...todo...
 
 
 ## Pre-built dictionaries
