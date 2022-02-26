@@ -25,7 +25,7 @@ jobs:
       - name: Get release name
         id: rel-name
         run: |
-          REL=$(echo target/RELEASE)
+          REL=$(cat target/RELEASE)
           echo "::set-output name=REL::$REL"
       - name: Linux archive
         run: |
@@ -65,7 +65,7 @@ jobs:
       - name: Get release name
         id: rel-name
         run: |
-          REL=$(echo target/RELEASE)
+          REL=$(cat target/RELEASE)
           echo "::set-output name=REL::$REL"
       - name: Build native image
         run: |
