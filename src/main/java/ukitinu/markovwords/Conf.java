@@ -66,6 +66,7 @@ public enum Conf {
                 MarkovWords.ERR.println(PROP_FILE + " not found, generating default one\n");
                 try {
                     FsUtils.writeToFile(Path.of(PROP_FILE), MKW_FILE);
+                    System.exit(0);
                 } catch (IOException ex) {
                     MarkovWords.ERR.println(ex.getMessage());
                     System.exit(1);
