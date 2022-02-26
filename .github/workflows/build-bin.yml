@@ -75,31 +75,31 @@ jobs:
           name: nat-img-ubuntu-latest
           path: ./target/*-linux-nat-img.tar.gz
 
-  build-graalvm-windows:
-    name: GraalVM-latest on windows-latest
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build jar
-        run: mvn clean install -DskipTests
-      - name: Get release name
-        id: rel-name
-        run: |
-          REL=$(type target/RELEASE)
-          echo "::set-output name=REL::$REL"
-      - name: Build native image
-        run: |
-          cd target
-          native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw.exe
-          zip ${{steps.rel-name.outputs.REL}}-windows-nat-img.zip mkw.exe
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: nat-img-windows-latest
-          path: ./target/*-windows-nat-img.zip
+#  build-graalvm-windows:
+#    name: GraalVM-latest on windows-latest
+#    runs-on: windows-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: graalvm/setup-graalvm@v1
+#        with:
+#          version: 'latest'
+#          java-version: '17'
+#          components: 'native-image'
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Build jar
+#        run: mvn clean install -DskipTests
+#      - name: Get release name
+#        id: rel-name
+#        run: |
+#          REL=$(type target/RELEASE)
+#          echo "::set-output name=REL::$REL"
+#      - name: Build native image
+#        run: |
+#          cd target
+#          native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw.exe
+#          zip ${{steps.rel-name.outputs.REL}}-windows-nat-img.zip mkw.exe
+#      - name: Upload binary
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: nat-img-windows-latest
+#          path: ./target/*-windows-nat-img.zip
