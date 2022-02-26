@@ -20,7 +20,7 @@ a mechanism based on Markov chains.
 TODO #22  
 Extract the archive where you want to run the application and then start using it: run the bash/batch/elf file to learn
 how the CLI works.  
-You can also get one of the pre-built dictionaries and use it immediately instead of creating your own. (TODO #11)  
+You can also get one of the pre-built dictionaries and use it immediately instead of creating your own.  
 To create new dictionaries on Windows, it is necessary to enable case sensitive file names for the data directory. I
 tried to follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/case-sensitivity), but it didn't work (I got
 a request not supported error or something like that).

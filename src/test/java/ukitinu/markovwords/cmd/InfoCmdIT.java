@@ -28,7 +28,9 @@ final class InfoCmdIT {
         cmd.name = "dict-name";
         assertEquals(0, cmd.call());
         assertEquals("name: dict-name" + System.lineSeparator()
-                + "desc: " + System.lineSeparator(), outStream.toString());
+                        + "desc: " + System.lineSeparator()
+                        + "alphabet: '-.012_abc" + System.lineSeparator(),
+                outStream.toString());
     }
 
     @Test
@@ -36,7 +38,8 @@ final class InfoCmdIT {
         cmd.name = "dict-complete";
         assertEquals(0, cmd.call());
         assertEquals("name: dict-complete" + System.lineSeparator()
-                        + "desc: A very good description" + System.lineSeparator(),
+                        + "desc: A very good description" + System.lineSeparator()
+                        + "alphabet: _ab" + System.lineSeparator(),
                 outStream.toString());
     }
 
@@ -62,6 +65,21 @@ final class InfoCmdIT {
         assertEquals("name: dict-test" + System.lineSeparator()
                         + "desc: description:test" + System.lineSeparator()
                         + "alphabet: _abcd" + System.lineSeparator()
+                        + "1-grams: 2" + System.lineSeparator()
+                        + "2-grams: 1" + System.lineSeparator()
+                        + "3-grams: " + System.lineSeparator(),
+                outStream.toString());
+    }
+
+    @Test
+    void call_veryVerbose() {
+        cmd.name = "dict-test";
+        cmd.verbose = true;
+        cmd.veryVerbose = true;
+        assertEquals(0, cmd.call());
+        assertEquals("name: dict-test" + System.lineSeparator()
+                        + "desc: description:test" + System.lineSeparator()
+                        + "alphabet: _abcd" + System.lineSeparator()
                         + "1-grams: a b" + System.lineSeparator()
                         + "2-grams: ba" + System.lineSeparator()
                         + "3-grams: " + System.lineSeparator(),
@@ -82,7 +100,8 @@ final class InfoCmdIT {
         cmd.name = ".del-dict";
         assertEquals(0, cmd.call());
         assertEquals("name: del-dict" + System.lineSeparator()
-                        + "desc: DELETED!" + System.lineSeparator(),
+                        + "desc: DELETED!" + System.lineSeparator()
+                        + "alphabet: _abcdefg" + System.lineSeparator(),
                 outStream.toString());
     }
 

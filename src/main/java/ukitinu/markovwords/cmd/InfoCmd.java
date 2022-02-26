@@ -3,17 +3,24 @@ package ukitinu.markovwords.cmd;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import ukitinu.markovwords.Conf;
 import ukitinu.markovwords.models.Dict;
+import ukitinu.markovwords.models.Gram;
 import ukitinu.markovwords.repo.DataException;
 import ukitinu.markovwords.repo.FilePaths;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
 
 @Command(name = "info", description = "Show information about a given dictionary")
 public class InfoCmd extends AbstractCmd {
 
-    @Option(names = {"-v", "--verbose"}, description = "Verbose output")
+    @Option(names = {"-v", "--verbose"}, description = "Verbose output (shows number of n-grams)")
     boolean verbose;
+
+    @Option(names = {"-vv", "--very-verbose"}, description = "Very verbose output (shows n-grams, supersedes --verbose)")
+    boolean veryVerbose;
 
     @Parameters(paramLabel = "NAME", description = "Dictionary name")
     String name;
@@ -39,19 +46,28 @@ public class InfoCmd extends AbstractCmd {
     private void printDict(Dict dict) {
         outStream.println("name: " + dict.name());
         outStream.println("desc: " + (!dict.desc().isEmpty() ? dict.desc() : ""));
+        outStream.println("alphabet: " + toPrintableString(dict.alphabet(), ""));
 
-        if (verbose) {
-            outStream.println("alphabet: " + toPrintableString(dict.alphabet(), ""));
-            outStream.println("1-grams: " + getGramKeys(1));
-            outStream.println("2-grams: " + getGramKeys(2));
-            outStream.println("3-grams: " + getGramKeys(3));
+        if (veryVerbose) {
+            for (int len = 1; len <= Conf.GRAM_MAX_LEN.num(); len++) {
+                outStream.println(len + "-grams: " + getGramInfo(
+                        len,
+                        map -> toPrintableString(map.keySet(), " ")
+                ));
+            }
+        } else if (verbose) {
+            for (int len = 1; len <= Conf.GRAM_MAX_LEN.num(); len++) {
+                outStream.println(len + "-grams: " + getGramInfo(
+                        len,
+                        map -> String.valueOf(map.size())
+                ));
+            }
         }
     }
 
-    private String getGramKeys(int len) {
+    private String getGramInfo(int len, Function<Map<String, Gram>, String> infoGetter) {
         try {
-            var keys = repo.getGramMap(name, len).keySet();
-            return toPrintableString(keys, " ");
+            return infoGetter.apply(repo.getGramMap(name, len));
         } catch (DataException e) {
             return "";
         }
