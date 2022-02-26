@@ -26,11 +26,15 @@ jobs:
         id: rel-name
         run: |
           REL=$(echo target/RELEASE)
-          echo "::set-output name=REL::REL"
+          echo "::set-output name=REL::$REL"
       - name: Linux archive
-        run: tar -czf ${{steps.rel-name.outputs.REL}}-linux.tar.gz ${{steps.rel-name.outputs.REL}}.jar mkw.sh
+        run: |
+          cd target
+          tar -czf ${{steps.rel-name.outputs.REL}}-linux.tar.gz ${{steps.rel-name.outputs.REL}}.jar mkw.sh
       - name: Windows archive
-        run: zip ${{steps.rel-name.outputs.REL}}-windows.tar.gz ${{steps.rel-name.outputs.REL}}.jar mkw.bat
+        run: |
+          cd target
+          zip ${{steps.rel-name.outputs.REL}}-windows.tar.gz ${{steps.rel-name.outputs.REL}}.jar mkw.bat
       - name: Upload Linux archive
         uses: actions/upload-artifact@v2
         with:
@@ -62,12 +66,16 @@ jobs:
         id: rel-name
         run: |
           REL=$(echo target/RELEASE)
-          echo "::set-output name=REL::REL"
+          echo "::set-output name=REL::$REL"
       - name: Build native image
-        run: native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw
+        run: |
+          cd target
+          native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw
         if: runner.os != 'Windows'
       - name: Build native image on Windows
-        run: native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw.exe
+        run: |
+          cd target
+          native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw.exe
         if: runner.os == 'Windows'
       - name: Upload binary
         uses: actions/upload-artifact@v2
