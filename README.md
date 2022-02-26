@@ -18,6 +18,10 @@ a mechanism based on Markov chains.
 
 
 ## Installation & requirements
+Java is the only requirement.  
+To use directly the jar, **Java 17** is required. Regarding the native image, I tested it with **Java 17** and **Java 11**
+and had no issues.
+
 TODO #22  
 Extract the archive where you want to run the application and then start using it: run the bash/batch/elf file to learn
 how the CLI works (the first time will generate the configuration file and exit immediately).  
