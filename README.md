@@ -17,7 +17,7 @@ its own "alphabet" and its own [n-grams](https://en.wikipedia.org/wiki/N-gram), 
 a mechanism based on Markov chains.
 
 
-## Installation
+## Installation & requirements
 TODO #22  
 Extract the archive where you want to run the application and then start using it: run the bash/batch/elf file to learn
 how the CLI works (the first time will generate the configuration file and exit immediately).  
@@ -28,8 +28,8 @@ a "request not supported" error or something like that).
 
 
 ## Quick guide
-Use `mkw --help` to see the list of available commands, while how to call them is explained using the CLI (use `mkw help command`), what follows here is more about 
-the "big picture".
+Use `mkw --help` to see the list of available commands, while how to call them is explained using the CLI
+(use `mkw help command`), what follows here is more about the "big picture".
 
 The user can `create` dictionaries, with a *name* and an *alphabet*. An alphabet is the set of symbols that will make up the
 dictionary's words. Most characters are allowed, apart from [control codes](https://en.wikipedia.org/wiki/C0_and_C1_control_codes),

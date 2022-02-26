@@ -70,6 +70,16 @@
 
     <build>
         <finalName>${project.artifactId}-${project.version}.original</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*</include>
+                </includes>
+                <targetPath>${project.build.directory}</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -128,6 +138,7 @@
                     </excludes>
                     <runOrder>alphabetical</runOrder>
                     <!-- populated during execution, ignore 'unresolved maven property' warning  -->
+                    <!--suppress UnresolvedMavenProperty -->
                     <argLine>${surefire.jacoco.args}</argLine>
                 </configuration>
             </plugin>
@@ -141,6 +152,7 @@
                     </includes>
                     <runOrder>alphabetical</runOrder>
                     <!-- populated during execution, ignore 'unresolved maven property' warning  -->
+                    <!--suppress UnresolvedMavenProperty -->
                     <argLine>${failsafe.jacoco.args}</argLine>
                 </configuration>
                 <executions>

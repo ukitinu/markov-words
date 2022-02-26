@@ -1,15 +1,15 @@
 name: Integration tests
 
 #
-# Unit and integration tests, with coverage report badge for PR NOT on master branch
+# Unit and integration tests, with coverage report for PR NOT on dev branch
 #
 
 on:
   pull_request:
-    # ** matches every branch name, but master is filtered out afterwards
+    # ** matches every branch name, but dev is filtered out afterwards
     branches:
       - '**'
-      - '!master'
+      - '!dev'
 
 jobs:
   integration-tests:
