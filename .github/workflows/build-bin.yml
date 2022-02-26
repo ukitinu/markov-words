@@ -34,7 +34,7 @@ jobs:
       - name: Windows archive
         run: |
           cd target
-          zip ${{steps.rel-name.outputs.REL}}-windows.tar.gz ${{steps.rel-name.outputs.REL}}.jar mkw.bat
+          zip ${{steps.rel-name.outputs.REL}}-windows.zip ${{steps.rel-name.outputs.REL}}.jar mkw.bat
       - name: Upload Linux archive
         uses: actions/upload-artifact@v2
         with:
@@ -44,14 +44,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jar-windows
-          path: ./target/*-windows.tar.gz
+          path: ./target/*-windows.zip
 
   build-graalvm:
-    name: GraalVM-latest on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    name: GraalVM-latest on ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: graalvm/setup-graalvm@v1
@@ -71,14 +68,8 @@ jobs:
         run: |
           cd target
           native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw
-        if: runner.os != 'Windows'
-      - name: Build native image on Windows
-        run: |
-          cd target
-          native-image -jar ${{steps.rel-name.outputs.REL}}.jar --static -H:Name=mkw.exe
-        if: runner.os == 'Windows'
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: bin-${{ matrix.os }}
-          path: ./target/mkw*
+          name: bin-ubuntu-latest
+          path: ./target/mkw
