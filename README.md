@@ -2,9 +2,9 @@
 ![Branches](.github/badges/branches.svg)
 
 # Markov Words
+### Random word generator based on Markov chains, with "trainable" datasets.
 
-Random word generator based on Markov chains, with "trainable" datasets.
-
+<img align="right" src="https://user-images.githubusercontent.com/52630493/155839196-a6a9895a-2f44-449a-9fda-bc67fb11a7f4.PNG" width="694">
 This project was born out of my desire to have a reliable way to create words that sound kind of similar to others,
 where *others* could be a language, a dialect, the names of all the characters of Tolkien's Legendarium and so on.
 
@@ -27,15 +27,16 @@ a "request not supported" error or something like that).
 
 
 ## Quick guide
-How to call the various commands is explained using the CLI (use `mkw help command`), what follows here is more about 
+Use `mkw --help` to see the list of available commands, while how to call them is explained using the CLI (use `mkw help command`), what follows here is more about 
 the "big picture".
 
 The user can `create` dictionaries, with a *name* and an *alphabet*. An alphabet is the set of symbols that will make up the
 dictionary's words. Most characters are allowed, apart from [control codes](https://en.wikipedia.org/wiki/C0_and_C1_control_codes),
-and the underscore which symbolises the end of a word and is a 'reserved' character.  
+and the underscore which symbolises the end of a word and is a "reserved" character.  
 After creation, texts can be `read` to the dictionary. This will slowly build up the set of n-grams of the dictionary
 (where *n* goes from 1 to 3, more than that would be useless and would kill the filesystem, probably) that will later
 be used to `write` words.  
+
 The importance of a dictionary's alphabet is that, whenever a text is read, every character that is not in the alphabet
 is evaluated as a word end (_) and won't appear later during word generation.  
 It is possible to `delete` a dictionary and `restore` it later if the deletion is not *permanent*.  
