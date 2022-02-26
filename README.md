@@ -18,17 +18,23 @@ a mechanism based on Markov chains.
 
 
 ## Installation & requirements
-Java is the only requirement.  
-To use directly the jar, **Java 17** is required. Regarding the native image, I tested it with **Java 17** and **Java 11**
-and had no issues.
+Download the [latest release](https://github.com/ukitinu/markov-words/releases/latest) for your platfom. There are two "types"
+of version, *jar* and *nat-img*.  
+- The *jar* versions may be used via the bash/batch script provided in the archive. They **require Java 17 to run**. Despite the
+name, I think that the script provided in the *linux-jar* version should run on Mac-OS too, as it is basic shell, but I
+have no MacOS environment to check.  
+- The *nat-img* version, native image, contains an executable built with GraalVM, I tested it with **Java 17** and **Java 11**
+and had no issues. As I had some troubles to create versions for all platforms,
+([see here](https://github.com/ukitinu/markov-words/issues/25)), there is only a Linux (Ubuntu) native image.
 
-TODO #22  
-Extract the archive where you want to run the application and then start using it: run the bash/batch/elf file to learn
-how the CLI works (the first time will generate the configuration file and exit immediately).  
-You can also get one of the pre-built dictionaries and use it immediately instead of creating your own.  
-To create new dictionaries on Windows, it is necessary to enable case sensitive file names for the data directory. I
-tried to follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/case-sensitivity), but it didn't work (I got
-a "request not supported" error or something like that).
+The executable version is significantly faster: for simple tasks it is **approximately 100 times faster** (basically instantaneous),
+while it is "only" **10 times as fast** during more computationally heavy tasks.
+
+The first time the programme runs, it will create the [default properties file](./mkw.properties) and exit.
+
+On Windows (I don't know if it also applies for Mac-OS) it is necessary to enable case sensitive file names for the data directory.
+I followed [this guide](https://docs.microsoft.com/en-us/windows/wsl/case-sensitivity), but it didn't work (I got
+a "request not supported" error or something like that). **This step is necessary if you want to create new dictionaries on Windows.**
 
 
 ## Quick guide
